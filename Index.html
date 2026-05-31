@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bite & Delight - Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --font-en: 'Poppins', sans-serif;
+            --font-ar: 'Cairo', sans-serif;
+        }
+
+        body[dir="ltr"] { font-family: var(--font-en); }
+        body[dir="rtl"] { font-family: var(--font-ar); }
+        
+        body {
+            background-color: #f8fafc;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Category Button Active State */
+        .category-btn.active {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            border-color: #ef4444;
+        }
+
+        /* Card Hover Effects */
+        .menu-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Image Loading Placeholder Animation */
+        .img-loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Fix for hidden scrollbar on horizontal scroll */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased transition-colors duration-300">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-40 top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-utensils text-red-500 text-2xl me-2"></i>
+                    <span id="nav-title" class="font-bold text-xl tracking-tight text-gray-900">Bite & Delight</span>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <!-- Language Toggle -->
+                    <button onclick="toggleLanguage()" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 font-bold transition">
+                        <span id="lang-text">AR</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header/Hero Section -->
+    <header class="pt-24 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
+            <span id="hero-title1">Taste the</span> <span id="hero-title2" class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Authentic Flavors</span>
+        </h1>
+        <p id="hero-desc" class="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-6">
+            Discover our carefully crafted menu featuring the best of Arabic street food and international favorites, made fresh daily.
+        </p>
+
+        <!-- Offers Banner -->
+        <div class="inline-block bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-6 rounded-full text-sm sm:text-base font-medium shadow-md animate-pulse">
+            <span id="banner-text">🎉 Special Offer: Flat 15 SR Delivery Charge anywhere in Riyadh!</span>
+        </div>
+    </header>
+
+    <!-- Search & Category Filters -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sticky top-16 z-30 bg-[#f8fafc] py-4 shadow-sm pb-2 transition-all">
+        
+        <!-- Search Bar -->
+        <div class="mb-4 relative max-w-md mx-auto md:max-w-full">
+            <input type="text" id="searchInput" class="w-full ps-11 pe-4 py-3 rounded-xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition-shadow bg-white text-gray-700" placeholder="Search menu...">
+            <i class="fas fa-search absolute top-4 start-4 text-gray-400"></i>
+        </div>
+
+        <!-- Categories -->
+        <div class="flex overflow-x-auto pb-4 hide-scrollbar space-x-3 space-x-reverse justify-start md:justify-center" id="category-filters">
+            <!-- Buttons injected by JS -->
+        </div>
+    </section>
+
+    <!-- Menu Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+        <div id="menu-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+            <!-- Menu Cards injected by JS -->
+        </div>
+        
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden text-center py-20">
+            <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
+            <h3 id="empty-text" class="text-xl font-medium text-gray-500">No items found.</h3>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-utensils text-red-500 text-2xl me-2"></i>
+                    <span id="footer-title" class="font-bold text-xl tracking-tight">Bite & Delight</span>
+                </div>
+                <p id="footer-desc" class="text-gray-400 text-sm">Serving the best authentic flavors since 2010. Quality and taste you can trust.</p>
+            </div>
+            <div>
+                <h4 id="footer-hours-title" class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Working Hours</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li class="flex justify-between"><span id="day1">Mon - Thu</span> <span class="dir-ltr text-end">10:00 AM - 11:00 PM</span></li>
+                    <li class="flex justify-between"><span id="day2">Fri - Sat</span> <span class="dir-ltr text-end">12:00 PM - 1:00 AM</span></li>
+                    <li class="flex justify-between"><span id="day3">Sunday</span> <span class="dir-ltr text-end">10:00 AM - 10:00 PM</span></li>
+                </ul>
+            </div>
+            <div>
+                <h4 id="footer-contact-title" class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Contact Us</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt w-5 text-red-500 mt-1 me-2"></i> 
+                        <a href="https://maps.app.goo.gl/T5SiWaHw1HHyRRAK7" target="_blank" class="hover:text-white transition underline-offset-4 hover:underline">
+                            <span id="address">King Fahd Road, Riyadh</span>
+                        </a>
+                    </li>
+                    <li class="flex items-center"><i class="fas fa-phone w-5 text-red-500 me-2"></i> <a href="tel:+966111234567" class="dir-ltr hover:text-white transition">+966 11 123 4567</a></li>
+                    <li class="flex items-center"><i class="fas fa-envelope w-5 text-red-500 me-2"></i> <a href="mailto:order@bitedelight.sa" class="dir-ltr hover:text-white transition">order@bitedelight.sa</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
+            &copy; <span id="footer-rights">2026 Bite & Delight. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Product Details Modal -->
+    <div id="productModal" class="fixed inset-0 z-[60] hidden items-end md:items-center justify-center p-0 md:p-6">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
+        
+        <!-- Modal Content Container -->
+        <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-3 end-3 z-10 bg-white/90 backdrop-blur text-gray-800 hover:text-red-500 w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Image Area -->
+            <div class="relative h-56 md:h-64 w-full shrink-0 bg-gray-100">
+                <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
+                <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-bold text-red-500 shadow-sm">
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-5 md:p-6 overflow-y-auto">
+                <div class="flex justify-between items-start mb-3 gap-4">
+                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
+                    <div class="text-end shrink-0">
+                        <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap"></span>
+                    </div>
+                </div>
+                
+                <p id="modalDesc" class="text-gray-600 mb-6 leading-relaxed"></p>
+                
+                <div class="flex items-center text-gray-600 text-sm bg-gray-50 border border-gray-100 p-3 rounded-xl inline-flex mb-2">
+                    <i class="fas fa-fire text-orange-500 me-2 text-lg"></i>
+                    <span id="modalCalories" class="font-bold text-gray-800 text-base me-1"></span>
+                    <span id="modalCaloriesLabel">Calories</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 flex flex-col gap-3">
+                    <div class="flex gap-3">
+                        <a href="tel:+966111234567" class="flex-1 bg-gray-900 text-white text-center py-3 rounded-xl font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-phone-alt"></i> <span id="modalCallBtn">Call to Order</span>
+                        </a>
+                        <a href="https://wa.me/966111234567" target="_blank" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp text-lg"></i> <span id="modalWaBtn">WhatsApp</span>
+                        </a>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="shareItem()" class="flex-1 border border-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-share-alt text-red-500"></i> <span id="modalShareBtn">Share</span>
+                        </button>
+                    </div>
+                    <p class="text-center text-xs text-gray-500 mt-2 font-medium">
+                        <i class="fas fa-motorcycle me-1 text-gray-400"></i> <span id="modalDeliveryText">Delivery charge: 15 SR</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentLang = 'ar';
+        let currentCategory = 'All';
+        let searchQuery = '';
+        let likedItems = new Set(JSON.parse(localStorage.getItem('likedItems')) || []);
+        let currentOpenItemId = null;
+
+        // --- Translations Dictionary ---
+        const translations = {
+            en: {
+                navTitle: 'Bite & Delight',
+                heroTitle1: 'Taste the',
+                heroTitle2: 'Authentic Flavors',
+                heroDesc: 'Discover our carefully crafted menu featuring the best of Arabic street food and international favorites, made fresh daily.',
+                searchPlaceholder: 'Search menu...',
+                emptyState: 'No items found matching your search.',
+                calories: 'Calories',
+                currency: 'SR',
+                langBtn: 'AR',
+                bannerText: '🎉 Special Offer: Flat 15 SR Delivery Charge anywhere in Riyadh!',
+                callBtn: 'Call to Order',
+                waBtn: 'WhatsApp',
+                shareBtn: 'Share',
+                deliveryText: 'Delivery charge: 15 SR',
+                // Footer
+                footerDesc: 'Serving the best authentic flavors since 2010. Quality and taste you can trust.',
+                footerHoursTitle: 'Working Hours',
+                footerContactTitle: 'Contact Us',
+                day1: 'Mon - Thu', day2: 'Fri - Sat', day3: 'Sunday',
+                address: 'King Fahd Road, Riyadh',
+                footerRights: '2026 Bite & Delight. All rights reserved.'
+            },
+            ar: {
+                navTitle: 'بايت آند ديلايت',
+                heroTitle1: 'تذوق',
+                heroTitle2: 'النكهات الأصيلة',
+                heroDesc: 'اكتشف قائمتنا المعدة بعناية والتي تضم أفضل المأكولات العربية الشعبية والأطباق العالمية المفضلة، والمحضرة طازجة يومياً.',
+                searchPlaceholder: 'ابحث في القائمة...',
+                emptyState: 'لم يتم العثور على عناصر تطابق بحثك.',
+                calories: 'سعرة حرارية',
+                currency: 'ر.س',
+                langBtn: 'EN',
+                bannerText: '🎉 عرض خاص: رسوم توصيل 15 ر.س فقط في أي مكان بالرياض!',
+                callBtn: 'اتصل للطلب',
+                waBtn: 'واتساب',
+                shareBtn: 'مشاركة',
+                deliveryText: 'رسوم التوصيل: 15 ر.س',
+                // Footer
+                footerDesc: 'نقدم أفضل النكهات الأصيلة منذ عام 2010. جودة وطعم يمكنك الوثوق بهما.',
+                footerHoursTitle: 'ساعات العمل',
+                footerContactTitle: 'اتصل بنا',
+                day1: 'الاثنين - الخميس', day2: 'الجمعة - السبت', day3: 'الأحد',
+                address: 'طريق الملك فهد، الرياض',
+                footerRights: '2026 بايت آند ديلايت. جميع الحقوق محفوظة.'
+            }
+        };
+
+        // --- Data ---
+        const categories = [
+            { id: 'All', en: 'All', ar: 'الكل' },
+            { id: 'Offers', en: '🔥 Offers', ar: '🔥 عروض' },
+            { id: 'Shawarma', en: 'Shawarma', ar: 'شاورما' },
+            { id: 'Burgers', en: 'Burgers', ar: 'برجر' },
+            { id: 'Pizza', en: 'Pizza', ar: 'بيتزا' },
+            { id: 'Sandwiches', en: 'Sandwiches', ar: 'سندويشات' },
+            { id: 'Drinks', en: 'Drinks', ar: 'مشروبات' }
+        ];
+
+        const menuItems = [
+            { id: 1, categoryId: 'Shawarma', price: 15, oldPrice: 20, isOffer: true, calories: 450, img: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Classic Chicken Shawarma', ar: 'شاورما دجاج كلاسيك' },
+              desc: { en: 'Tender marinated chicken, garlic sauce, pickles, wrapped in fresh Arabic bread.', ar: 'دجاج متبل طري، صوص ثوم، مخلل، ملفوف في خبز عربي طازج.' } },
+            { id: 2, categoryId: 'Shawarma', price: 35, calories: 850, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Beef Shawarma Platter', ar: 'صحن شاورما لحم' },
+              desc: { en: 'Slices of seasoned beef served with tahini, fries, mixed salad, and bread.', ar: 'شرائح لحم متبل تقدم مع طحينة، بطاطس، سلطة مشكلة، وخبز.' } },
+            { id: 3, categoryId: 'Shawarma', price: 18, calories: 520, img: 'https://images.unsplash.com/photo-1615719413546-198b25453f85?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Spicy Shawarma Saj', ar: 'شاورما صاج سبايسي' },
+              desc: { en: 'Chicken shawarma with a spicy kick, wrapped in thin saj bread and toasted.', ar: 'شاورما دجاج بلمسة حارة، ملفوفة بخبز الصاج الرقيق ومحمص.' } },
+            
+            { id: 4, categoryId: 'Burgers', price: 45, calories: 950, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Wagyu Smash Burger', ar: 'واقيو سماش برجر' },
+              desc: { en: 'Double wagyu beef patty, melted cheddar, caramelized onions, house sauce.', ar: 'شريحتين لحم واقيو، جبن شيدر ذائب، بصل مكرمل، صوص خاص.' } },
+            { id: 5, categoryId: 'Burgers', price: 32, calories: 780, img: 'https://images.unsplash.com/photo-1615719413546-198b25453f85?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Crispy Chicken Burger', ar: 'برجر دجاج مقرمش' },
+              desc: { en: 'Buttermilk fried chicken breast, spicy mayo, lettuce, pickles on a brioche bun.', ar: 'صدر دجاج مقلي، مايونيز حار، خس، مخلل في خبز بريوش.' } },
+            { id: 6, categoryId: 'Burgers', price: 28, calories: 650, img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Classic Cheeseburger', ar: 'تشيز برجر كلاسيك' },
+              desc: { en: 'Angus beef, American cheese, lettuce, tomato, onions, ketchup, mustard.', ar: 'لحم أنجوس، جبن أمريكي، خس، طماطم، بصل، كاتشب، خردل.' } },
+
+            { id: 7, categoryId: 'Pizza', price: 38, oldPrice: 50, isOffer: true, calories: 1100, img: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Margherita Pizza', ar: 'بيتزا مارغريتا' },
+              desc: { en: 'San Marzano tomato sauce, fresh mozzarella, basil, extra virgin olive oil.', ar: 'صلصة طماطم سان مارزانو، موزاريلا طازجة، ريحان، زيت زيتون بكر.' } },
+            { id: 8, categoryId: 'Pizza', price: 42, calories: 1350, img: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Pepperoni Supreme', ar: 'بيبروني سوبريم' },
+              desc: { en: 'Tomato sauce, mozzarella, double beef pepperoni, chili flakes.', ar: 'صلصة طماطم، موزاريلا، بيبروني لحم مضاعف، رقائق فلفل حار.' } }, 
+            { id: 9, categoryId: 'Pizza', price: 45, calories: 1420, img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Chicken Ranch Pizza', ar: 'بيتزا دجاج رانش' },
+              desc: { en: 'White sauce base, grilled chicken, mushrooms, jalapenos, ranch drizzle.', ar: 'قاعدة صلصة بيضاء، دجاج مشوي، فطر، هلابينو، صلصة رانش.' } },
+
+            { id: 10, categoryId: 'Sandwiches', price: 30, calories: 720, img: 'https://images.unsplash.com/photo-1619860860774-1e2e17343432?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Steak & Cheese Sandwich', ar: 'ساندويتش ستيك وجبن' },
+              desc: { en: 'Thinly sliced steak, sautéed peppers and onions, melted provolone in a sub roll.', ar: 'شرائح ستيك رفيعة، فلفل وبصل سوتيه، جبن بروفولون ذائب.' } },
+            { id: 11, categoryId: 'Sandwiches', price: 12, oldPrice: 16, isOffer: true, calories: 410, img: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Falafel Wrap', ar: 'راب فلافل' },
+              desc: { en: 'Crispy falafel, hummus, cucumber, tomatoes, tahini sauce in pita.', ar: 'فلافل مقرمشة، حمص، خيار، طماطم، صلصة طحينة في خبز بيتا.' } },
+            
+            { id: 12, categoryId: 'Drinks', price: 10, calories: 120, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Fresh Orange Juice', ar: 'عصير برتقال طازج' },
+              desc: { en: 'Freshly squeezed oranges.', ar: 'برتقال معصور طازجاً.' } },
+            { id: 13, categoryId: 'Drinks', price: 12, calories: 150, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop',
+              name: { en: 'Mint Lemonade', ar: 'ليمون بالنعناع' },
+              desc: { en: 'Refreshing blend of lemon juice, fresh mint, and a touch of sweetness.', ar: 'مزيج منعش من عصير الليمون، النعناع الطازج، وقليل من الحلاوة.' } }
+        ];
+
+        // --- DOM Elements ---
+        const categoryFiltersContainer = document.getElementById('category-filters');
+        const menuContainer = document.getElementById('menu-container');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('searchInput');
+
+        // --- Initialization ---
+        function init() {
+            setupSearch();
+            applyLanguage();
+        }
+
+        // --- Language Switcher ---
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            applyLanguage();
+            closeModal(); // Close modal on lang switch to prevent layout jump
+        }
+
+        function applyLanguage() {
+            // Update HTML dir and lang attributes
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
+
+            const t = translations[currentLang];
+
+            // Update Static Texts
+            document.getElementById('nav-title').textContent = t.navTitle;
+            document.getElementById('hero-title1').textContent = t.heroTitle1;
+            document.getElementById('hero-title2').textContent = t.heroTitle2;
+            document.getElementById('hero-desc').textContent = t.heroDesc;
+            searchInput.placeholder = t.searchPlaceholder;
+            document.getElementById('empty-text').textContent = t.emptyState;
+            document.getElementById('lang-text').textContent = t.langBtn;
+            
+            // New dynamic translations
+            document.getElementById('banner-text').textContent = t.bannerText;
+            document.getElementById('modalCallBtn').textContent = t.callBtn;
+            document.getElementById('modalWaBtn').textContent = t.waBtn;
+            document.getElementById('modalShareBtn').textContent = t.shareBtn;
+            document.getElementById('modalDeliveryText').textContent = t.deliveryText;
+            
+            // Footer Texts
+            document.getElementById('footer-title').textContent = t.navTitle;
+            document.getElementById('footer-desc').textContent = t.footerDesc;
+            document.getElementById('footer-hours-title').textContent = t.footerHoursTitle;
+            document.getElementById('footer-contact-title').textContent = t.footerContactTitle;
+            document.getElementById('day1').textContent = t.day1;
+            document.getElementById('day2').textContent = t.day2;
+            document.getElementById('day3').textContent = t.day3;
+            document.getElementById('address').textContent = t.address;
+            document.getElementById('footer-rights').textContent = t.footerRights;
+
+            // Re-render Dynamic Content
+            renderCategories();
+            executeFilter();
+        }
+
+        // --- Search Functionality ---
+        function setupSearch() {
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase().trim();
+                executeFilter();
+            });
+        }
+
+        // --- Rendering Categories ---
+        function renderCategories() {
+            categoryFiltersContainer.innerHTML = '';
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                const catName = category[currentLang];
+                
+                btn.className = `category-btn whitespace-nowrap px-6 py-2 rounded-full border border-gray-200 font-medium text-sm transition-colors duration-200 ${category.id === currentCategory ? 'active' : 'text-gray-600 hover:bg-gray-100 bg-white'}`;
+                btn.textContent = catName;
+                
+                btn.onclick = () => {
+                    currentCategory = category.id;
+                    renderCategories(); // Update active state
+                    executeFilter();
+                };
+                
+                categoryFiltersContainer.appendChild(btn);
+            });
+        }
+
+        // --- Filtering Logic ---
+        function executeFilter() {
+            let filtered = menuItems;
+
+            // Filter by Category
+            if (currentCategory === 'Offers') {
+                filtered = filtered.filter(item => item.isOffer);
+            } else if (currentCategory !== 'All') {
+                filtered = filtered.filter(item => item.categoryId === currentCategory);
+            }
+
+            // Filter by Search Query (Checking both Name and Description in current language)
+            if (searchQuery) {
+                filtered = filtered.filter(item => {
+                    const nameMatch = item.name[currentLang].toLowerCase().includes(searchQuery);
+                    const descMatch = item.desc[currentLang].toLowerCase().includes(searchQuery);
+                    return nameMatch || descMatch;
+                });
+            }
+
+            renderMenu(filtered);
+        }
+
+        // --- Render Menu Items ---
+        function renderMenu(items) {
+            menuContainer.innerHTML = '';
+            
+            if (items.length === 0) {
+                menuContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            menuContainer.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            const currency = translations[currentLang].currency;
+
+            items.forEach((item, index) => {
+                const delay = index * 30; // Stagger animation
+                
+                const card = document.createElement('div');
+                card.className = 'menu-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative';
+                card.style.animation = `fadeInUp 0.4s ease forwards ${delay}ms`;
+                // Clicking entire card opens modal
+                card.onclick = () => openModal(item.id);
+
+                const isLiked = likedItems.has(item.id);
+
+                card.innerHTML = `
+                    <button onclick="toggleLike(event, ${item.id})" class="absolute top-2 start-2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-10">
+                        <i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i>
+                    </button>
+                    <div class="relative h-32 sm:h-40 md:h-44 overflow-hidden img-loading shrink-0">
+                        <img src="${item.img}" alt="${item.name[currentLang]}" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('img-loading')">
+                        <div class="absolute top-2 end-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-bold text-red-500 shadow-sm">
+                            ${categories.find(c => c.id === item.categoryId)[currentLang]}
+                        </div>
+                    </div>
+                    <div class="p-3 sm:p-4 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-1 sm:mb-2 gap-2">
+                            <h3 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">${item.name[currentLang]}</h3>
+                            <div class="flex flex-col items-end shrink-0">
+                                <span class="font-extrabold text-red-500 whitespace-nowrap text-sm sm:text-base">
+                                    ${currentLang === 'en' ? `<span class="text-[10px] sm:text-xs font-normal me-0.5">${currency}</span>${item.price}` : `${item.price} <span class="text-[10px] sm:text-xs font-normal ms-0.5">${currency}</span>`}
+                                </span>
+                                ${item.oldPrice ? `<span class="text-[10px] sm:text-xs text-gray-400 line-through">${currentLang === 'en' ? currency + ' ' + item.oldPrice : item.oldPrice + ' ' + currency}</span>` : ''}
+                            </div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-500 line-clamp-2 mt-1">${item.desc[currentLang]}</p>
+                    </div>
+                `;
+                menuContainer.appendChild(card);
+            });
+        }
+
+        // --- Add CSS Animation dynamically for the cards ---
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInUp {
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // --- Modal Functionality ---
+        function openModal(id) {
+            const item = menuItems.find(i => i.id === id);
+            if (!item) return;
+
+            currentOpenItemId = id;
+            const t = translations[currentLang];
+            const catName = categories.find(c => c.id === item.categoryId)[currentLang];
+
+            // Populate Data
+            document.getElementById('modalImg').src = item.img;
+            document.getElementById('modalCategoryBadge').textContent = catName;
+            document.getElementById('modalTitle').textContent = item.name[currentLang];
+            document.getElementById('modalDesc').textContent = item.desc[currentLang];
+            document.getElementById('modalCalories').textContent = item.calories;
+            document.getElementById('modalCaloriesLabel').textContent = t.calories;
+            
+            // Format Price based on language
+            const priceHtml = currentLang === 'en' 
+                ? `<span class="text-sm font-normal me-1">${t.currency}</span>${item.price}`
+                : `${item.price} <span class="text-sm font-normal ms-1">${t.currency}</span>`;
+            document.getElementById('modalPrice').innerHTML = priceHtml;
+
+            // DOM Elements for Animation
+            const modal = document.getElementById('productModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const content = document.getElementById('modalContent');
+            
+            // Show modal (remove display:none, add flex)
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Trigger reflow to ensure transition happens
+            void modal.offsetWidth; 
+
+            // Animate In
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+            
+            content.classList.remove('translate-y-full', 'md:scale-95', 'opacity-0');
+            content.classList.add('translate-y-0', 'md:scale-100', 'opacity-100');
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            currentOpenItemId = null;
+            const modal = document.getElementById('productModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const content = document.getElementById('modalContent');
+            
+            // Animate Out
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            
+            content.classList.remove('translate-y-0', 'md:scale-100', 'opacity-100');
+            content.classList.add('translate-y-full', 'md:scale-95', 'opacity-0');
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+
+            // Hide after transition ends (300ms matches Tailwind duration-300)
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300); 
+        }
+
+        // --- Like & Share Functionality ---
+        function toggleLike(event, id) {
+            event.stopPropagation(); // Prevent opening modal when clicking like
+            const icon = event.currentTarget.querySelector('i');
+            
+            if (likedItems.has(id)) {
+                likedItems.delete(id);
+                icon.classList.remove('fas', 'text-red-500');
+                icon.classList.add('far');
+            } else {
+                likedItems.add(id);
+                icon.classList.remove('far');
+                icon.classList.add('fas', 'text-red-500');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('likedItems', JSON.stringify([...likedItems]));
+        }
+
+        function shareItem() {
+            if (!currentOpenItemId) return;
+            const item = menuItems.find(i => i.id === currentOpenItemId);
+            const itemName = item.name[currentLang];
+            const itemDesc = item.desc[currentLang];
+            const shareText = currentLang === 'en' 
+                ? `Check out ${itemName} at Bite & Delight! ${itemDesc}`
+                : `شاهد ${itemName} في بايت آند ديلايت! ${itemDesc}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: itemName,
+                    text: shareText,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback to WhatsApp
+                const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + window.location.href)}`;
+                window.open(waUrl, '_blank');
+            }
+        }
+
+        // Run initialization
+        init();
+    </script>
+</body>
+</html>
