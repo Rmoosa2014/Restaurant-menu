@@ -288,34 +288,44 @@
         // --- Master Initialization ---
         async function init() {
             try {
-                // Fetch Excel File (Directly from your GitHub repository)
-                const response = await fetch("https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/MenuMasterData.xlsx");
+                // Fetch Excel File - Added a timestamp to bypass GitHub's cache so it always gets the latest version!
+                const fileUrl = "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/MenuMasterData.xlsx?v=" + new Date().getTime();
+                const response = await fetch(fileUrl);
                 if (!response.ok) throw new Error("Could not fetch file");
                 
                 const arrayBuffer = await response.arrayBuffer();
                 const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                
+                const sNames = workbook.SheetNames;
+                
+                // Smart Sheet Detection (Handles variations in sheet naming or falls back to order 1,2,3,4)
+                const sBrand = sNames.find(n => n.includes("01") || n.includes("Brand") || n.replace(/\s/g,'') === "Sheet1") || sNames[0];
+                const sOffer = sNames.find(n => n.includes("2") || n.includes("Offer")) || sNames[1];
+                const sMenuEn = sNames.find(n => n.includes("3") || n.includes("English")) || sNames[2];
+                const sMenuAr = sNames.find(n => n.includes("4") || n.includes("Arabic")) || sNames[3];
 
-                // 1. Read Branding (Sheet01)
-                if(workbook.SheetNames.includes("Sheet01")) {
-                    const brandRows = XLSX.utils.sheet_to_json(workbook.Sheets["Sheet01"], { header: "A", defval: "" });
-                    if(brandRows.length > 1) rawBranding = brandRows[1]; // Index 1 skips header row
+                // 1. Read Branding
+                if(sBrand && workbook.Sheets[sBrand]) {
+                    const brandRows = XLSX.utils.sheet_to_json(workbook.Sheets[sBrand], { header: "A", defval: "" });
+                    // Find first row that has actual data in Column K (Language) or Column B (Name), skipping row 0 (headers)
+                    rawBranding = brandRows.find((r, i) => i > 0 && (r.K || r.B)) || brandRows[1] || brandRows[0] || {};
                 }
 
-                // 2. Read Offers (Sheet 2)
-                if(workbook.SheetNames.includes("Sheet 2")) {
-                    const offerRows = XLSX.utils.sheet_to_json(workbook.Sheets["Sheet 2"], { header: "A", defval: "" });
+                // 2. Read Offers
+                if(sOffer && workbook.Sheets[sOffer]) {
+                    const offerRows = XLSX.utils.sheet_to_json(workbook.Sheets[sOffer], { header: "A", defval: "" });
                     if(offerRows.length > 1) rawOffers = offerRows.slice(1);
                 }
 
-                // 3. Read English Menu (Sheet3)
-                if(workbook.SheetNames.includes("Sheet3")) {
-                    const enRows = XLSX.utils.sheet_to_json(workbook.Sheets["Sheet3"], { header: "A", defval: "" });
+                // 3. Read English Menu
+                if(sMenuEn && workbook.Sheets[sMenuEn]) {
+                    const enRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuEn], { header: "A", defval: "" });
                     if(enRows.length > 1) rawMenuEn = enRows.slice(1);
                 }
 
-                // 4. Read Arabic Menu (Sheet4)
-                if(workbook.SheetNames.includes("Sheet4")) {
-                    const arRows = XLSX.utils.sheet_to_json(workbook.Sheets["Sheet4"], { header: "A", defval: "" });
+                // 4. Read Arabic Menu
+                if(sMenuAr && workbook.Sheets[sMenuAr]) {
+                    const arRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuAr], { header: "A", defval: "" });
                     if(arRows.length > 1) rawMenuAr = arRows.slice(1);
                 }
 
@@ -335,14 +345,17 @@
         function applySystemSetup() {
             // Determine Language Setup (Column K)
             const kVal = String(rawBranding.K || "").trim().toLowerCase();
+            const toggleBtn = document.getElementById('lang-toggle-btn');
+            
             if(kVal === 'english') {
                 langSetup = 'English'; currentLang = 'en';
+                toggleBtn.classList.add('hidden'); toggleBtn.classList.remove('flex');
             } else if(kVal === 'arabic') {
                 langSetup = 'Arabic'; currentLang = 'ar';
+                toggleBtn.classList.add('hidden'); toggleBtn.classList.remove('flex');
             } else {
-                langSetup = 'Both'; currentLang = 'ar'; // Default to AR if both
-                document.getElementById('lang-toggle-btn').classList.remove('hidden');
-                document.getElementById('lang-toggle-btn').classList.add('flex');
+                langSetup = 'Both'; currentLang = 'ar'; // Default to Arabic if both are enabled
+                toggleBtn.classList.remove('hidden'); toggleBtn.classList.add('flex');
             }
 
             processDataForCurrentLang();
