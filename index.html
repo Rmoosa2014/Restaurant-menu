@@ -83,16 +83,16 @@
             </h1>
 
             <!-- Special Offer Banner (Injected from Sheet 2) -->
-            <div id="offer-banner-container" class="hidden mt-6 mb-2">
-                <div class="inline-flex flex-col items-center bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 px-6 sm:px-8 rounded-2xl shadow-xl animate-pulse cursor-pointer border border-red-400/30">
+            <div id="offer-banner-container" class="hidden mt-6 mb-2 mx-auto max-w-xl transition-all duration-500 rounded-2xl overflow-hidden border border-red-400/30 shadow-xl cursor-pointer bg-gradient-to-r from-orange-500 to-red-600">
+                <div id="offer-content" class="flex flex-col items-center py-4 px-6 sm:px-8 transition-opacity duration-300 bg-black/20 backdrop-blur-sm">
                     <div class="flex items-center gap-2 mb-1">
-                        <i class="fas fa-certificate text-yellow-300"></i>
-                        <span id="offer-title" class="font-bold text-lg">Special Offer</span>
+                        <i class="fas fa-certificate text-yellow-300 animate-pulse"></i>
+                        <span id="offer-title" class="font-bold text-lg sm:text-xl text-white"></span>
                     </div>
-                    <span id="offer-desc" class="text-sm font-medium text-red-50"></span>
-                    <div class="mt-2 flex items-center gap-3 bg-black/20 px-4 py-1.5 rounded-full">
-                        <span id="offer-old-price" class="line-through text-red-200 text-sm"></span>
-                        <span id="offer-new-price" class="font-extrabold text-xl text-yellow-300"></span>
+                    <span id="offer-desc" class="text-sm sm:text-base font-medium text-red-50 text-center mb-2"></span>
+                    <div class="flex items-center gap-3 bg-black/40 px-5 py-2 rounded-full border border-white/10">
+                        <span id="offer-old-price" class="line-through text-red-200 text-sm font-medium hidden"></span>
+                        <span id="offer-new-price" class="font-extrabold text-2xl text-yellow-300 drop-shadow-md hidden"></span>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
         
         <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
             
-            <button onclick="closeModal()" class="absolute top-3 end-3 z-20 bg-black/50 hover:bg-black/80 backdrop-blur text-white w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
+            <button onclick="closeModal()" class="absolute top-3 end-3 z-30 bg-black/50 hover:bg-black/80 backdrop-blur text-white w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
                 <i class="fas fa-times"></i>
             </button>
 
@@ -198,8 +198,14 @@
             <div class="relative h-56 md:h-64 w-full shrink-0 bg-gray-100">
                 <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
                 <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm"></div>
+                
+                <!-- Today's Special Badge (New) -->
+                <div id="modalTodaySpecialBadge" class="hidden absolute top-3 start-3 md:end-12 md:start-auto bg-gradient-to-r from-orange-400 to-red-500 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-white shadow-lg flex items-center gap-1 z-20">
+                    <i class="fas fa-star text-yellow-200"></i> <span id="label-modal-special">Today's Special</span>
+                </div>
+
                 <!-- Video Link Button -->
-                <a href="#" target="_blank" id="modalVideoBtn" class="hidden absolute top-3 start-3 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg transition-colors flex items-center gap-2">
+                <a href="#" target="_blank" id="modalVideoBtn" class="hidden absolute top-12 start-3 md:top-3 md:start-3 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg transition-colors flex items-center gap-2 z-20">
                     <i class="fas fa-play-circle"></i> <span id="label-video">Watch Video</span>
                 </a>
             </div>
@@ -268,6 +274,8 @@
         
         let likedItems = new Set(JSON.parse(localStorage.getItem('likedItems')) || []);
         let currentOpenItemId = null;
+        let offerInterval = null;
+        let currentOfferIndex = 0;
 
         // Static Translations
         const staticText = {
@@ -275,13 +283,15 @@
                 search: 'Search menu...', empty: 'No items found.', calories: 'Calories', 
                 recipe: 'Recipe / Ingredients', video: 'Watch Video', call: 'Call to Order', 
                 wa: 'WhatsApp', share: 'Share', contact: 'Contact Us', location: 'Location',
-                deliveryPrefix: 'Delivery Charge:', todaySpecial: '🌟 Today\'s Specials', all: 'All'
+                deliveryPrefix: 'Delivery Charge:', todaySpecial: '🌟 Today\'s Specials', all: 'All',
+                specialBadge: "Today's Special"
             },
             ar: {
                 search: 'ابحث في القائمة...', empty: 'لم يتم العثور على عناصر.', calories: 'سعرة حرارية', 
                 recipe: 'الوصفة / المكونات', video: 'شاهد الفيديو', call: 'اتصل للطلب', 
                 wa: 'واتساب', share: 'مشاركة', contact: 'اتصل بنا', location: 'الموقع',
-                deliveryPrefix: 'رسوم التوصيل:', todaySpecial: '🌟 أطباق اليوم المميزة', all: 'الكل'
+                deliveryPrefix: 'رسوم التوصيل:', todaySpecial: '🌟 أطباق اليوم المميزة', all: 'الكل',
+                specialBadge: "طبق اليوم"
             }
         };
 
@@ -402,17 +412,8 @@
                 document.getElementById('hero-section').style.backgroundImage = `linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95)), url('${rawBranding.N}')`;
             }
 
-            // Apply Offer Banner (Sheet 2)
-            if(rawOffers.length > 0) {
-                const offer = rawOffers[0]; // Assuming 1 active offer
-                if(offer.B) {
-                    document.getElementById('offer-banner-container').classList.remove('hidden');
-                    document.getElementById('offer-title').textContent = offer.B;
-                    document.getElementById('offer-desc').textContent = offer.C || "";
-                    document.getElementById('offer-old-price').textContent = offer.D ? `${offer.D} ${rawBranding.J || ''}` : "";
-                    document.getElementById('offer-new-price').textContent = offer.E ? `${offer.E} ${rawBranding.J || ''}` : "";
-                }
-            }
+            // Render Offers
+            renderOffers();
 
             // Apply Static Text Translations
             const t = staticText[currentLang];
@@ -424,6 +425,69 @@
             // Format Menu Data
             const rawSource = currentLang === 'en' ? rawMenuEn : rawMenuAr;
             formatMenuData(rawSource);
+        }
+
+        function renderOffers() {
+            clearInterval(offerInterval);
+            const bannerContainer = document.getElementById('offer-banner-container');
+            const bannerContent = document.getElementById('offer-content');
+            
+            if(rawOffers.length > 0) {
+                bannerContainer.classList.remove('hidden');
+
+                const updateOffer = () => {
+                    const offer = rawOffers[currentOfferIndex];
+                    
+                    // Fade out
+                    bannerContent.style.opacity = '0';
+
+                    setTimeout(() => {
+                        document.getElementById('offer-title').textContent = offer.B || "";
+                        document.getElementById('offer-desc').textContent = offer.C || "";
+
+                        const oldPriceEl = document.getElementById('offer-old-price');
+                        if (offer.D) {
+                            oldPriceEl.textContent = `${offer.D} ${rawBranding.J || ''}`;
+                            oldPriceEl.classList.remove('hidden');
+                        } else {
+                            oldPriceEl.classList.add('hidden');
+                        }
+
+                        const newPriceEl = document.getElementById('offer-new-price');
+                        if (offer.E) {
+                            newPriceEl.textContent = `${offer.E} ${rawBranding.J || ''}`;
+                            newPriceEl.classList.remove('hidden');
+                        } else {
+                            newPriceEl.classList.add('hidden');
+                        }
+
+                        // Apply background image if provided in Column F
+                        if (offer.F) {
+                            bannerContainer.style.backgroundImage = `linear-gradient(to right, rgba(239, 68, 68, 0.9), rgba(249, 115, 22, 0.9)), url('${offer.F}')`;
+                            bannerContainer.style.backgroundSize = 'cover';
+                            bannerContainer.style.backgroundPosition = 'center';
+                            bannerContainer.style.backgroundBlendMode = 'overlay';
+                        } else {
+                            bannerContainer.style.backgroundImage = '';
+                            bannerContainer.style.backgroundBlendMode = 'normal';
+                        }
+
+                        // Fade in
+                        bannerContent.style.opacity = '1';
+                        
+                        // Increment index
+                        currentOfferIndex = (currentOfferIndex + 1) % rawOffers.length;
+                    }, 300); // Wait for fade out to complete
+                };
+
+                updateOffer(); // Run first time immediately
+                
+                if (rawOffers.length > 1) {
+                    offerInterval = setInterval(updateOffer, 4000); // Change offer every 4 seconds
+                }
+            } else {
+                bannerContainer.classList.add('hidden');
+            }
         }
 
         function formatMenuData(rawSource) {
@@ -461,24 +525,48 @@
             executeFilter();
         }
 
+        // Smart Icon Matcher for Categories
+        function getCategoryIcon(catName) {
+            const lower = catName.toLowerCase();
+            if(lower.includes('burger') || lower.includes('برجر')) return 'fa-hamburger';
+            if(lower.includes('pizza') || lower.includes('بيتزا')) return 'fa-pizza-slice';
+            if(lower.includes('drink') || lower.includes('beverage') || lower.includes('مشروب') || lower.includes('عصير')) return 'fa-glass-cheers';
+            if(lower.includes('salad') || lower.includes('سلطة')) return 'fa-leaf';
+            if(lower.includes('dessert') || lower.includes('sweet') || lower.includes('حلوى') || lower.includes('حلى')) return 'fa-ice-cream';
+            if(lower.includes('coffee') || lower.includes('قهوة') || lower.includes('كافيه')) return 'fa-coffee';
+            if(lower.includes('chicken') || lower.includes('دجاج') || lower.includes('فراخ')) return 'fa-drumstick-bite';
+            if(lower.includes('fish') || lower.includes('seafood') || lower.includes('سمك') || lower.includes('بحري')) return 'fa-fish';
+            if(lower.includes('sandwich') || lower.includes('ساندوتش')) return 'fa-hotdog';
+            if(lower.includes('soup') || lower.includes('شوربة')) return 'fa-mug-hot';
+            if(lower.includes('breakfast') || lower.includes('فطور') || lower.includes('افطار')) return 'fa-egg';
+            if(lower.includes('meat') || lower.includes('لحم') || lower.includes('ستيك')) return 'fa-bacon';
+            return 'fa-utensils'; // Default
+        }
+
         function renderCategoryFilters() {
             const container = document.getElementById('category-filters');
             container.innerHTML = '';
             
             const t = staticText[currentLang];
+            const activeClass = 'bg-red-500 text-white border-red-500 shadow-md transform scale-105';
+            const inactiveClass = 'bg-white text-gray-700 border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-500';
 
             // "All" Button
             const allBtn = document.createElement('button');
-            allBtn.className = `category-btn whitespace-nowrap px-6 py-2 rounded-full border border-gray-200 font-bold text-sm transition-colors ${currentMainCategory === 'All' ? 'active shadow-md' : 'text-gray-600 hover:bg-gray-100 bg-white'}`;
-            allBtn.innerHTML = `<i class="fas fa-th-large me-2"></i>${t.all}`;
+            const isActiveAll = currentMainCategory === 'All';
+            allBtn.className = `category-btn flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActiveAll ? activeClass : inactiveClass}`;
+            allBtn.innerHTML = `<i class="fas fa-th-large ${isActiveAll ? 'text-white' : 'text-red-400'}"></i> ${t.all}`;
             allBtn.onclick = () => { currentMainCategory = 'All'; renderCategoryFilters(); executeFilter(); };
             container.appendChild(allBtn);
 
-            // Dynamic Main Categories
+            // Dynamic Main Categories with Icons
             mainCategories.forEach(cat => {
+                const icon = getCategoryIcon(cat);
                 const btn = document.createElement('button');
-                btn.className = `category-btn whitespace-nowrap px-6 py-2 rounded-full border border-gray-200 font-bold text-sm transition-colors ${currentMainCategory === cat ? 'active shadow-md' : 'text-gray-600 hover:bg-gray-100 bg-white'}`;
-                btn.textContent = cat;
+                const isActive = currentMainCategory === cat;
+                
+                btn.className = `category-btn flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActive ? activeClass : inactiveClass}`;
+                btn.innerHTML = `<i class="fas ${icon} ${isActive ? 'text-white' : 'text-red-400'}"></i> ${cat}`;
                 btn.onclick = () => { currentMainCategory = cat; renderCategoryFilters(); executeFilter(); };
                 container.appendChild(btn);
             });
@@ -573,10 +661,10 @@
 
                 const isLiked = likedItems.has(item.id);
                 
-                // Price Formatting based on language Dir
+                // Increased Price Size on Card
                 const priceHtml = currentLang === 'en' 
-                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5">${currency}</span>${item.price}`
-                    : `${item.price} <span class="text-[10px] sm:text-xs font-normal ms-0.5">${currency}</span>`;
+                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5 text-gray-500">${currency}</span><span class="text-base sm:text-lg">${item.price}</span>`
+                    : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${currency}</span>`;
 
                 // Badge Logic
                 let badgeHtml = '';
@@ -621,6 +709,15 @@
             document.getElementById('modalTitle').textContent = item.name;
             document.getElementById('modalDesc').textContent = item.desc;
             
+            // Special Badge Logic
+            const specialBadge = document.getElementById('modalTodaySpecialBadge');
+            if(item.isTodaySpecial) {
+                specialBadge.classList.remove('hidden');
+                document.getElementById('label-modal-special').textContent = t.specialBadge;
+            } else {
+                specialBadge.classList.add('hidden');
+            }
+            
             // Labels
             document.getElementById('label-calories').textContent = t.calories;
             document.getElementById('label-recipe').textContent = t.recipe;
@@ -633,10 +730,10 @@
             const delCharge = rawBranding.L ? `${rawBranding.L} ${currency}` : 'Free';
             document.getElementById('modalDeliveryText').textContent = `${t.deliveryPrefix} ${delCharge}`;
 
-            // Price
+            // Increased Price Size in Modal
             const priceHtml = currentLang === 'en' 
-                ? `<span class="text-sm font-normal me-1 text-gray-500">${currency}</span>${item.price}`
-                : `${item.price} <span class="text-sm font-normal ms-1 text-gray-500">${currency}</span>`;
+                ? `<span class="text-sm md:text-base font-normal me-1 text-red-400">${currency}</span><span class="text-3xl">${item.price}</span>`
+                : `<span class="text-3xl">${item.price}</span> <span class="text-sm md:text-base font-normal ms-1 text-red-400">${currency}</span>`;
             document.getElementById('modalPrice').innerHTML = priceHtml;
 
             // Calories
