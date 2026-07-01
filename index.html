@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Menu</title>
+  <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ef4444">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Restaurant">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -163,19 +169,23 @@
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
                     <i class="fas fa-headset text-red-500"></i> <span id="label-contact">Contact Us</span>
                 </h4>
-                <ul class="text-gray-400 text-sm space-y-3">
-                    <li class="flex items-center gap-3 hover:text-white transition cursor-pointer" onclick="callPhone()">
-                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center"><i class="fas fa-phone text-red-400"></i></div>
-                        <span class="dir-ltr font-medium" id="f-phone">--</span>
+                <ul class="text-gray-400 text-[11px] sm:text-sm grid grid-cols-3 sm:flex sm:flex-col gap-2 sm:gap-3">
+                    
+                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 hover:text-white transition cursor-pointer text-center sm:text-start overflow-hidden" onclick="callPhone()">
+                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-phone text-red-400 sm:text-base text-sm"></i></div>
+                        <span class="dir-ltr font-medium truncate w-full" id="f-phone">--</span>
                     </li>
-                    <li class="flex items-center gap-3 hover:text-white transition cursor-pointer" onclick="openWhatsApp()">
-                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center"><i class="fab fa-whatsapp text-green-400 text-lg"></i></div>
-                        <span class="dir-ltr font-medium" id="f-whatsapp">--</span>
+                    
+                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 hover:text-white transition cursor-pointer text-center sm:text-start overflow-hidden" onclick="openWhatsApp()">
+                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-green-400 sm:text-lg text-base"></i></div>
+                        <span class="dir-ltr font-medium truncate w-full" id="f-whatsapp">--</span>
                     </li>
-                    <li class="flex items-center gap-3 hover:text-white transition">
-                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center"><i class="fas fa-envelope text-blue-400"></i></div>
-                        <a href="#" id="f-email" class="dir-ltr">--</a>
+                    
+                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 hover:text-white transition text-center sm:text-start overflow-hidden">
+                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400 sm:text-base text-sm"></i></div>
+                        <a href="#" id="f-email" class="dir-ltr truncate w-full">--</a>
                     </li>
+
                 </ul>
             </div>
 
@@ -749,10 +759,16 @@
             }
 
             if (searchQuery) {
-                filteredData = filteredData.filter(i => 
-                    i.name.toLowerCase().includes(searchQuery) || 
-                    i.desc.toLowerCase().includes(searchQuery)
-                );
+                // Split the search query into an array of individual words
+                const searchWords = searchQuery.toLowerCase().split(' ').filter(word => word.trim() !== '');
+                
+                filteredData = filteredData.filter(i => {
+                    // Combine the Name, Description, Main Category, and Sub-Category into one big string
+                    const searchableText = `${i.name} ${i.desc} ${i.mainCat} ${i.subCat}`.toLowerCase();
+                    
+                    // Return true ONLY if every single word the user typed is found somewhere in that string
+                    return searchWords.every(word => searchableText.includes(word));
+                });
             }
 
             if (currentMainCategory === 'All' && !searchQuery) {
@@ -1261,7 +1277,7 @@ let diningType = 'Takeaway';
                 cart.push({ ...item, qty: 1 });
             }
 
-            closeModal(); // Close item modal so they can keep browsing
+            // (Removed closeModal() so the card stays open until the user clicks the X)
             updateCartUI(); // Automatically updates the red number on the floating cart!
         }
 function quickAddToCart(id) {
@@ -1421,6 +1437,15 @@ function quickAddToCart(id) {
         }
         window.onload = init;
         setupSearch();
+
+        // --- Register PWA Service Worker ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('PWA Service Worker registered successfully!'))
+                    .catch(err => console.error('PWA Registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>
