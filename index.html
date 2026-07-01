@@ -146,7 +146,7 @@
             </div>
         </div>
     </div>
-    <footer class="bg-gray-900 text-white py-12 rounded-t-3xl sm:rounded-none mt-10">
+    <footer class="bg-gray-900 text-white pt-12 pb-32 md:pb-12 rounded-t-3xl sm:rounded-none mt-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div>
                 <div class="flex items-center gap-3 mb-4">
@@ -249,9 +249,9 @@
                         <button onclick="callPhone()" class="flex-1 bg-gray-900 text-white text-center py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow-md flex items-center justify-center gap-2">
                             <i class="fas fa-phone-alt"></i> <span id="label-call">Call</span>
                         </button>
-                        <button onclick="openWhatsAppItem()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
-                            <i class="fab fa-whatsapp text-lg"></i> <span id="label-wa">WhatsApp</span>
-                        </button>
+                        <button onclick="addToOrderAndCheckout()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
+    <i class="fas fa-cart-plus text-lg"></i> <span id="label-wa">Add & Review</span>
+</button>
                     </div>
                     <button onclick="shareItem()" class="w-full border-2 border-gray-100 text-gray-700 py-2.5 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2">
                         <i class="fas fa-share-alt text-red-500"></i> <span id="label-share">Share Item</span>
@@ -264,7 +264,76 @@
             </div>
         </div>
     </div>
+<!-- Floating Cart Button -->
+    <button id="cart-floating-btn" onclick="openCartModal()" class="hidden fixed bottom-24 start-6 z-50 bg-green-500 text-white w-14 h-14 rounded-full items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-shopping-cart text-xl"></i>
+        <span id="cart-count-badge" class="absolute -top-2 -end-2 bg-red-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">0</span>
+    </button>
 
+    <!-- Cart / Bill Modal -->
+    <div id="cartModal" class="fixed inset-0 z-[90] hidden items-end md:items-center justify-center p-0 md:p-6">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onclick="closeCartModal()"></div>
+        
+        <div class="relative z-10 w-full md:max-w-md bg-white rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] md:h-[700px] transform transition-all">
+            
+            <!-- Header -->
+            <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50">
+                <div class="flex items-center gap-3">
+                    <img id="cart-brand-logo" src="" class="w-10 h-10 rounded-full object-cover hidden">
+                    <h2 class="text-xl font-bold text-gray-900">Your Bill</h2>
+                </div>
+                <button onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-300 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Items List -->
+            <div class="flex-grow overflow-y-auto p-4 bg-gray-50" id="cart-items-container">
+                <!-- Cart items will be injected here via JS -->
+            </div>
+
+            <!-- Footer / Totals Section -->
+            <div class="p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)]">
+                
+                <!-- Table Selector -->
+                <div class="mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Table Number</label>
+                    <select id="table-number" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-gray-800 font-bold focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="Takeaway">Takeaway / Pickup</option>
+                        <option value="Table 1">Table 1</option>
+                        <option value="Table 2">Table 2</option>
+                        <option value="Table 3">Table 3</option>
+                        <option value="Table 4">Table 4</option>
+                        <option value="Table 5">Table 5</option>
+                        <option value="Table 6">Table 6</option>
+                        <option value="Table 7">Table 7</option>
+                        <option value="Table 8">Table 8</option>
+                    </select>
+                </div>
+
+                <!-- Calculations -->
+                <div class="space-y-2 mb-4 text-sm font-medium text-gray-600">
+                    <div class="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span id="cart-subtotal">0.00</span>
+                    </div>
+                    <div class="flex justify-between text-red-500">
+                        <span>VAT (15%):</span>
+                        <span id="cart-vat">0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xl font-extrabold text-gray-900 border-t border-gray-200 pt-2 mt-2">
+                        <span>Net Total:</span>
+                        <span id="cart-total">0.00</span>
+                    </div>
+                </div>
+
+                <!-- WhatsApp Order Button -->
+                <button onclick="sendOrderViaWhatsApp()" class="w-full bg-green-500 text-white text-center py-3.5 rounded-xl font-bold hover:bg-green-600 transition shadow-lg flex items-center justify-center gap-2 text-lg">
+                    <i class="fab fa-whatsapp text-2xl"></i> Send Order
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
         // --- Core State ---
         let rawBranding = {};
@@ -960,6 +1029,7 @@
                 container.appendChild(a);
             });
         }
+      
         // --- Game Modal Logic ---
         function openGameModal() {
             const modal = document.getElementById('gameModal');
@@ -1012,6 +1082,148 @@
                 currentIndex++;
                 if (currentIndex >= suggestions.length) currentIndex = 0;
             }, 2500);
+        }
+      // --- Shopping Cart & Bill Engine ---
+        let cart = [];
+        const VAT_RATE = 0.15; // 15% VAT
+
+        function addToOrderAndCheckout() {
+            if(!currentOpenItemId) return;
+            const item = activeMenuData.find(i => i.id === currentOpenItemId);
+            if(!item) return;
+
+            // Check if item is already in cart
+            const existingItem = cart.find(c => c.id === currentOpenItemId);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+
+            closeModal(); // Close item modal
+            updateCartUI();
+            openCartModal(); // Open bill
+        }
+
+        function updateCartUI() {
+            const countBadge = document.getElementById('cart-count-badge');
+            const floatingBtn = document.getElementById('cart-floating-btn');
+            const container = document.getElementById('cart-items-container');
+            
+            // Update Floating Button
+            let totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            countBadge.innerText = totalItems;
+            
+            if (totalItems > 0) {
+                floatingBtn.classList.remove('hidden');
+                floatingBtn.classList.add('flex');
+            } else {
+                floatingBtn.classList.add('hidden');
+                floatingBtn.classList.remove('flex');
+                closeCartModal();
+            }
+
+            // Render Items in Bill
+            container.innerHTML = '';
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                const itemPrice = parseFloat(item.price) || 0;
+                const itemTotal = itemPrice * item.qty;
+                subtotal += itemTotal;
+
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 bg-white p-3 rounded-xl mb-3 shadow-sm border border-gray-100">
+                        <img src="${item.img}" class="w-16 h-16 rounded-lg object-cover bg-gray-100 shrink-0">
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-gray-800 text-sm leading-tight">${item.name}</h4>
+                            <div class="text-xs text-gray-500 mt-1">${itemPrice.toFixed(2)} ${globalCurrency} x ${item.qty}</div>
+                        </div>
+                        <div class="flex flex-col items-end gap-2 shrink-0">
+                            <span class="font-extrabold text-red-600">${itemTotal.toFixed(2)}</span>
+                            <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                                <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-minus text-xs"></i></button>
+                                <span class="font-bold text-sm w-4 text-center">${item.qty}</span>
+                                <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-plus text-xs"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Calculate Totals
+            const vatAmount = subtotal * VAT_RATE;
+            const netTotal = subtotal + vatAmount;
+
+            document.getElementById('cart-subtotal').innerText = `${subtotal.toFixed(2)} ${globalCurrency}`;
+            document.getElementById('cart-vat').innerText = `${vatAmount.toFixed(2)} ${globalCurrency}`;
+            document.getElementById('cart-total').innerText = `${netTotal.toFixed(2)} ${globalCurrency}`;
+        }
+
+        function changeQty(id, change) {
+            const item = cart.find(c => c.id === id);
+            if(item) {
+                item.qty += change;
+                if(item.qty <= 0) {
+                    cart = cart.filter(c => c.id !== id);
+                }
+                updateCartUI();
+            }
+        }
+
+        function openCartModal() {
+            if(cart.length === 0) return; // Don't open if empty
+            
+            // Set the logo in the cart header
+            if(rawBranding.smartLogo) {
+                const logo = document.getElementById('cart-brand-logo');
+                logo.src = rawBranding.smartLogo;
+                logo.classList.remove('hidden');
+            }
+
+            const modal = document.getElementById('cartModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCartModal() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function sendOrderViaWhatsApp() {
+            if(cart.length === 0 || !rawBranding.D) return;
+            
+            const tableNo = document.getElementById('table-number').value;
+            const restaurantName = rawBranding.B || 'Our Restaurant';
+            
+            // Build the formatted text receipt
+            let msg = `🧾 *NEW ORDER*\n`;
+            msg += `📍 Restaurant: *${restaurantName}*\n`;
+            msg += `🍽️ Table/Type: *${tableNo}*\n`;
+            msg += `------------------------\n`;
+            
+            let subtotal = 0;
+            cart.forEach(item => {
+                const itemPrice = parseFloat(item.price) || 0;
+                const total = itemPrice * item.qty;
+                subtotal += total;
+                msg += `${item.qty}x ${item.name} @ ${itemPrice.toFixed(2)} = ${total.toFixed(2)}\n`;
+            });
+            
+            const vatAmount = subtotal * VAT_RATE;
+            const netTotal = subtotal + vatAmount;
+
+            msg += `------------------------\n`;
+            msg += `Subtotal: ${subtotal.toFixed(2)}\n`;
+            msg += `VAT (15%): ${vatAmount.toFixed(2)}\n`;
+            msg += `*Net Total: ${netTotal.toFixed(2)} ${globalCurrency}*\n`;
+
+            // Redirect to WhatsApp
+            window.open(`https://wa.me/${rawBranding.D}?text=${encodeURIComponent(msg)}`, '_blank');
         }
         window.onload = init;
         setupSearch();
