@@ -301,22 +301,29 @@
             <div class="p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)]">
                 
                 <!-- Order Type & Table Selector -->
-                <div class="mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                <div class="mb-3 bg-gray-50 p-2.5 rounded-xl border border-gray-200">
                     <div class="flex justify-between items-center mb-3">
-                        <label class="block text-xs font-bold text-gray-500 uppercase">Dining Option</label>
-                        <span id="bill-datetime" class="text-[10px] text-gray-400 font-bold bg-white px-2 py-1 rounded-md border border-gray-200"></span>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Dining Option</label>
+                        <!-- Date & Time Badge -->
+                        <span id="bill-datetime" class="text-[10px] text-gray-600 font-bold bg-white px-2 py-1 rounded border border-gray-200 shadow-sm"></span>
                     </div>
                     
-                    <!-- Master Takeaway Button -->
-                    <button onclick="selectDiningOption('Takeaway')" id="btn-takeaway" class="w-full py-2.5 mb-3 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold transition-all shadow-sm flex items-center justify-center gap-2">
-                        <i class="fas fa-shopping-bag"></i> Takeaway / Pickup
-                    </button>
-                    
-                    <div class="text-[10px] font-bold text-gray-400 uppercase mb-2 text-center flex items-center gap-2 before:h-px before:flex-1 before:bg-gray-200 after:h-px after:flex-1 after:bg-gray-200">Or Select Table</div>
-                    
-                    <!-- Table Grid (Auto-populated by JS) -->
-                    <div id="table-grid" class="grid grid-cols-5 gap-2">
-                        <!-- Buttons 1-20 will be injected here -->
+                    <!-- Dine In / Takeaway Toggle -->
+                    <div class="flex gap-2 mb-2">
+                        <button onclick="setDiningType('Takeaway')" id="btn-type-takeaway" class="flex-1 py-2 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fas fa-shopping-bag"></i> Takeaway
+                        </button>
+                        <button onclick="setDiningType('Dine In')" id="btn-type-dinein" class="flex-1 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm transition-all flex items-center justify-center gap-2 hover:bg-gray-50">
+                            <i class="fas fa-utensils"></i> Dine In
+                        </button>
+                    </div>
+
+                    <!-- Hidden Table Dropdown -->
+                    <div id="table-select-container" class="hidden transition-all duration-300">
+                        <select id="table-number" onchange="updateTableSelection()" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-gray-800 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="" disabled selected>Select your table...</option>
+                            <!-- JS will inject options 1-20 here -->
+                        </select>
                     </div>
                 </div>
 
@@ -1110,46 +1117,38 @@ function smartWhatsAppOrder() {
       // --- Shopping Cart & Bill Engine ---
         let cart = [];
         const VAT_RATE = 0.15; // 15% VAT
-let currentDiningOption = 'Takeaway'; // Default selection
+let diningType = 'Takeaway'; 
+        let selectedTable = '';
 
-        function renderTableGrid() {
-            const grid = document.getElementById('table-grid');
-            grid.innerHTML = '';
+        function initTableSelect() {
+            const select = document.getElementById('table-number');
             for(let i = 1; i <= 20; i++) {
-                grid.innerHTML += `
-                    <button onclick="selectDiningOption('Table ${i}')" id="btn-table-${i}" class="py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm hover:border-green-300 transition-all">
-                        ${i}
-                    </button>
-                `;
+                select.innerHTML += `<option value="Table ${i}">Table ${i}</option>`;
             }
         }
 
-        function selectDiningOption(option) {
-            currentDiningOption = option;
-            
-            // 1. Reset the Takeaway Button to default gray
-            document.getElementById('btn-takeaway').className = "w-full py-2.5 mb-3 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold transition-all flex items-center justify-center gap-2";
-            
-            // 2. Reset ALL Table Buttons to default gray
-            for(let i = 1; i <= 20; i++) {
-                const btn = document.getElementById(`btn-table-${i}`);
-                if(btn) btn.className = "py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm hover:border-green-300 transition-all";
-            }
-            
-            // 3. Highlight the specific button that was clicked in Green
-            if(option === 'Takeaway') {
-                document.getElementById('btn-takeaway').className = "w-full py-2.5 mb-3 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold transition-all shadow-sm flex items-center justify-center gap-2";
+        function setDiningType(type) {
+            diningType = type;
+            const btnTakeaway = document.getElementById('btn-type-takeaway');
+            const btnDineIn = document.getElementById('btn-type-dinein');
+            const tableContainer = document.getElementById('table-select-container');
+
+            if(type === 'Takeaway') {
+                btnTakeaway.className = "flex-1 py-2 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm";
+                btnDineIn.className = "flex-1 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm transition-all flex items-center justify-center gap-2 hover:bg-gray-50";
+                tableContainer.classList.add('hidden'); // Hide dropdown
             } else {
-                const tableNum = option.replace('Table ', '');
-                const activeBtn = document.getElementById(`btn-table-${tableNum}`);
-                if(activeBtn) {
-                    activeBtn.className = "py-2 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold text-sm transition-all shadow-sm scale-105";
-                }
+                btnDineIn.className = "flex-1 py-2 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm";
+                btnTakeaway.className = "flex-1 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm transition-all flex items-center justify-center gap-2 hover:bg-gray-50";
+                tableContainer.classList.remove('hidden'); // Show dropdown
             }
         }
 
-        // Call this once to build the buttons when the script loads
-        setTimeout(() => { renderTableGrid(); }, 500);
+        function updateTableSelection() {
+            selectedTable = document.getElementById('table-number').value;
+        }
+
+        setTimeout(() => { initTableSelect(); }, 500);
       
         function addToCart() {
             if(!currentOpenItemId) return;
@@ -1207,18 +1206,18 @@ function quickAddToCart(id) {
                 subtotal += itemTotal;
 
                 container.innerHTML += `
-                    <div class="flex items-center gap-3 bg-white p-3 rounded-xl mb-3 shadow-sm border border-gray-100">
-                        <img src="${item.img}" class="w-16 h-16 rounded-lg object-cover bg-gray-100 shrink-0">
-                        <div class="flex-grow">
-                            <h4 class="font-bold text-gray-800 text-sm leading-tight">${item.name}</h4>
-                            <div class="text-xs text-gray-500 mt-1">${itemPrice.toFixed(2)} ${globalCurrency} x ${item.qty}</div>
+                    <div class="flex items-center gap-2 bg-white p-2 rounded-lg mb-2 shadow-sm border border-gray-100">
+                        <img src="${item.img}" class="w-12 h-12 rounded-md object-cover bg-gray-100 shrink-0">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-bold text-gray-800 text-xs leading-tight truncate">${item.name}</h4>
+                            <div class="text-[10px] text-gray-500 mt-0.5">${itemPrice.toFixed(2)} ${globalCurrency} x ${item.qty}</div>
                         </div>
-                        <div class="flex flex-col items-end gap-2 shrink-0">
-                            <span class="font-extrabold text-red-600">${itemTotal.toFixed(2)}</span>
-                            <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-                                <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-minus text-xs"></i></button>
-                                <span class="font-bold text-sm w-4 text-center">${item.qty}</span>
-                                <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-plus text-xs"></i></button>
+                        <div class="flex flex-col items-end gap-1 shrink-0">
+                            <span class="font-bold text-red-600 text-xs">${itemTotal.toFixed(2)}</span>
+                            <div class="flex items-center gap-1 bg-gray-100 rounded p-0.5">
+                                <button onclick="changeQty('${item.id}', -1)" class="w-5 h-5 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-minus text-[10px]"></i></button>
+                                <span class="font-bold text-xs w-3 text-center">${item.qty}</span>
+                                <button onclick="changeQty('${item.id}', 1)" class="w-5 h-5 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-plus text-[10px]"></i></button>
                             </div>
                         </div>
                     </div>
@@ -1287,10 +1286,20 @@ function quickAddToCart(id) {
             });
             
             // Build the formatted text receipt using the new Dining Option variable
+            let orderTypeStr = diningType;
+            if (diningType === 'Dine In') {
+                if (!selectedTable) {
+                    alert('Please select a table number from the dropdown!');
+                    return;
+                }
+                orderTypeStr = `Dine In (${selectedTable})`;
+            }
+
+            // Build the formatted text receipt
             let msg = `🧾 *NEW ORDER*\n`;
             msg += `📅 Date: ${orderDate}\n`;
             msg += `📍 Restaurant: *${restaurantName}*\n`;
-            msg += `🍽️ Option: *${currentDiningOption}*\n`;
+            msg += `🍽️ Option: *${orderTypeStr}*\n`;
             msg += `------------------------\n`;
             
             let subtotal = 0;
