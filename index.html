@@ -75,28 +75,29 @@
                 <span id="hero-title2" class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Our Restaurant</span>
             </h1>
 
-            <div id="offer-banner-container" class="hidden mt-6 mb-2 mx-auto max-w-xl transition-all duration-500 rounded-2xl overflow-hidden border border-red-400/30 shadow-xl cursor-pointer bg-gradient-to-r from-orange-500 to-red-600">
-                <div id="offer-content" class="flex flex-col items-center py-4 px-6 sm:px-8 transition-opacity duration-300 bg-black/20 backdrop-blur-sm rounded-2xl">
-                    <div class="flex items-center gap-2 mb-1">
-                        <i class="fas fa-certificate text-yellow-300 animate-pulse"></i>
-                        <span id="offer-title" class="font-bold text-lg sm:text-xl text-white"></span>
-                    </div>
-                    <span id="offer-desc" class="text-sm sm:text-base font-medium text-red-50 text-center mb-2"></span>
-                    <div class="flex items-center gap-3 bg-black/40 px-5 py-2 rounded-full border border-white/10">
-                        <span id="offer-old-price" class="line-through text-red-200 text-sm font-medium hidden"></span>
-                        <span id="offer-new-price" class="font-extrabold text-2xl text-yellow-300 drop-shadow-md hidden"></span>
-                    </div>
+            <div id="offer-carousel-wrapper" class="hidden relative h-44 sm:h-48 mt-6 mb-2 mx-auto max-w-5xl overflow-hidden flex items-center justify-center">
                 </div>
-            </div>
         </div>
     </header>
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sticky top-16 z-30 bg-[#f8fafc] py-4 shadow-sm transition-all">
-        <div class="relative max-w-xl mx-auto mb-4">
-            <div class="absolute inset-y-0 start-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-search text-gray-400 ms-3"></i>
+        <div class="relative max-w-xl mx-auto mb-4 bg-white border border-gray-200 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
+            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none px-4 z-10">
+                <i class="fas fa-search text-gray-400"></i>
             </div>
-            <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-2xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 sm:text-sm shadow-sm transition-shadow" placeholder="Search menu...">
+            
+            <div id="search-placeholder-wrapper" class="absolute inset-y-0 start-12 end-4 flex items-center pointer-events-none z-10 text-sm font-medium text-gray-400">
+                <span id="search-prefix" class="whitespace-nowrap"></span>
+                
+                <div class="h-5 overflow-hidden w-full relative ms-1">
+                    <div id="animated-placeholder-container" class="flex flex-col transition-transform duration-500 ease-in-out absolute w-full top-0 start-0">
+                        <span class="truncate h-5 leading-5 block" id="search-text-1"></span>
+                        <span class="truncate h-5 leading-5 block" id="search-text-2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <input type="text" id="searchInput" class="block w-full ps-12 pe-4 py-3 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
         </div>
 
         <div class="flex overflow-x-auto hide-scrollbar gap-3 px-1 py-2 justify-start md:justify-center" id="category-filters">
@@ -531,7 +532,8 @@
             renderOffers();
 
             const t = staticText[currentLang];
-            document.getElementById('searchInput').placeholder = t.search;
+            // Clear the standard placeholder so it doesn't overlap our custom animated one!
+            document.getElementById('searchInput').placeholder = ''; 
             document.getElementById('empty-text').textContent = t.empty;
             document.getElementById('label-contact').textContent = t.contact;
             document.getElementById('label-location').textContent = t.location;
@@ -542,57 +544,100 @@
 
         function renderOffers() {
             clearInterval(offerInterval);
-            const bannerContainer = document.getElementById('offer-banner-container');
-            const bannerContent = document.getElementById('offer-content');
+            const wrapper = document.getElementById('offer-carousel-wrapper');
             
-            if(rawOffers.length > 0) {
-                bannerContainer.classList.remove('hidden');
+            if(!rawOffers || rawOffers.length === 0) {
+                wrapper.classList.add('hidden');
+                return;
+            }
 
-                const updateOffer = () => {
-                    const offer = rawOffers[currentOfferIndex];
-                    bannerContent.style.opacity = '0';
+            wrapper.classList.remove('hidden');
+            wrapper.innerHTML = ''; 
+            
+            const isRtl = currentLang === 'ar';
 
-                    setTimeout(() => {
-                        document.getElementById('offer-title').textContent = offer.B || "";
-                        document.getElementById('offer-desc').textContent = offer.C || "";
-
-                        const oldPriceEl = document.getElementById('offer-old-price');
-                        if (offer.D) {
-                            oldPriceEl.textContent = `${offer.D} ${globalCurrency}`;
-                            oldPriceEl.classList.remove('hidden');
-                        } else {
-                            oldPriceEl.classList.add('hidden');
-                        }
-
-                        const newPriceEl = document.getElementById('offer-new-price');
-                        if (offer.E) {
-                            newPriceEl.textContent = `${offer.E} ${globalCurrency}`;
-                            newPriceEl.classList.remove('hidden');
-                        } else {
-                            newPriceEl.classList.add('hidden');
-                        }
-
-                        if (offer.F) {
-                            bannerContainer.style.backgroundImage = `linear-gradient(to right, rgba(239, 68, 68, 0.9), rgba(249, 115, 22, 0.9)), url('${offer.F}')`;
-                            bannerContainer.style.backgroundSize = 'cover';
-                            bannerContainer.style.backgroundPosition = 'center';
-                            bannerContainer.style.backgroundBlendMode = 'overlay';
-                        } else {
-                            bannerContainer.style.backgroundImage = '';
-                            bannerContainer.style.backgroundBlendMode = 'normal';
-                        }
-
-                        bannerContent.style.opacity = '1';
-                        currentOfferIndex = (currentOfferIndex + 1) % rawOffers.length;
-                    }, 300); 
-                };
-
-                updateOffer(); 
-                if (rawOffers.length > 1) {
-                    offerInterval = setInterval(updateOffer, 4000); 
+            // 1. Build all the cards dynamically
+            const cards = rawOffers.map((offer, index) => {
+                const card = document.createElement('div');
+                
+                let innerOverlayClass = 'bg-black/20 backdrop-blur-sm'; // Default glass effect
+                
+                // Add Image Background if present
+                if (offer.F) {
+                    card.style.backgroundImage = `url('${offer.F}')`;
+                    card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                    innerOverlayClass = 'bg-black/40'; 
+                } else {
+                    // Use inline style gradient so the sliding animation doesn't erase it!
+                    card.style.backgroundImage = 'linear-gradient(to right, #f97316, #dc2626)'; // Tailwind orange-500 to red-600
+                    innerOverlayClass = ''; // Remove dark overlay to let the gradient shine
                 }
-            } else {
-                bannerContainer.classList.add('hidden');
+
+                // Inner HTML of the card
+                card.innerHTML = `
+                    <div class="flex flex-col items-center justify-center w-full h-full p-4 sm:p-6 ${innerOverlayClass} rounded-2xl">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-certificate text-yellow-300 animate-pulse"></i>
+                            <span class="font-bold text-lg sm:text-xl text-white text-center">${offer.B || ""}</span>
+                        </div>
+                        <span class="text-sm sm:text-base font-medium text-red-50 text-center mb-2">${offer.C || ""}</span>
+                        ${(offer.D || offer.E) ? `
+                        <div class="flex items-center gap-3 bg-black/40 px-5 py-2 rounded-full border border-white/10 mt-auto">
+                            ${offer.D ? `<span class="line-through text-red-200 text-sm font-medium">${offer.D} ${globalCurrency}</span>` : ''}
+                            ${offer.E ? `<span class="font-extrabold text-2xl text-yellow-300 drop-shadow-md">${offer.E} ${globalCurrency}</span>` : ''}
+                        </div>` : ''}
+                    </div>
+                `;
+                wrapper.appendChild(card);
+                return card;
+            });
+
+            // 2. The Logic to position them left, center, right
+            function updatePositions() {
+                const total = cards.length;
+                
+                cards.forEach((card, index) => {
+                    let diff = index - currentOfferIndex;
+                    if (diff < -1) diff += total; // wrap around
+                    if (diff > 1) diff -= total;
+
+                    // INCREASED WIDTH: w-[85%] sm:w-[65%] max-w-lg
+                    let classes = "absolute w-[85%] sm:w-[65%] max-w-lg transition-all duration-700 ease-in-out rounded-2xl border border-red-400/30 shadow-xl top-2 bottom-2 flex items-center justify-center flex-col overflow-hidden";
+                    
+                    if (total === 1) {
+                        card.className = `${classes} z-30 scale-100 opacity-100 translate-x-0 blur-none`;
+                        return;
+                    }
+
+                    if (diff === 0) {
+                        // Current (Center) - Sharp focus
+                        card.className = `${classes} z-30 scale-100 opacity-100 translate-x-0 blur-none`;
+                    } else if (diff === 1 || (diff < 0 && total === 2 && diff === -1)) {
+                        // Next item - Blurred
+                        const slideClass = isRtl ? '-translate-x-[65%] sm:-translate-x-[85%]' : 'translate-x-[65%] sm:translate-x-[85%]';
+                        card.className = `${classes} z-20 scale-90 opacity-40 blur-[1px] ${slideClass} cursor-pointer`;
+                        card.onclick = () => { currentOfferIndex = index; updatePositions(); }; 
+                    } else if (diff === -1) {
+                        // Previous item - Blurred
+                        const slideClass = isRtl ? 'translate-x-[65%] sm:translate-x-[85%]' : '-translate-x-[65%] sm:-translate-x-[85%]';
+                        card.className = `${classes} z-20 scale-90 opacity-40 blur-[1px] ${slideClass} cursor-pointer`;
+                        card.onclick = () => { currentOfferIndex = index; updatePositions(); }; 
+                    } else {
+                        // Hidden in the back
+                        card.className = `${classes} z-10 scale-75 opacity-0 translate-x-0 pointer-events-none blur-sm`;
+                    }
+                });
+            }
+
+            updatePositions();
+
+            // 3. Loop the animation (Changed to 3 Seconds)
+            if (cards.length > 1) {
+                offerInterval = setInterval(() => {
+                    currentOfferIndex = (currentOfferIndex + 1) % cards.length;
+                    updatePositions();
+                }, 3000); // 3000ms = 3 seconds
             }
         }
 
@@ -678,6 +723,14 @@
 
         function setupSearch() {
             document.getElementById('searchInput').addEventListener('input', (e) => {
+                const placeholderWrapper = document.getElementById('search-placeholder-wrapper');
+                // Hide animation if they are typing
+                if(e.target.value.length > 0) {
+                    placeholderWrapper.classList.add('opacity-0');
+                } else {
+                    placeholderWrapper.classList.remove('opacity-0');
+                }
+                
                 searchQuery = e.target.value.toLowerCase().trim();
                 executeFilter();
             });
@@ -1090,29 +1143,47 @@ function smartWhatsAppOrder() {
         let placeholderTimer;
         function animateSearchPlaceholder() {
             clearInterval(placeholderTimer);
-            const searchInput = document.getElementById('searchInput');
+            const container = document.getElementById('animated-placeholder-container');
+            const span1 = document.getElementById('search-text-1');
+            const span2 = document.getElementById('search-text-2');
             
             // Wait until menu data is loaded
-            if (!searchInput || activeMenuData.length === 0) return;
+            if (!container || activeMenuData.length === 0) return;
 
-            // Pick 5 random item names from the menu
             const suggestions = [...activeMenuData]
                 .sort(() => 0.5 - Math.random())
                 .slice(0, 5)
                 .map(item => item.name);
 
             let currentIndex = 0;
+            
+            // Set static prefix outside the animation
+            const prefix = currentLang === 'en' ? 'Try searching "' : 'جرب البحث عن "';
+            const suffix = '"...';
+            document.getElementById('search-prefix').innerText = prefix;
 
-            // Change the text every 2.5 seconds
+            // Set initial sliding text (food name only)
+            span1.innerText = suggestions[0] + suffix;
+
+            // Animate it sliding up
             placeholderTimer = setInterval(() => {
-                const prefix = currentLang === 'en' ? 'Try searching "' : 'جرب البحث عن "';
-                const suffix = '"...';
+                currentIndex = (currentIndex + 1) % suggestions.length;
                 
-                searchInput.placeholder = prefix + suggestions[currentIndex] + suffix;
+                // Put the upcoming food name in the bottom span
+                span2.innerText = suggestions[currentIndex] + suffix;
                 
-                currentIndex++;
-                if (currentIndex >= suggestions.length) currentIndex = 0;
-            }, 2500);
+                // Slide the container up smoothly (-24px is exactly the height of one line)
+                container.style.transition = 'transform 0.5s ease-in-out';
+                container.style.transform = 'translateY(-20px)';
+
+                // Reset it silently behind the scenes when the animation finishes
+                setTimeout(() => {
+                    container.style.transition = 'none';
+                    span1.innerText = span2.innerText; // Move text 2 into position 1
+                    container.style.transform = 'translateY(0)'; // Snap back to start instantly
+                }, 500); 
+
+            }, 3000);
         }
       // --- Shopping Cart & Bill Engine ---
         let cart = [];
