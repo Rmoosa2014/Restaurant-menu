@@ -300,20 +300,24 @@
             <!-- Footer / Totals Section -->
             <div class="p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)]">
                 
-                <!-- Table Selector -->
+                <!-- Order Type & Table Selector -->
                 <div class="mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200">
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Select Table Number</label>
-                    <select id="table-number" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-gray-800 font-bold focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="Takeaway">Takeaway / Pickup</option>
-                        <option value="Table 1">Table 1</option>
-                        <option value="Table 2">Table 2</option>
-                        <option value="Table 3">Table 3</option>
-                        <option value="Table 4">Table 4</option>
-                        <option value="Table 5">Table 5</option>
-                        <option value="Table 6">Table 6</option>
-                        <option value="Table 7">Table 7</option>
-                        <option value="Table 8">Table 8</option>
-                    </select>
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="block text-xs font-bold text-gray-500 uppercase">Dining Option</label>
+                        <span id="bill-datetime" class="text-[10px] text-gray-400 font-bold bg-white px-2 py-1 rounded-md border border-gray-200"></span>
+                    </div>
+                    
+                    <!-- Master Takeaway Button -->
+                    <button onclick="selectDiningOption('Takeaway')" id="btn-takeaway" class="w-full py-2.5 mb-3 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold transition-all shadow-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-shopping-bag"></i> Takeaway / Pickup
+                    </button>
+                    
+                    <div class="text-[10px] font-bold text-gray-400 uppercase mb-2 text-center flex items-center gap-2 before:h-px before:flex-1 before:bg-gray-200 after:h-px after:flex-1 after:bg-gray-200">Or Select Table</div>
+                    
+                    <!-- Table Grid (Auto-populated by JS) -->
+                    <div id="table-grid" class="grid grid-cols-5 gap-2">
+                        <!-- Buttons 1-20 will be injected here -->
+                    </div>
                 </div>
 
                 <!-- Calculations -->
@@ -1106,7 +1110,47 @@ function smartWhatsAppOrder() {
       // --- Shopping Cart & Bill Engine ---
         let cart = [];
         const VAT_RATE = 0.15; // 15% VAT
+let currentDiningOption = 'Takeaway'; // Default selection
 
+        function renderTableGrid() {
+            const grid = document.getElementById('table-grid');
+            grid.innerHTML = '';
+            for(let i = 1; i <= 20; i++) {
+                grid.innerHTML += `
+                    <button onclick="selectDiningOption('Table ${i}')" id="btn-table-${i}" class="py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm hover:border-green-300 transition-all">
+                        ${i}
+                    </button>
+                `;
+            }
+        }
+
+        function selectDiningOption(option) {
+            currentDiningOption = option;
+            
+            // 1. Reset the Takeaway Button to default gray
+            document.getElementById('btn-takeaway').className = "w-full py-2.5 mb-3 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold transition-all flex items-center justify-center gap-2";
+            
+            // 2. Reset ALL Table Buttons to default gray
+            for(let i = 1; i <= 20; i++) {
+                const btn = document.getElementById(`btn-table-${i}`);
+                if(btn) btn.className = "py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-sm hover:border-green-300 transition-all";
+            }
+            
+            // 3. Highlight the specific button that was clicked in Green
+            if(option === 'Takeaway') {
+                document.getElementById('btn-takeaway').className = "w-full py-2.5 mb-3 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold transition-all shadow-sm flex items-center justify-center gap-2";
+            } else {
+                const tableNum = option.replace('Table ', '');
+                const activeBtn = document.getElementById(`btn-table-${tableNum}`);
+                if(activeBtn) {
+                    activeBtn.className = "py-2 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold text-sm transition-all shadow-sm scale-105";
+                }
+            }
+        }
+
+        // Call this once to build the buttons when the script loads
+        setTimeout(() => { renderTableGrid(); }, 500);
+      
         function addToCart() {
             if(!currentOpenItemId) return;
             const item = activeMenuData.find(i => i.id === currentOpenItemId);
@@ -1206,6 +1250,12 @@ function quickAddToCart(id) {
         function openCartModal() {
             if(cart.length === 0) return; // Don't open if empty
             
+            // --- NEW: Update the Date & Time ---
+            const now = new Date();
+            document.getElementById('bill-datetime').innerText = now.toLocaleString('en-US', { 
+                day: '2-digit', month: 'short', hour: 'numeric', minute: '2-digit' 
+            });
+
             // Set the logo in the cart header
             if(rawBranding.smartLogo) {
                 const logo = document.getElementById('cart-brand-logo');
@@ -1229,13 +1279,18 @@ function quickAddToCart(id) {
         function sendOrderViaWhatsApp() {
             if(cart.length === 0 || !rawBranding.D) return;
             
-            const tableNo = document.getElementById('table-number').value;
             const restaurantName = rawBranding.B || 'Our Restaurant';
             
-            // Build the formatted text receipt
+            // --- NEW: Grab current date/time for the receipt ---
+            const orderDate = new Date().toLocaleString('en-US', { 
+                day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' 
+            });
+            
+            // Build the formatted text receipt using the new Dining Option variable
             let msg = `🧾 *NEW ORDER*\n`;
+            msg += `📅 Date: ${orderDate}\n`;
             msg += `📍 Restaurant: *${restaurantName}*\n`;
-            msg += `🍽️ Table/Type: *${tableNo}*\n`;
+            msg += `🍽️ Option: *${currentDiningOption}*\n`;
             msg += `------------------------\n`;
             
             let subtotal = 0;
