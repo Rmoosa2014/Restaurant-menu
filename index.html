@@ -679,8 +679,8 @@
                 let cardClasses = 'menu-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group';
                 
                 if (isHighlight) {
-                    // Makes the card width 45% of the screen (showing ~2 items), enabling the swipe!
-                    cardClasses += ' w-[45vw] sm:w-[220px] snap-start shrink-0';
+                    // Changed from 45vw to 40vw to leave room for the 3rd card to peek!
+                    cardClasses += ' w-[40vw] sm:w-[220px] snap-start shrink-0';
                 }
                 card.className = cardClasses;
                 // -----------------------------
