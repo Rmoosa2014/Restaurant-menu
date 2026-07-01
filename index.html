@@ -319,11 +319,11 @@
                     </div>
 
                     <!-- Hidden Table Dropdown -->
-                    <div id="table-select-container" class="hidden transition-all duration-300">
-                        <select id="table-number" onchange="updateTableSelection()" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-gray-800 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option value="" disabled selected>Select your table...</option>
-                            <!-- JS will inject options 1-20 here -->
-                        </select>
+                    <div id="table-select-container" class="hidden transition-all duration-300 mt-2">
+                        <div class="text-[10px] font-bold text-gray-400 uppercase mb-2 text-center flex items-center gap-2 before:h-px before:flex-1 before:bg-gray-200 after:h-px after:flex-1 after:bg-gray-200">Select Table</div>
+                        
+                        <div id="table-grid" class="flex overflow-x-auto gap-1.5 pb-2 snap-x hide-scrollbar">
+                            </div>
                     </div>
                 </div>
 
@@ -1121,9 +1121,38 @@ let diningType = 'Takeaway';
         let selectedTable = '';
 
         function initTableSelect() {
-            const select = document.getElementById('table-number');
+            const grid = document.getElementById('table-grid');
+            grid.innerHTML = '';
+            
             for(let i = 1; i <= 20; i++) {
-                select.innerHTML += `<option value="Table ${i}">Table ${i}</option>`;
+                // This creates the 01, 02 format automatically
+                const formattedNum = String(i).padStart(2, '0'); 
+                const tableLabel = `T${formattedNum}`; // Adds the "T"
+                
+                // Adjusted to w-10 and text-xs to fit the new text perfectly
+                grid.innerHTML += `
+                    <button onclick="selectTableNumber('${i}')" id="btn-table-num-${i}" class="w-10 h-10 shrink-0 snap-start rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-xs hover:border-green-300 transition-all flex items-center justify-center">
+                        ${tableLabel}
+                    </button>
+                `;
+            }
+        }
+
+        function selectTableNumber(num) {
+            // Saves the exact T01 format to send to WhatsApp
+            const formattedNum = String(num).padStart(2, '0');
+            selectedTable = `T${formattedNum}`; 
+            
+            // Reset all table buttons to default gray
+            for(let i = 1; i <= 20; i++) {
+                const btn = document.getElementById(`btn-table-num-${i}`);
+                if(btn) btn.className = "w-10 h-10 shrink-0 snap-start rounded-lg border-2 border-gray-200 bg-white text-gray-500 font-bold text-xs hover:border-green-300 transition-all flex items-center justify-center";
+            }
+            
+            // Highlight the clicked button in Green
+            const activeBtn = document.getElementById(`btn-table-num-${num}`);
+            if(activeBtn) {
+                activeBtn.className = "w-10 h-10 shrink-0 snap-start rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold text-xs transition-all shadow-sm scale-110 flex items-center justify-center";
             }
         }
 
@@ -1144,9 +1173,7 @@ let diningType = 'Takeaway';
             }
         }
 
-        function updateTableSelection() {
-            selectedTable = document.getElementById('table-number').value;
-        }
+        
 
         setTimeout(() => { initTableSelect(); }, 500);
       
