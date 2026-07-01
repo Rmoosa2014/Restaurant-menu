@@ -246,9 +246,9 @@
 
                 <div class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100">
                     <div class="flex gap-3">
-                        <button onclick="openWhatsAppItem()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
-                            <i class="fab fa-whatsapp text-lg"></i> <span id="label-wa">Order Now</span>
-                        </button>
+                        <button onclick="smartWhatsAppOrder()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
+    <i class="fab fa-whatsapp text-lg"></i> <span id="label-wa">Order Now</span>
+</button>
                         <button onclick="addToCart()" class="flex-1 bg-orange-500 text-white text-center py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-md flex items-center justify-center gap-2">
                             <i class="fas fa-cart-plus text-lg"></i> <span>Add to Cart</span>
                         </button>
@@ -269,10 +269,10 @@
             </div>
         </div>
     </div>
-<!-- Floating Cart Button -->
-    <button id="cart-floating-btn" onclick="openCartModal()" class="hidden fixed bottom-24 start-6 z-50 bg-green-500 text-white w-14 h-14 rounded-full items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-300">
-        <i class="fas fa-shopping-cart text-xl"></i>
-        <span id="cart-count-badge" class="absolute -top-2 -end-2 bg-red-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">0</span>
+<!-- Top Right Cart Button -->
+    <button id="cart-floating-btn" onclick="openCartModal()" class="hidden fixed top-3 end-4 sm:end-6 z-[60] bg-green-500 text-white w-10 h-10 rounded-full items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-shopping-cart text-sm"></i>
+        <span id="cart-count-badge" class="absolute -top-1.5 -end-1.5 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">0</span>
     </button>
 
     <!-- Cart / Bill Modal -->
@@ -789,11 +789,17 @@
             </div>
             <p class="text-xs text-gray-500 line-clamp-2 mt-1 mb-2 flex-grow">${item.desc}</p>
             
-            ${item.calories ? `
-            <div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-orange-500 bg-orange-50 w-fit px-2 py-1 rounded-md">
-                <i class="fas fa-fire"></i> ${item.calories} Cal
+            <div class="flex justify-between items-end mt-1">
+                ${item.calories ? `
+                <div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-orange-500 bg-orange-50 w-fit px-2 py-1 rounded-md">
+                    <i class="fas fa-fire"></i> ${item.calories} Cal
+                </div>
+                ` : '<div></div>'}
+                
+                <button onclick="event.stopPropagation(); quickAddToCart('${item.id}')" class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-orange-600 hover:scale-110 transition-transform">
+                    <i class="fas fa-plus text-sm"></i>
+                </button>
             </div>
-            ` : ''}
         </div>
                 `;
                 grid.appendChild(card);
@@ -988,7 +994,16 @@
                 : `مرحباً، أود طلب: ${item.name} (${item.price}${globalCurrency})`;
             window.open(`https://wa.me/${rawBranding.D}?text=${encodeURIComponent(text)}`, '_blank');
         }
-
+function smartWhatsAppOrder() {
+            if (cart.length > 0) {
+                // If they already have items in the cart, add this new item to the cart and open the bill
+                addToCart();
+                openCartModal();
+            } else {
+                // If the cart is empty, do the standard single-item direct order
+                openWhatsAppItem();
+            }
+        }
         function shareItem() {
             if (!currentOpenItemId) return;
             const item = activeMenuData.find(i => i.id === currentOpenItemId);
@@ -1108,7 +1123,18 @@
             closeModal(); // Close item modal so they can keep browsing
             updateCartUI(); // Automatically updates the red number on the floating cart!
         }
+function quickAddToCart(id) {
+            const item = activeMenuData.find(i => String(i.id) === String(id));
+            if(!item) return;
 
+            const existingItem = cart.find(c => String(c.id) === String(id));
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            updateCartUI(); // Updates the red badge on your floating cart automatically!
+        }
         function updateCartUI() {
             const countBadge = document.getElementById('cart-count-badge');
             const floatingBtn = document.getElementById('cart-floating-btn');
@@ -1165,11 +1191,13 @@
         }
 
         function changeQty(id, change) {
-            const item = cart.find(c => c.id === id);
-            if(item) {
+            // Convert both IDs to Strings to guarantee a perfect match
+            const item = cart.find(c => String(c.id) === String(id));
+            if (item) {
                 item.qty += change;
-                if(item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id);
+                // If quantity drops to 0, remove it from the cart
+                if (item.qty <= 0) {
+                    cart = cart.filter(c => String(c.id) !== String(id));
                 }
                 updateCartUI();
             }
