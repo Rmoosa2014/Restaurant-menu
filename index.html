@@ -123,7 +123,7 @@
             <h3 id="empty-text" class="text-xl font-medium text-gray-500">No items found.</h3>
         </div>
     </main>
-    <button id="game-trigger-btn" onclick="openGameModal()" class="hidden fixed bottom-6 start-6 z-50 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-3 rounded-full items-center gap-3 shadow-2xl hover:scale-105 transition-transform duration-300 animate-bounce cursor-pointer border-2 border-white/20 group">
+    <button id="game-trigger-btn" onclick="openGameModal()" class="hidden fixed bottom-6 start-6 z-50 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-2 py-1 rounded-full items-center gap-3 shadow-2xl hover:scale-105 transition-transform duration-300 animate-bounce cursor-pointer border-2 border-white/20 group">
         <div class="bg-white/20 p-2 rounded-full group-hover:rotate-12 transition-transform">
             <i class="fas fa-gamepad text-xl"></i>
         </div>
@@ -530,7 +530,10 @@
                     calories: row.H || "",
                     recipe: row.I || "",
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
-                    img: row.K || "https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image",
+                    
+                    // NEW: Auto-fetch from GitHub folders if Column K is blank!
+                    img: row.K || `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/${encodeURIComponent(String(row.B).trim())}/${encodeURIComponent(String(row.D).trim())}.jpg`,
+                    
                     video: row.L || "",
                     reviewLinks: row.M || "" 
                 };
@@ -765,10 +768,10 @@
             reviewIconsContainer.innerHTML = ''; 
 
             if (item.reviewLinks) {
-                const links = String(item.reviewLinks).split(',').map(l => l.trim().toLowerCase());
+                // Keep the exact upper/lower case for the real link so it doesn't break
+                const links = String(item.reviewLinks).split(',').map(l => l.trim());
                 
                 const platforms = [
-                    { name: 'google', icon: 'fab fa-google', hover: 'hover:bg-blue-500', color: 'text-blue-500' },
                     { name: 'instagram', icon: 'fab fa-instagram', hover: 'hover:bg-pink-600', color: 'text-pink-600' },
                     { name: 'facebook', icon: 'fab fa-facebook-f', hover: 'hover:bg-blue-600', color: 'text-blue-600' },
                     { name: 'snapchat', icon: 'fab fa-snapchat-ghost', hover: 'hover:bg-yellow-500 hover:text-black', color: 'text-yellow-500' },
@@ -778,14 +781,34 @@
 
                 links.forEach(link => {
                     if (!link) return;
-                    let matchedPlatform = platforms.find(p => link.includes(p.name)) || 
-                      { name: 'review', icon: 'fas fa-star', hover: 'hover:bg-yellow-500', color: 'text-yellow-500' };
+                    
+                    // We only use lowercase to search for platform names, we don't change the actual link
+                    const lowerLink = link.toLowerCase(); 
+                    
+                    // If it's not a social media link, automatically assume it's Google
+                    let matchedPlatform = platforms.find(p => lowerLink.includes(p.name)) || { name: 'google' };
                     
                     const a = document.createElement('a');
-                    a.href = link.startsWith('http') ? link : `https://${link}`;
+                    a.href = lowerLink.startsWith('http') ? link : `https://${link}`;
                     a.target = '_blank';
-                    a.className = `w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center ${matchedPlatform.color} transition-all duration-300 ${matchedPlatform.hover} hover:text-white shadow-sm`;
-                    a.innerHTML = `<i class="${matchedPlatform.icon}"></i>`;
+
+                    // --- The Custom Google Reviews Pill Button ---
+                    if (matchedPlatform.name === 'google') {
+                        a.className = `h-10 px-4 rounded-full border border-gray-200 bg-white flex items-center justify-center gap-2 transition-all duration-300 hover:bg-gray-50 shadow-sm`;
+                        a.innerHTML = `
+                            <i class="fab fa-google text-blue-500 text-lg"></i>
+                            <span class="font-bold text-gray-700 text-sm">Reviews</span>
+                            <div class="flex text-yellow-400 text-xs gap-0.5">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        `;
+                    } 
+                    // --- Standard Social Media Circle Buttons ---
+                    else {
+                        a.className = `w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center ${matchedPlatform.color} transition-all duration-300 ${matchedPlatform.hover} hover:text-white shadow-sm`;
+                        a.innerHTML = `<i class="${matchedPlatform.icon}"></i>`;
+                    }
+                    
                     reviewIconsContainer.appendChild(a);
                 });
                 
