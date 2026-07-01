@@ -1,0 +1,17 @@
+{
+  "name": "Our Restaurant Menu",
+  "short_name": "Restaurant",
+  "description": "Order your favorite meals easily.",
+  "start_url": "./Restaurant.html",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#ef4444",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
