@@ -640,12 +640,66 @@
             updatePositions();
 
             // 3. Loop the animation (Changed to 3 Seconds)
-            if (cards.length > 1) {
-                offerInterval = setInterval(() => {
-                    currentOfferIndex = (currentOfferIndex + 1) % cards.length;
+            let touchStartX = 0;
+            let touchEndX = 0;
+            let isDraggingOffer = false;
+
+            function handleSwipe() {
+                const threshold = 40; // Pixels needed to trigger a swipe
+                if (touchEndX < touchStartX - threshold) {
+                    // Swiped Left
+                    currentOfferIndex = isRtl ? (currentOfferIndex - 1 + cards.length) % cards.length : (currentOfferIndex + 1) % cards.length;
                     updatePositions();
-                }, 3000); // 3000ms = 3 seconds
+                } else if (touchEndX > touchStartX + threshold) {
+                    // Swiped Right
+                    currentOfferIndex = isRtl ? (currentOfferIndex + 1) % cards.length : (currentOfferIndex - 1 + cards.length) % cards.length;
+                    updatePositions();
+                }
             }
+
+            function startOfferInterval() {
+                clearInterval(offerInterval);
+                if (cards.length > 1) {
+                    offerInterval = setInterval(() => {
+                        currentOfferIndex = (currentOfferIndex + 1) % cards.length;
+                        updatePositions();
+                    }, 3000); // Resume auto-scroll
+                }
+            }
+
+            // Mobile Touch Support
+            wrapper.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+                clearInterval(offerInterval); // Pause on touch
+            }, {passive: true});
+
+            wrapper.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                startOfferInterval(); // Restart timer
+            }, {passive: true});
+
+            // Desktop Mouse Drag Support
+            wrapper.addEventListener('mousedown', e => {
+                isDraggingOffer = true;
+                touchStartX = e.screenX;
+                clearInterval(offerInterval);
+            });
+            wrapper.addEventListener('mouseup', e => {
+                if(!isDraggingOffer) return;
+                isDraggingOffer = false;
+                touchEndX = e.screenX;
+                handleSwipe();
+                startOfferInterval();
+            });
+            wrapper.addEventListener('mouseleave', () => {
+                if(isDraggingOffer) {
+                    isDraggingOffer = false;
+                    startOfferInterval();
+                }
+            });
+
+            startOfferInterval(); // Start initial loop
         }
 
         function formatMenuData(rawSource) {
@@ -888,8 +942,8 @@
                 </div>
                 ` : '<div></div>'}
                 
-                <button onclick="event.stopPropagation(); quickAddToCart('${item.id}')" class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-orange-600 hover:scale-110 transition-transform">
-                    <i class="fas fa-plus text-sm"></i>
+                <button id="quick-add-btn-${item.id}" onclick="event.stopPropagation(); toggleQuickCart('${item.id}')" class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-colors duration-300">
+                    <i id="quick-add-icon-${item.id}" class="fas fa-plus text-sm"></i>
                 </button>
             </div>
         </div>
@@ -1236,6 +1290,35 @@ let diningType = 'Takeaway';
                 `;
             }
         }
+      function setupDraggable(elementId) {
+            const slider = document.getElementById(elementId);
+            if(!slider) return;
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                slider.classList.add('cursor-grabbing');
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.classList.remove('cursor-grabbing');
+            });
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.classList.remove('cursor-grabbing');
+            });
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2; // Scroll speed multiplier
+                slider.scrollLeft = scrollLeft - walk;
+            });
+        }
 
         function selectTableNumber(num) {
             // Saves the exact T01 format to send to WhatsApp
@@ -1274,7 +1357,10 @@ let diningType = 'Takeaway';
 
         
 
-        setTimeout(() => { initTableSelect(); }, 500);
+        setTimeout(() => { 
+            initTableSelect(); 
+            setupDraggable('table-grid'); // Enable desktop drag
+        }, 500);
       
         function addToCart() {
             if(!currentOpenItemId) return;
@@ -1292,17 +1378,36 @@ let diningType = 'Takeaway';
             // (Removed closeModal() so the card stays open until the user clicks the X)
             updateCartUI(); // Automatically updates the red number on the floating cart!
         }
-function quickAddToCart(id) {
-            const item = activeMenuData.find(i => String(i.id) === String(id));
-            if(!item) return;
-
-            const existingItem = cart.find(c => String(c.id) === String(id));
-            if (existingItem) {
-                existingItem.qty += 1;
+function toggleQuickCart(id) {
+            const itemIndex = cart.findIndex(c => String(c.id) === String(id));
+            
+            if (itemIndex > -1) {
+                // If it's already in the cart, remove it completely
+                cart.splice(itemIndex, 1);
             } else {
-                cart.push({ ...item, qty: 1 });
+                // If not in cart, add 1 quantity
+                const item = activeMenuData.find(i => String(i.id) === String(id));
+                if (item) cart.push({ ...item, qty: 1 });
             }
-            updateCartUI(); // Updates the red badge on your floating cart automatically!
+            updateCartUI(); 
+        }
+
+        function updateQuickAddButtons() {
+            // Loop through all active items on the screen to update their +/- state
+            activeMenuData.forEach(item => {
+                const btn = document.getElementById(`quick-add-btn-${item.id}`);
+                const icon = document.getElementById(`quick-add-icon-${item.id}`);
+                if (btn && icon) {
+                    const isInCart = cart.some(c => String(c.id) === String(item.id));
+                    if (isInCart) {
+                        btn.className = "bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 hover:scale-110 transition-colors duration-300";
+                        icon.className = "fas fa-minus text-sm";
+                    } else {
+                        btn.className = "bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-orange-600 hover:scale-110 transition-colors duration-300";
+                        icon.className = "fas fa-plus text-sm";
+                    }
+                }
+            });
         }
         function updateCartUI() {
             const countBadge = document.getElementById('cart-count-badge');
@@ -1357,6 +1462,7 @@ function quickAddToCart(id) {
             document.getElementById('cart-subtotal').innerText = `${subtotal.toFixed(2)} ${globalCurrency}`;
             document.getElementById('cart-vat').innerText = `${vatAmount.toFixed(2)} ${globalCurrency}`;
             document.getElementById('cart-total').innerText = `${netTotal.toFixed(2)} ${globalCurrency}`;
+          updateQuickAddButtons();
         }
 
         function changeQty(id, change) {
@@ -1429,11 +1535,11 @@ function quickAddToCart(id) {
             msg += `------------------------\n`;
             
             let subtotal = 0;
-            cart.forEach(item => {
+            cart.forEach((item, index) => {
                 const itemPrice = parseFloat(item.price) || 0;
                 const total = itemPrice * item.qty;
                 subtotal += total;
-                msg += `${item.qty}x ${item.name} @ ${itemPrice.toFixed(2)} = ${total.toFixed(2)}\n`;
+                msg += `${index + 1}. ${item.qty}x ${item.name} @ ${itemPrice.toFixed(2)} = ${total.toFixed(2)}\n`;
             });
             
             const vatAmount = subtotal * VAT_RATE;
@@ -1446,6 +1552,7 @@ function quickAddToCart(id) {
 
             // Redirect to WhatsApp
             window.open(`https://wa.me/${rawBranding.D}?text=${encodeURIComponent(msg)}`, '_blank');
+            closeCartModal(); // Automatically close the bill
         }
         window.onload = init;
         setupSearch();
