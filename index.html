@@ -535,10 +535,7 @@
                 imgEl.classList.remove('hidden');
             }
 
-            if(rawBranding.smartBanner) {
-                document.getElementById('hero-section').style.backgroundImage = `linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95)), url('${rawBranding.smartBanner}')`;
-            }
-
+            
             renderOffers();
 
             const t = staticText[currentLang];
@@ -786,11 +783,26 @@
                 grouped[item.subCat].push(item);
             });
 
+            // 1. Setup a counter and grab the banner from Column O
+            let categoryCount = 0; 
+            const inlineBannerUrl = rawBranding.O; 
+
             for (const subCat in grouped) {
                 hasItems = true;
                 const items = grouped[subCat];
                 items.sort((a, b) => a.order - b.order);
                 renderSection(subCat, items, container, false);
+                
+                categoryCount++;
+
+                // 2. Inject the banner exactly after the 5th category is rendered
+                if (categoryCount === 5 && inlineBannerUrl) {
+                    const bannerDiv = document.createElement('div');
+                    // Full width, fixed heights for mobile/desktop, perfectly rounds corners
+                    bannerDiv.className = "w-full h-32 sm:h-48 md:h-56 rounded-2xl overflow-hidden shadow-md relative";
+                    bannerDiv.innerHTML = `<img src="${inlineBannerUrl}" alt="Promo Banner" class="w-full h-full object-cover">`;
+                    container.appendChild(bannerDiv);
+                }
             }
 
             if (!hasItems) {
