@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Menu</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- SheetJS (To read Excel files) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
@@ -52,12 +49,10 @@
 </head>
 <body class="text-gray-800 antialiased transition-colors duration-300">
 
-    <!-- Navigation -->
     <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full z-40 top-0 transition-all duration-300 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <!-- Dynamic Logo or Icon -->
                     <div id="brand-logo-container" class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center overflow-hidden shrink-0">
                         <i id="default-logo-icon" class="fas fa-utensils text-red-500 text-xl"></i>
                         <img id="brand-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden">
@@ -65,7 +60,6 @@
                     <span id="nav-title" class="font-bold text-lg sm:text-xl tracking-tight text-gray-900 truncate">Loading...</span>
                 </div>
                 <div class="flex items-center space-x-2 space-x-reverse">
-                    <!-- Language Toggle (Hidden by default, shown if English&Arabic is selected) -->
                     <button id="lang-toggle-btn" onclick="toggleLanguage()" class="hidden items-center justify-center px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm transition">
                         <span id="lang-text">EN</span>
                     </button>
@@ -74,7 +68,6 @@
         </div>
     </nav>
 
-    <!-- Header/Hero Section -->
     <header id="hero-section" class="pt-24 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative overflow-hidden rounded-b-3xl sm:rounded-b-none bg-gray-900 text-white mb-6 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95));">
         <div class="relative z-10 py-6">
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-md">
@@ -82,7 +75,6 @@
                 <span id="hero-title2" class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Our Restaurant</span>
             </h1>
 
-            <!-- Special Offer Banner (Injected from Sheet 2) -->
             <div id="offer-banner-container" class="hidden mt-6 mb-2 mx-auto max-w-xl transition-all duration-500 rounded-2xl overflow-hidden border border-red-400/30 shadow-xl cursor-pointer bg-gradient-to-r from-orange-500 to-red-600">
                 <div id="offer-content" class="flex flex-col items-center py-4 px-6 sm:px-8 transition-opacity duration-300 bg-black/20 backdrop-blur-sm">
                     <div class="flex items-center gap-2 mb-1">
@@ -99,47 +91,61 @@
         </div>
     </header>
 
-    <!-- Search & Category Filters -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sticky top-16 z-30 bg-[#f8fafc] py-4 shadow-sm pb-2 transition-all">
-        <div class="mb-4 relative max-w-md mx-auto md:max-w-full">
-            <input type="text" id="searchInput" class="w-full ps-11 pe-4 py-3 rounded-xl border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition-shadow bg-white text-gray-700" placeholder="Search menu...">
-            <i class="fas fa-search absolute top-4 start-4 text-gray-400"></i>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sticky top-16 z-30 bg-[#f8fafc] py-4 shadow-sm transition-all">
+        <div class="relative max-w-xl mx-auto mb-4">
+            <div class="absolute inset-y-0 start-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400 ms-3"></i>
+            </div>
+            <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-2xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 sm:text-sm shadow-sm transition-shadow" placeholder="Search menu...">
         </div>
 
-        <div class="flex overflow-x-auto pb-4 hide-scrollbar space-x-3 space-x-reverse justify-start md:justify-center" id="category-filters">
-            <!-- Buttons injected by JS -->
-        </div>
+        <div class="flex overflow-x-auto hide-scrollbar gap-3 px-1 py-2 justify-start md:justify-center" id="category-filters">
+            </div>
     </section>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 min-h-[50vh]">
-        
-        <!-- Loading State -->
         <div id="loading-state" class="flex flex-col items-center justify-center py-20">
             <i class="fas fa-circle-notch fa-spin text-4xl text-red-500 mb-4"></i>
             <p class="text-gray-500 font-medium animate-pulse" id="loading-text">Loading Menu Master Data...</p>
         </div>
 
-        <!-- Error State -->
         <div id="error-state" class="hidden flex-col items-center justify-center py-20 text-center">
             <i class="fas fa-exclamation-triangle text-5xl text-orange-400 mb-4"></i>
             <h3 class="text-xl font-bold text-gray-800 mb-2">Could not load menu data</h3>
             <p class="text-gray-500 max-w-md">Please ensure `MenuMasterData.xlsx` is uploaded to your repository and formatted correctly.</p>
         </div>
 
-        <!-- Menu Container (Structured by Subcategories) -->
         <div id="menu-container" class="hidden flex-col gap-10">
-            <!-- Menu Sections injected by JS -->
-        </div>
+            </div>
         
-        <!-- Empty Search State -->
         <div id="empty-state" class="hidden text-center py-20">
             <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
             <h3 id="empty-text" class="text-xl font-medium text-gray-500">No items found.</h3>
         </div>
     </main>
+    <button id="game-trigger-btn" onclick="openGameModal()" class="hidden fixed bottom-6 start-6 z-50 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-3 rounded-full items-center gap-3 shadow-2xl hover:scale-105 transition-transform duration-300 animate-bounce cursor-pointer border-2 border-white/20 group">
+        <div class="bg-white/20 p-2 rounded-full group-hover:rotate-12 transition-transform">
+            <i class="fas fa-gamepad text-xl"></i>
+        </div>
+        <span class="font-bold text-sm pr-1">Play & Win!</span>
+    </button>
 
-    <!-- Footer -->
+    <div id="gameModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 sm:p-6">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeGameModal()"></div>
+        
+        <div class="relative z-10 w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[75vh] md:h-[600px] transform transition-all">
+            <button onclick="closeGameModal()" class="absolute top-3 end-3 z-30 bg-black/50 hover:bg-black/80 backdrop-blur text-white w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="w-full h-full bg-gray-900 rounded-3xl overflow-hidden relative">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fas fa-spinner fa-spin text-3xl text-gray-500"></i>
+                </div>
+                <iframe id="gameFrame" src="" class="absolute inset-0 w-full h-full border-0 z-10 rounded-3xl" title="Restaurant Game"></iframe>
+            </div>
+        </div>
+    </div>
     <footer class="bg-gray-900 text-white py-12 rounded-t-3xl sm:rounded-none mt-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div>
@@ -180,11 +186,13 @@
                     <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 transition"><i class="fas fa-map-marker-alt"></i></div>
                     <span id="f-address" class="mt-1 leading-relaxed">--</span>
                 </a>
+                
+                <div id="social-media-container" class="mt-6 flex justify-start gap-3 flex-wrap">
+                    </div>
             </div>
         </div>
     </footer>
 
-    <!-- Product Details Modal -->
     <div id="productModal" class="fixed inset-0 z-[60] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
         
@@ -194,23 +202,19 @@
                 <i class="fas fa-times"></i>
             </button>
 
-            <!-- Image Area -->
             <div class="relative h-56 md:h-64 w-full shrink-0 bg-gray-100">
                 <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
                 <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm"></div>
                 
-                <!-- Today's Special Badge (New) -->
                 <div id="modalTodaySpecialBadge" class="hidden absolute top-3 start-3 md:end-12 md:start-auto bg-gradient-to-r from-orange-400 to-red-500 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-white shadow-lg flex items-center gap-1 z-20">
                     <i class="fas fa-star text-yellow-200"></i> <span id="label-modal-special">Today's Special</span>
                 </div>
 
-                <!-- Video Link Button -->
                 <a href="#" target="_blank" id="modalVideoBtn" class="hidden absolute top-12 start-3 md:top-3 md:start-3 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg transition-colors flex items-center gap-2 z-20">
                     <i class="fas fa-play-circle"></i> <span id="label-video">Watch Video</span>
                 </a>
             </div>
 
-            <!-- Content Area -->
             <div class="p-5 md:p-6 overflow-y-auto">
                 <div class="flex justify-between items-start mb-2 gap-4">
                     <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
@@ -229,13 +233,17 @@
                     </div>
                 </div>
 
-                <!-- Recipe Area (Optional) -->
                 <div id="modalRecipeArea" class="hidden mb-4 bg-yellow-50 border border-yellow-100 rounded-xl p-4">
                     <h4 class="font-bold text-yellow-800 text-sm mb-1 flex items-center gap-2"><i class="fas fa-book-open"></i> <span id="label-recipe">Recipe / Ingredients</span></h4>
                     <p id="modalRecipe" class="text-sm text-yellow-700 leading-relaxed"></p>
                 </div>
 
-                <!-- Action Buttons -->
+                <div id="modalReviewArea" class="hidden mb-2 flex-col gap-2">
+                    <h4 class="font-bold text-gray-700 text-sm border-b border-gray-100 pb-1">Write your honest Reviews & Share your Media with US</h4>
+                    <div id="modalReviewIcons" class="flex flex-wrap gap-2 pt-1">
+                        </div>
+                </div>
+
                 <div class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100">
                     <div class="flex gap-3">
                         <button onclick="callPhone()" class="flex-1 bg-gray-900 text-white text-center py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow-md flex items-center justify-center gap-2">
@@ -264,11 +272,13 @@
         let rawMenuEn = [];
         let rawMenuAr = [];
         
-        let currentLang = 'ar'; // Default, will be overridden by Branding setup
+        let currentLang = 'ar'; 
         let langSetup = 'English&Arabic'; 
         
-        let activeMenuData = []; // The processed array based on language
-        let mainCategories = []; // Extracted main categories
+        let globalCurrency = ""; 
+
+        let activeMenuData = []; 
+        let mainCategories = []; 
         let currentMainCategory = 'All';
         let searchQuery = '';
         
@@ -298,42 +308,31 @@
         // --- Master Initialization ---
         async function init() {
             try {
-                // Fetch Excel File - Added a timestamp to bypass GitHub's cache so it always gets the latest version!
                 const fileUrl = "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/MenuMasterData.xlsx?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
                 if (!response.ok) throw new Error("Could not fetch file");
                 
                 const arrayBuffer = await response.arrayBuffer();
                 const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                
                 const sNames = workbook.SheetNames;
                 
-                // Smart Sheet Detection (Handles variations in sheet naming or falls back to order 1,2,3,4)
                 const sBrand = sNames.find(n => n.includes("01") || n.includes("Brand") || n.replace(/\s/g,'') === "Sheet1") || sNames[0];
                 const sOffer = sNames.find(n => n.includes("2") || n.includes("Offer")) || sNames[1];
                 const sMenuEn = sNames.find(n => n.includes("3") || n.includes("English")) || sNames[2];
                 const sMenuAr = sNames.find(n => n.includes("4") || n.includes("Arabic")) || sNames[3];
 
-                // 1. Read Branding
                 if(sBrand && workbook.Sheets[sBrand]) {
                     const brandRows = XLSX.utils.sheet_to_json(workbook.Sheets[sBrand], { header: "A", defval: "" });
-                    // Find first row that has actual data in Column K (Language) or Column B (Name), skipping row 0 (headers)
-                    rawBranding = brandRows.find((r, i) => i > 0 && (r.K || r.B)) || brandRows[1] || brandRows[0] || {};
+                    rawBranding = brandRows.find((r, i) => i > 0 && (r.K || r.B || r.L)) || brandRows[1] || brandRows[0] || {};
                 }
-
-                // 2. Read Offers
                 if(sOffer && workbook.Sheets[sOffer]) {
                     const offerRows = XLSX.utils.sheet_to_json(workbook.Sheets[sOffer], { header: "A", defval: "" });
                     if(offerRows.length > 1) rawOffers = offerRows.slice(1);
                 }
-
-                // 3. Read English Menu
                 if(sMenuEn && workbook.Sheets[sMenuEn]) {
                     const enRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuEn], { header: "A", defval: "" });
                     if(enRows.length > 1) rawMenuEn = enRows.slice(1);
                 }
-
-                // 4. Read Arabic Menu
                 if(sMenuAr && workbook.Sheets[sMenuAr]) {
                     const arRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuAr], { header: "A", defval: "" });
                     if(arRows.length > 1) rawMenuAr = arRows.slice(1);
@@ -342,6 +341,7 @@
                 document.getElementById('loading-state').classList.add('hidden');
                 
                 applySystemSetup();
+                renderSocialMedia();
                 
             } catch (error) {
                 console.error("Excel Initialization Error:", error);
@@ -353,19 +353,54 @@
 
         // --- System Logic ---
         function applySystemSetup() {
-            // Determine Language Setup (Column K)
-            const kVal = String(rawBranding.K || "").trim().toLowerCase();
+            let langVal = "";
+            let langCol = "K";
+            
+            for (let col of ["J", "K", "L", "M"]) {
+                let val = String(rawBranding[col] || "").trim().toLowerCase();
+                if (val === 'english' || val === 'arabic' || val === 'english&arabic' || val === 'both') {
+                    langVal = val;
+                    langCol = col;
+                    break;
+                }
+            }
+
+            if (langCol === "L") {
+                rawBranding.smartCurrency = rawBranding.K || "";
+                rawBranding.smartSocial = rawBranding.J || "";
+                rawBranding.smartDelivery = rawBranding.M || "";
+                rawBranding.smartLogo = rawBranding.N || "";
+                rawBranding.smartBanner = rawBranding.O || "";
+            } else {
+                rawBranding.smartCurrency = rawBranding.J || "";
+                rawBranding.smartSocial = rawBranding.L || ""; 
+                rawBranding.smartDelivery = rawBranding.L || "";
+                rawBranding.smartLogo = rawBranding.M || "";
+                rawBranding.smartBanner = rawBranding.N || "";
+            }
+
+            globalCurrency = rawBranding.smartCurrency;
             const toggleBtn = document.getElementById('lang-toggle-btn');
             
-            if(kVal === 'english') {
+            if(langVal === 'english') {
                 langSetup = 'English'; currentLang = 'en';
                 toggleBtn.classList.add('hidden'); toggleBtn.classList.remove('flex');
-            } else if(kVal === 'arabic') {
+            } else if(langVal === 'arabic') {
                 langSetup = 'Arabic'; currentLang = 'ar';
                 toggleBtn.classList.add('hidden'); toggleBtn.classList.remove('flex');
             } else {
-                langSetup = 'Both'; currentLang = 'ar'; // Default to Arabic if both are enabled
+                langSetup = 'Both'; currentLang = 'ar'; 
                 toggleBtn.classList.remove('hidden'); toggleBtn.classList.add('flex');
+            }
+          const gameTrigger = String(rawBranding.P || "").trim().toLowerCase();
+            const gameBtn = document.getElementById('game-trigger-btn');
+            
+            if (gameTrigger === 'true') {
+                gameBtn.classList.remove('hidden');
+                gameBtn.classList.add('flex');
+            } else {
+                gameBtn.classList.add('hidden');
+                gameBtn.classList.remove('flex');
             }
 
             processDataForCurrentLang();
@@ -379,11 +414,9 @@
         }
 
         function processDataForCurrentLang() {
-            // Apply HTML properties
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.documentElement.lang = currentLang;
 
-            // Apply Branding Data (Sheet01)
             document.getElementById('nav-title').textContent = rawBranding.B || "My Restaurant";
             document.getElementById('hero-title1').textContent = rawBranding.B || "Welcome";
             document.getElementById('footer-title').textContent = rawBranding.B || "My Restaurant";
@@ -399,30 +432,25 @@
             document.getElementById('f-address').textContent = rawBranding.H || "--";
             if(rawBranding.I) mapEl.href = rawBranding.I;
 
-            // Logo processing
-            if(rawBranding.M) {
+            if(rawBranding.smartLogo) {
                 document.getElementById('default-logo-icon').classList.add('hidden');
                 const imgEl = document.getElementById('brand-logo-img');
-                imgEl.src = rawBranding.M;
+                imgEl.src = rawBranding.smartLogo;
                 imgEl.classList.remove('hidden');
             }
 
-            // Hero Background
-            if(rawBranding.N) {
-                document.getElementById('hero-section').style.backgroundImage = `linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95)), url('${rawBranding.N}')`;
+            if(rawBranding.smartBanner) {
+                document.getElementById('hero-section').style.backgroundImage = `linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95)), url('${rawBranding.smartBanner}')`;
             }
 
-            // Render Offers
             renderOffers();
 
-            // Apply Static Text Translations
             const t = staticText[currentLang];
             document.getElementById('searchInput').placeholder = t.search;
             document.getElementById('empty-text').textContent = t.empty;
             document.getElementById('label-contact').textContent = t.contact;
             document.getElementById('label-location').textContent = t.location;
             
-            // Format Menu Data
             const rawSource = currentLang === 'en' ? rawMenuEn : rawMenuAr;
             formatMenuData(rawSource);
         }
@@ -437,8 +465,6 @@
 
                 const updateOffer = () => {
                     const offer = rawOffers[currentOfferIndex];
-                    
-                    // Fade out
                     bannerContent.style.opacity = '0';
 
                     setTimeout(() => {
@@ -447,7 +473,7 @@
 
                         const oldPriceEl = document.getElementById('offer-old-price');
                         if (offer.D) {
-                            oldPriceEl.textContent = `${offer.D} ${rawBranding.J || ''}`;
+                            oldPriceEl.textContent = `${offer.D} ${globalCurrency}`;
                             oldPriceEl.classList.remove('hidden');
                         } else {
                             oldPriceEl.classList.add('hidden');
@@ -455,13 +481,12 @@
 
                         const newPriceEl = document.getElementById('offer-new-price');
                         if (offer.E) {
-                            newPriceEl.textContent = `${offer.E} ${rawBranding.J || ''}`;
+                            newPriceEl.textContent = `${offer.E} ${globalCurrency}`;
                             newPriceEl.classList.remove('hidden');
                         } else {
                             newPriceEl.classList.add('hidden');
                         }
 
-                        // Apply background image if provided in Column F
                         if (offer.F) {
                             bannerContainer.style.backgroundImage = `linear-gradient(to right, rgba(239, 68, 68, 0.9), rgba(249, 115, 22, 0.9)), url('${offer.F}')`;
                             bannerContainer.style.backgroundSize = 'cover';
@@ -472,18 +497,14 @@
                             bannerContainer.style.backgroundBlendMode = 'normal';
                         }
 
-                        // Fade in
                         bannerContent.style.opacity = '1';
-                        
-                        // Increment index
                         currentOfferIndex = (currentOfferIndex + 1) % rawOffers.length;
-                    }, 300); // Wait for fade out to complete
+                    }, 300); 
                 };
 
-                updateOffer(); // Run first time immediately
-                
+                updateOffer(); 
                 if (rawOffers.length > 1) {
-                    offerInterval = setInterval(updateOffer, 4000); // Change offer every 4 seconds
+                    offerInterval = setInterval(updateOffer, 4000); 
                 }
             } else {
                 bannerContainer.classList.add('hidden');
@@ -496,36 +517,32 @@
             const subCatGroups = {};
 
             rawSource.forEach(row => {
-                if(!row.B || !row.D) return; // Skip invalid rows
+                if(!row.B || !row.D) return;
 
                 const item = {
                     id: row.A || Math.random().toString(),
                     mainCat: String(row.B).trim(),
                     subCat: String(row.C || "Other").trim(),
                     name: String(row.D).trim(),
-                    order: parseInt(row.E) || 999, // Fallback to 999 if missing
+                    order: parseInt(row.E) || 999, 
                     price: row.F || 0,
                     desc: row.G || "",
                     calories: row.H || "",
                     recipe: row.I || "",
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
                     img: row.K || "https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image",
-                    video: row.L || ""
+                    video: row.L || "",
+                    reviewLinks: row.M || "" 
                 };
 
                 activeMenuData.push(item);
-
-                // Collect unique Main Categories
-                if(!mainCategories.includes(item.mainCat)) {
-                    mainCategories.push(item.mainCat);
-                }
+                if(!mainCategories.includes(item.mainCat)) mainCategories.push(item.mainCat);
             });
 
             renderCategoryFilters();
             executeFilter();
         }
 
-        // Smart Icon Matcher for Categories
         function getCategoryIcon(catName) {
             const lower = catName.toLowerCase();
             if(lower.includes('burger') || lower.includes('برجر')) return 'fa-hamburger';
@@ -540,7 +557,7 @@
             if(lower.includes('soup') || lower.includes('شوربة')) return 'fa-mug-hot';
             if(lower.includes('breakfast') || lower.includes('فطور') || lower.includes('افطار')) return 'fa-egg';
             if(lower.includes('meat') || lower.includes('لحم') || lower.includes('ستيك')) return 'fa-bacon';
-            return 'fa-utensils'; // Default
+            return 'fa-utensils'; 
         }
 
         function renderCategoryFilters() {
@@ -551,21 +568,19 @@
             const activeClass = 'bg-red-500 text-white border-red-500 shadow-md transform scale-105';
             const inactiveClass = 'bg-white text-gray-700 border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-500';
 
-            // "All" Button
             const allBtn = document.createElement('button');
             const isActiveAll = currentMainCategory === 'All';
-            allBtn.className = `category-btn flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActiveAll ? activeClass : inactiveClass}`;
+            allBtn.className = `category-btn shrink-0 flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActiveAll ? activeClass : inactiveClass}`;
             allBtn.innerHTML = `<i class="fas fa-th-large ${isActiveAll ? 'text-white' : 'text-red-400'}"></i> ${t.all}`;
             allBtn.onclick = () => { currentMainCategory = 'All'; renderCategoryFilters(); executeFilter(); };
             container.appendChild(allBtn);
 
-            // Dynamic Main Categories with Icons
             mainCategories.forEach(cat => {
                 const icon = getCategoryIcon(cat);
                 const btn = document.createElement('button');
                 const isActive = currentMainCategory === cat;
                 
-                btn.className = `category-btn flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActive ? activeClass : inactiveClass}`;
+                btn.className = `category-btn shrink-0 flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActive ? activeClass : inactiveClass}`;
                 btn.innerHTML = `<i class="fas ${icon} ${isActive ? 'text-white' : 'text-red-400'}"></i> ${cat}`;
                 btn.onclick = () => { currentMainCategory = cat; renderCategoryFilters(); executeFilter(); };
                 container.appendChild(btn);
@@ -585,7 +600,6 @@
             container.innerHTML = '';
             let hasItems = false;
 
-            // 1. Filter Data
             let filteredData = activeMenuData;
             
             if (currentMainCategory !== 'All') {
@@ -599,29 +613,24 @@
                 );
             }
 
-            // 2. Handle "Today's Specials" Section (Only show if 'All' is selected and no search)
             if (currentMainCategory === 'All' && !searchQuery) {
                 const specials = activeMenuData.filter(i => i.isTodaySpecial);
                 if (specials.length > 0) {
                     hasItems = true;
-                    // Sort by order number
                     specials.sort((a, b) => a.order - b.order);
                     renderSection(staticText[currentLang].todaySpecial, specials, container, true);
                 }
             }
 
-            // 3. Group remaining items by Sub Category and render
             const grouped = {};
             filteredData.forEach(item => {
                 if(!grouped[item.subCat]) grouped[item.subCat] = [];
                 grouped[item.subCat].push(item);
             });
 
-            // Sort Sub Categories alphabetically or as they appeared
             for (const subCat in grouped) {
                 hasItems = true;
                 const items = grouped[subCat];
-                // CRITICAL: Sort items based on Excel Column E (Order Number)
                 items.sort((a, b) => a.order - b.order);
                 renderSection(subCat, items, container, false);
             }
@@ -639,18 +648,14 @@
         function renderSection(title, items, container, isHighlight) {
             const section = document.createElement('div');
             
-            // Section Title
             const headerClasses = isHighlight 
                 ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500 mb-4 inline-block"
                 : "text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4 inline-block";
                 
             section.innerHTML = `<h3 class="${headerClasses}">${title}</h3>`;
             
-            // Grid
             const grid = document.createElement('div');
             grid.className = "grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6";
-            
-            const currency = rawBranding.J || "";
 
             items.forEach((item, index) => {
                 const delay = index * 30; 
@@ -661,12 +666,10 @@
 
                 const isLiked = likedItems.has(item.id);
                 
-                // Increased Price Size on Card
                 const priceHtml = currentLang === 'en' 
-                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5 text-gray-500">${currency}</span><span class="text-base sm:text-lg">${item.price}</span>`
-                    : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${currency}</span>`;
+                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5 text-gray-500">${globalCurrency}</span><span class="text-base sm:text-lg">${item.price}</span>`
+                    : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
 
-                // Badge Logic
                 let badgeHtml = '';
                 if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1"><i class="fas fa-play"></i> Video</div>`;
                 else if(isHighlight) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm"><i class="fas fa-star text-[10px]"></i> Special</div>`;
@@ -702,14 +705,12 @@
             currentOpenItemId = id;
 
             const t = staticText[currentLang];
-            const currency = rawBranding.J || "";
 
             document.getElementById('modalImg').src = item.img;
             document.getElementById('modalCategoryBadge').textContent = item.subCat;
             document.getElementById('modalTitle').textContent = item.name;
             document.getElementById('modalDesc').textContent = item.desc;
             
-            // Special Badge Logic
             const specialBadge = document.getElementById('modalTodaySpecialBadge');
             if(item.isTodaySpecial) {
                 specialBadge.classList.remove('hidden');
@@ -718,7 +719,6 @@
                 specialBadge.classList.add('hidden');
             }
             
-            // Labels
             document.getElementById('label-calories').textContent = t.calories;
             document.getElementById('label-recipe').textContent = t.recipe;
             document.getElementById('label-video').textContent = t.video;
@@ -726,17 +726,14 @@
             document.getElementById('label-wa').textContent = t.wa;
             document.getElementById('label-share').textContent = t.share;
 
-            // Delivery text
-            const delCharge = rawBranding.L ? `${rawBranding.L} ${currency}` : 'Free';
+            const delCharge = rawBranding.smartDelivery ? `${rawBranding.smartDelivery} ${globalCurrency}` : 'Free';
             document.getElementById('modalDeliveryText').textContent = `${t.deliveryPrefix} ${delCharge}`;
 
-            // Increased Price Size in Modal
             const priceHtml = currentLang === 'en' 
-                ? `<span class="text-sm md:text-base font-normal me-1 text-red-400">${currency}</span><span class="text-3xl">${item.price}</span>`
-                : `<span class="text-3xl">${item.price}</span> <span class="text-sm md:text-base font-normal ms-1 text-red-400">${currency}</span>`;
+                ? `<span class="text-sm md:text-base font-normal me-1 text-red-400">${globalCurrency}</span><span class="text-3xl">${item.price}</span>`
+                : `<span class="text-3xl">${item.price}</span> <span class="text-sm md:text-base font-normal ms-1 text-red-400">${globalCurrency}</span>`;
             document.getElementById('modalPrice').innerHTML = priceHtml;
 
-            // Calories
             if(item.calories) {
                 document.getElementById('modalCalories').textContent = item.calories;
                 document.getElementById('modalCalories').parentElement.classList.remove('hidden');
@@ -746,7 +743,6 @@
                 document.getElementById('modalCalories').parentElement.classList.remove('inline-flex');
             }
 
-            // Recipe logic
             const recipeArea = document.getElementById('modalRecipeArea');
             if(item.recipe) {
                 document.getElementById('modalRecipe').textContent = item.recipe;
@@ -755,7 +751,6 @@
                 recipeArea.classList.add('hidden');
             }
 
-            // Video logic
             const vidBtn = document.getElementById('modalVideoBtn');
             if(item.video) {
                 vidBtn.href = item.video;
@@ -764,14 +759,50 @@
                 vidBtn.classList.add('hidden');
             }
 
-            // Animate In
+            // Parse and Add Review/Social Icons
+            const reviewArea = document.getElementById('modalReviewArea');
+            const reviewIconsContainer = document.getElementById('modalReviewIcons');
+            reviewIconsContainer.innerHTML = ''; 
+
+            if (item.reviewLinks) {
+                const links = String(item.reviewLinks).split(',').map(l => l.trim().toLowerCase());
+                
+                const platforms = [
+                    { name: 'google', icon: 'fab fa-google', hover: 'hover:bg-blue-500', color: 'text-blue-500' },
+                    { name: 'instagram', icon: 'fab fa-instagram', hover: 'hover:bg-pink-600', color: 'text-pink-600' },
+                    { name: 'facebook', icon: 'fab fa-facebook-f', hover: 'hover:bg-blue-600', color: 'text-blue-600' },
+                    { name: 'snapchat', icon: 'fab fa-snapchat-ghost', hover: 'hover:bg-yellow-500 hover:text-black', color: 'text-yellow-500' },
+                    { name: 'tiktok', icon: 'fab fa-tiktok', hover: 'hover:bg-gray-700', color: 'text-gray-700' },
+                    { name: 'youtube', icon: 'fab fa-youtube', hover: 'hover:bg-red-600', color: 'text-red-600' }
+                ];
+
+                links.forEach(link => {
+                    if (!link) return;
+                    let matchedPlatform = platforms.find(p => link.includes(p.name)) || 
+                      { name: 'review', icon: 'fas fa-star', hover: 'hover:bg-yellow-500', color: 'text-yellow-500' };
+                    
+                    const a = document.createElement('a');
+                    a.href = link.startsWith('http') ? link : `https://${link}`;
+                    a.target = '_blank';
+                    a.className = `w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center ${matchedPlatform.color} transition-all duration-300 ${matchedPlatform.hover} hover:text-white shadow-sm`;
+                    a.innerHTML = `<i class="${matchedPlatform.icon}"></i>`;
+                    reviewIconsContainer.appendChild(a);
+                });
+                
+                reviewArea.classList.remove('hidden');
+                reviewArea.classList.add('flex');
+            } else {
+                reviewArea.classList.add('hidden');
+                reviewArea.classList.remove('flex');
+            }
+
             const modal = document.getElementById('productModal');
             const backdrop = document.getElementById('modalBackdrop');
             const content = document.getElementById('modalContent');
             
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            void modal.offsetWidth; // reflow
+            void modal.offsetWidth; 
             
             backdrop.classList.remove('opacity-0');
             backdrop.classList.add('opacity-100');
@@ -829,8 +860,8 @@
             if(!currentOpenItemId || !rawBranding.D) return;
             const item = activeMenuData.find(i => i.id === currentOpenItemId);
             const text = currentLang === 'en' 
-                ? `Hi, I would like to order: ${item.name} (${item.price}${rawBranding.J || ''})`
-                : `مرحباً، أود طلب: ${item.name} (${item.price}${rawBranding.J || ''})`;
+                ? `Hi, I would like to order: ${item.name} (${item.price}${globalCurrency})`
+                : `مرحباً، أود طلب: ${item.name} (${item.price}${globalCurrency})`;
             window.open(`https://wa.me/${rawBranding.D}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
@@ -848,8 +879,64 @@
             }
         }
 
-        // Boot
+        function renderSocialMedia() {
+            const container = document.getElementById('social-media-container');
+            container.innerHTML = '';
+
+            const socialData = rawBranding.smartSocial || ""; 
+            const links = String(socialData).split(',').map(link => link.trim().toLowerCase());
+            
+            const platforms = [
+                { name: 'instagram', icon: 'fa-instagram', hover: 'hover:bg-pink-600' },
+                { name: 'facebook', icon: 'fa-facebook-f', hover: 'hover:bg-blue-600' },
+                { name: 'snapchat', icon: 'fa-snapchat-ghost', hover: 'hover:bg-yellow-500 hover:text-black' },
+                { name: 'tiktok', icon: 'fa-tiktok', hover: 'hover:bg-gray-700' },
+                { name: 'youtube', icon: 'fa-youtube', hover: 'hover:bg-red-600' }
+            ];
+
+            platforms.forEach(platform => {
+                const matchedLink = links.find(l => l.includes(platform.name));
+                const a = document.createElement('a');
+                
+                if (matchedLink) {
+                    a.href = matchedLink.startsWith('http') ? matchedLink : `https://${matchedLink}`;
+                    a.target = '_blank';
+                } else {
+                    a.href = '#'; 
+                }
+                
+                a.className = `w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 transition-all duration-300 ${platform.hover} hover:text-white shadow-md`;
+                a.innerHTML = `<i class="fab ${platform.icon}"></i>`;
+                container.appendChild(a);
+            });
+        }
+        // --- Game Modal Logic ---
+        function openGameModal() {
+            const modal = document.getElementById('gameModal');
+            const frame = document.getElementById('gameFrame');
+            
+            frame.src = 'Hungergame.html'; 
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGameModal() {
+            const modal = document.getElementById('gameModal');
+            const frame = document.getElementById('gameFrame');
+            
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.body.style.overflow = ''; 
+            
+            // Clear iframe so game sounds stop playing in background
+            setTimeout(() => {
+                frame.src = ''; 
+            }, 300);
+        }
         window.onload = init;
+        setupSearch();
     </script>
 </body>
 </html>
