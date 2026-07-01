@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Food Blast: Eat to Win!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            touch-action: none; /* Prevents page scrolling when swiping the game board */
+            overflow: hidden;
+            color: white;
+            user-select: none;
+        }
+        
+        h1, h2, h3, .brand-font {
+            font-family: 'Fredoka One', cursive;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 6px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .tile {
+            width: 100%;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border-radius: 0.5rem;
+            cursor: grab;
+            transition: transform 0.2s ease-in-out, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            position: relative;
+            background-color: rgba(255,255,255,0.05);
+            z-index: 10;
+        }
+
+        .tile:active { 
+            cursor: grabbing;
+            transform: scale(0.95); 
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        @media (max-width: 450px) {
+            .tile { font-size: 1.5rem; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+            #game-board { gap: 2px; padding: 4px; border-radius: 0.5rem; }
+        }
+
+        .tile.matched {
+            animation: popOut 0.3s forwards;
+        }
+
+        @keyframes popOut {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* Particle VFX */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 50;
+            animation: fly 0.6s ease-out forwards;
+            font-size: 1.2rem;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .floating-text {
+            position: absolute;
+            color: #fbbf24;
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-shadow: 0px 2px 4px black, 0px 0px 10px #fbbf24;
+            pointer-events: none;
+            z-index: 60;
+            animation: floatUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen w-screen relative">
+
+    <div id="start-screen" class="absolute inset-0 z-[100] bg-gray-900/95 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md">
+        <div class="text-6xl mb-4 animate-bounce">🍔</div>
+        <h1 class="text-4xl md:text-5xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-500 mb-2">Food Blast!</h1>
+        <p class="text-gray-300 mb-8 max-w-md">Swipe to match 3 or more foods and eat them! Track your calories and balance your diet in 60 seconds.</p>
+        
+        <div class="grid grid-cols-2 gap-4 mb-8 text-sm text-gray-400 text-left w-full max-w-xs">
+            <div class="flex items-center gap-2"><div class="w-3 h-3 bg-green-500 rounded-full"></div> Veg Matches</div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 bg-red-500 rounded-full"></div> Non-Veg Matches</div>
+            <div class="col-span-2 text-center text-xs mt-2 italic">* Swipe up, down, left, or right to swap items!</div>
+        </div>
+
+        <button onclick="startGame()" class="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-4 px-10 rounded-full shadow-lg shadow-red-500/30 transform transition hover:scale-105 text-xl brand-font">
+            PLAY NOW
+        </button>
+    </div>
+
+    <div id="game-over-screen" class="absolute inset-0 z-[100] bg-gray-900/95 hidden flex-col items-center justify-center p-6 text-center backdrop-blur-md">
+        <h2 class="text-5xl brand-font text-red-500 mb-2">Time's Up!</h2>
+        <p class="text-xl text-gray-300 mb-8">Here is what you ate:</p>
+        
+        <div class="glass-panel p-6 rounded-3xl w-full max-w-sm mb-8 space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-600 pb-3">
+                <span class="text-gray-400 font-bold">Total Calories:</span>
+                <span class="text-3xl brand-font text-orange-400" id="final-calories">0</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="flex items-center gap-2"><i class="fas fa-leaf text-green-400"></i> Veg Items:</span>
+                <span class="text-xl font-bold" id="final-veg">0</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="flex items-center gap-2"><i class="fas fa-drumstick-bite text-red-400"></i> Non-Veg Items:</span>
+                <span class="text-xl font-bold" id="final-nonveg">0</span>
+            </div>
+        </div>
+
+        <button onclick="resetGame()" class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105 mb-4 text-lg">
+            Play Again
+        </button>
+    </div>
+
+    <div class="w-full max-w-lg mx-auto pt-6 px-4 pb-2 flex-shrink-0 z-10">
+        <div class="flex justify-between items-end mb-4">
+            <div>
+                <h1 class="text-2xl brand-font text-white drop-shadow-md tracking-wider">FOOD <span class="text-red-500">BLAST</span></h1>
+            </div>
+            <div class="glass-panel px-4 py-1.5 rounded-full flex items-center gap-2 border-red-500/50 border-2">
+                <i class="fas fa-clock text-red-400 animate-pulse"></i>
+                <span id="timer" class="brand-font text-xl text-white">60s</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mb-2">
+            <div class="glass-panel rounded-2xl p-3 flex flex-col items-center justify-center relative overflow-hidden">
+                <div class="absolute -bottom-2 -right-2 text-4xl opacity-20">🔥</div>
+                <span class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Calories</span>
+                <span id="score" class="brand-font text-2xl text-orange-400">0</span>
+            </div>
+            <div class="glass-panel rounded-2xl p-3 flex flex-col items-center justify-center">
+                <span class="text-xs text-green-400 uppercase font-bold tracking-wider mb-1"><i class="fas fa-leaf"></i> Veg</span>
+                <span id="veg-count" class="brand-font text-xl text-white">0</span>
+            </div>
+            <div class="glass-panel rounded-2xl p-3 flex flex-col items-center justify-center">
+                <span class="text-xs text-red-400 uppercase font-bold tracking-wider mb-1"><i class="fas fa-drumstick-bite"></i> Meat</span>
+                <span id="nonveg-count" class="brand-font text-xl text-white">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-grow flex items-center justify-center px-4 pb-6 overflow-hidden z-10">
+        <div class="w-full max-w-md aspect-square relative" id="game-board-container">
+            <div id="game-board">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Audio Engine (Web Audio API Synthesizer) ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let actx;
+
+        function initAudio() {
+            if (!actx) actx = new AudioContext();
+            if (actx.state === 'suspended') actx.resume();
+        }
+
+        function playTone(freq, type, duration, vol = 0.1) {
+            if (!actx) return;
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, actx.currentTime);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            osc.start();
+            gain.gain.setValueAtTime(vol, actx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + duration);
+            osc.stop(actx.currentTime + duration);
+        }
+
+        const sfx = {
+            swipe: () => { playTone(400, 'sine', 0.1, 0.05); setTimeout(() => playTone(500, 'sine', 0.1, 0.05), 100); },
+            invalid: () => { playTone(200, 'sawtooth', 0.1, 0.1); setTimeout(() => playTone(150, 'sawtooth', 0.15, 0.1), 100); },
+            match: () => { playTone(800, 'square', 0.1, 0.05); setTimeout(() => playTone(1200, 'square', 0.2, 0.05), 100); },
+            blast: () => { playTone(150, 'sawtooth', 0.3, 0.2); },
+            gameOver: () => { playTone(400, 'sine', 0.2, 0.1); setTimeout(()=>playTone(300, 'sine', 0.4, 0.1), 200); setTimeout(()=>playTone(200, 'sine', 0.6, 0.1), 600); }
+        };
+
+        // --- 2. Game Data & Configuration ---
+        const rows = 8;
+        const cols = 8;
+        let board = [];
+        let score = 0;
+        let vegCount = 0;
+        let nonvegCount = 0;
+        let timeLeft = 60;
+        let timerInterval;
+        let isProcessing = false;
+        
+        // Swipe tracking variables
+        let swipeStartX = 0;
+        let swipeStartY = 0;
+        let swipeStartTile = null;
+
+        const foodTypes = [
+            { id: 1, type: 'veg', icon: '🥦', cal: 20, color: '#22c55e' },
+            { id: 2, type: 'veg', icon: '🍅', cal: 15, color: '#ef4444' },
+            { id: 3, type: 'veg', icon: '🥕', cal: 25, color: '#f97316' },
+            { id: 4, type: 'nonveg', icon: '🍗', cal: 150, color: '#b45309' },
+            { id: 5, type: 'nonveg', icon: '🥩', cal: 250, color: '#be123c' },
+            { id: 6, type: 'nonveg', icon: '🍤', cal: 100, color: '#fdba74' }
+        ];
+
+        const boardEl = document.getElementById('game-board');
+
+        // --- 3. Core Game Logic ---
+        function startGame() {
+            initAudio();
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('flex');
+            resetGame();
+        }
+
+        function resetGame() {
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.remove('flex');
+            
+            score = 0;
+            vegCount = 0;
+            nonvegCount = 0;
+            timeLeft = 60;
+          isProcessing = false; 
+            swipeStartTile = null;
+            updateHUD();
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            createBoard();
+            setupSwipeListeners();
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft + 's';
+            if(timeLeft <= 10) document.getElementById('timer').classList.add('text-red-500');
+            else document.getElementById('timer').classList.remove('text-red-500');
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                endGame();
+            }
+        }
+
+        function endGame() {
+            isProcessing = true;
+            sfx.gameOver();
+            document.getElementById('final-calories').innerText = score;
+            document.getElementById('final-veg').innerText = vegCount;
+            document.getElementById('final-nonveg').innerText = nonvegCount;
+            
+            const goScreen = document.getElementById('game-over-screen');
+            goScreen.classList.remove('hidden');
+            goScreen.classList.add('flex');
+        }
+
+        function updateHUD() {
+            const scoreEl = document.getElementById('score');
+            scoreEl.innerText = score;
+            scoreEl.style.transform = 'scale(1.2)';
+            setTimeout(() => scoreEl.style.transform = 'scale(1)', 200);
+            document.getElementById('veg-count').innerText = vegCount;
+            document.getElementById('nonveg-count').innerText = nonvegCount;
+        }
+
+        function createBoard() {
+            board = [];
+            boardEl.innerHTML = '';
+            
+            for (let r = 0; r < rows; r++) {
+                let row = [];
+                for (let c = 0; c < cols; c++) {
+                    let randomFood = getRandomFoodSafe(r, c, row, board);
+                    row.push(randomFood);
+                    
+                    let tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.innerText = randomFood.icon;
+                    tile.dataset.r = r;
+                    tile.dataset.c = c;
+                    
+                    boardEl.appendChild(tile);
+                }
+                board.push(row);
+            }
+        }
+
+        function getRandomFoodSafe(r, c, currentRow, fullBoard) {
+            let safeTypes = [...foodTypes];
+            if (c >= 2 && currentRow[c-1].id === currentRow[c-2].id) {
+                safeTypes = safeTypes.filter(f => f.id !== currentRow[c-1].id);
+            }
+            if (r >= 2 && fullBoard[r-1][c].id === fullBoard[r-2][c].id) {
+                safeTypes = safeTypes.filter(f => f.id !== fullBoard[r-1][c].id);
+            }
+            return safeTypes[Math.floor(Math.random() * safeTypes.length)];
+        }
+
+        function getTileEl(r, c) {
+            return boardEl.children[r * cols + c];
+        }
+
+        // --- 4. SWIPE LOGIC ENGINE ---
+        function setupSwipeListeners() {
+            // Mobile Touch Events attached directly to the board
+            boardEl.addEventListener('touchstart', handlePointerDown, {passive: false});
+            boardEl.addEventListener('touchmove', handlePointerMove, {passive: false});
+            boardEl.addEventListener('touchend', handlePointerUp);
+
+            // Desktop Mouse Events
+            boardEl.addEventListener('mousedown', handlePointerDown);
+            boardEl.addEventListener('mousemove', handlePointerMove);
+            window.addEventListener('mouseup', handlePointerUp);
+        }
+
+        function handlePointerDown(e) {
+            if (isProcessing || timeLeft <= 0) return;
+            
+            // Allow clicking/touching only on tiles
+            let targetTile = e.target.closest('.tile');
+            if (!targetTile) return;
+
+            // Prevent screen scrolling when touching the game board on mobile
+            if (e.type === 'touchstart') e.preventDefault();
+
+            initAudio(); 
+
+            swipeStartTile = { 
+                r: parseInt(targetTile.dataset.r), 
+                c: parseInt(targetTile.dataset.c), 
+                el: targetTile 
+            };
+            
+            if (e.touches && e.touches.length > 0) {
+                swipeStartX = e.touches[0].clientX;
+                swipeStartY = e.touches[0].clientY;
+            } else {
+                swipeStartX = e.clientX;
+                swipeStartY = e.clientY;
+            }
+        }
+
+        function handlePointerMove(e) {
+            if (!swipeStartTile || isProcessing || timeLeft <= 0) return;
+            if (e.type === 'touchmove') e.preventDefault();
+            
+            let currentX, currentY;
+            if (e.touches && e.touches.length > 0) {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            }
+
+            let diffX = currentX - swipeStartX;
+            let diffY = currentY - swipeStartY;
+            
+            // Distance the finger/mouse must move to trigger a swap
+            const SWIPE_THRESHOLD = 30; 
+
+            if (Math.abs(diffX) > SWIPE_THRESHOLD || Math.abs(diffY) > SWIPE_THRESHOLD) {
+                let r1 = swipeStartTile.r;
+                let c1 = swipeStartTile.c;
+                let targetR = r1;
+                let targetC = c1;
+
+                // Figure out which direction they swiped hardest
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 0) targetC++; // Swiped Right
+                    else targetC--;           // Swiped Left
+                } else {
+                    if (diffY > 0) targetR++; // Swiped Down
+                    else targetR--;           // Swiped Up
+                }
+
+                // Immediately clear the start tile so it doesn't trigger multiple times
+                swipeStartTile = null; 
+                
+                // If they swiped towards a valid spot on the board, execute swap!
+                if (targetR >= 0 && targetR < rows && targetC >= 0 && targetC < cols) {
+                    trySwap(r1, c1, targetR, targetC);
+                }
+            }
+        }
+
+        function handlePointerUp(e) {
+            swipeStartTile = null; // Clear state when finger/mouse lifts
+        }
+
+        // --- 5. Animation and Match Logic ---
+        async function trySwap(r1, c1, r2, c2) {
+            isProcessing = true;
+            sfx.swipe();
+
+            let el1 = getTileEl(r1, c1);
+            let el2 = getTileEl(r2, c2);
+            
+            const rect1 = el1.getBoundingClientRect();
+            const rect2 = el2.getBoundingClientRect();
+            const dx = rect2.left - rect1.left;
+            const dy = rect2.top - rect1.top;
+
+            // Safe String Interpolation (Fixed)
+            el1.style.transform = `translate(${dx}px, ${dy}px)`;
+            el2.style.transform = `translate(${-dx}px, ${-dy}px)`;
+            el1.style.zIndex = "20";
+
+            await delay(200);
+
+            let temp = board[r1][c1];
+            board[r1][c1] = board[r2][c2];
+            board[r2][c2] = temp;
+
+            el1.style.transform = '';
+            el2.style.transform = '';
+            el1.style.zIndex = '';
+            el1.innerText = board[r1][c1].icon;
+            el2.innerText = board[r2][c2].icon;
+
+            const matches = findMatches();
+
+            if (matches.length > 0) {
+                await processMatches(matches);
+            } else {
+                sfx.invalid();
+                el1.style.transform = `translate(${dx}px, ${dy}px)`;
+                el2.style.transform = `translate(${-dx}px, ${-dy}px)`;
+                await delay(200);
+                
+                let revert = board[r1][c1];
+                board[r1][c1] = board[r2][c2];
+                board[r2][c2] = revert;
+                
+                el1.style.transform = '';
+                el2.style.transform = '';
+                el1.innerText = board[r1][c1].icon;
+                el2.innerText = board[r2][c2].icon;
+                
+                isProcessing = false;
+            }
+        }
+
+        function findMatches() {
+            let matchSet = new Set();
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols - 2; c++) {
+                    let v1 = board[r][c], v2 = board[r][c+1], v3 = board[r][c+2];
+                    if (v1 && v2 && v3 && v1.id === v2.id && v1.id === v3.id) {
+                        matchSet.add(`${r},${c}`); matchSet.add(`${r},${c+1}`); matchSet.add(`${r},${c+2}`);
+                    }
+                }
+            }
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows - 2; r++) {
+                    let v1 = board[r][c], v2 = board[r+1][c], v3 = board[r+2][c];
+                    if (v1 && v2 && v3 && v1.id === v2.id && v1.id === v3.id) {
+                        matchSet.add(`${r},${c}`); matchSet.add(`${r+1},${c}`); matchSet.add(`${r+2},${c}`);
+                    }
+                }
+            }
+            return Array.from(matchSet).map(str => {
+                let parts = str.split(','); return { r: parseInt(parts[0]), c: parseInt(parts[1]) };
+            });
+        }
+
+        async function processMatches(matches) {
+            let roundScore = 0;
+            let centerR = 0, centerC = 0;
+
+            if(matches.length > 4) sfx.blast();
+            else sfx.match();
+
+            matches.forEach(m => {
+                let item = board[m.r][m.c];
+                if (!item) return;
+
+                roundScore += item.cal;
+                if(item.type === 'veg') vegCount++; else nonvegCount++;
+
+                let el = getTileEl(m.r, m.c);
+                el.classList.add('matched');
+                
+                createParticles(el.getBoundingClientRect(), item.icon, item.color);
+                board[m.r][m.c] = null;
+                centerR += m.r; centerC += m.c;
+            });
+
+            score += roundScore;
+            updateHUD();
+
+            if(matches.length > 0) {
+                centerR = Math.floor(centerR / matches.length);
+                centerC = Math.floor(centerC / matches.length);
+                let centerEl = getTileEl(centerR, centerC);
+                createFloatingScore(centerEl.getBoundingClientRect(), roundScore);
+            }
+
+            await delay(300);
+
+            matches.forEach(m => {
+                let el = getTileEl(m.r, m.c);
+                el.classList.remove('matched');
+                el.innerText = '';
+            });
+
+            await applyGravity();
+        }
+
+        async function applyGravity() {
+            for (let c = 0; c < cols; c++) {
+                let emptySpaces = 0;
+                for (let r = rows - 1; r >= 0; r--) {
+                    if (board[r][c] === null) {
+                        emptySpaces++;
+                    } else if (emptySpaces > 0) {
+                        board[r + emptySpaces][c] = board[r][c];
+                        board[r][c] = null;
+                        getTileEl(r + emptySpaces, c).innerText = board[r + emptySpaces][c].icon;
+                        getTileEl(r, c).innerText = '';
+                    }
+                }
+            }
+
+            await delay(150);
+
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    if (board[r][c] === null) {
+                        let newFood = foodTypes[Math.floor(Math.random() * foodTypes.length)];
+                        board[r][c] = newFood;
+                        
+                        let el = getTileEl(r, c);
+                        el.innerText = newFood.icon;
+                        
+                        el.style.transform = 'translateY(-100%)';
+                        el.style.opacity = '0';
+                        setTimeout(() => {
+                            el.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s';
+                            el.style.transform = 'translateY(0)';
+                            el.style.opacity = '1';
+                        }, 50);
+                    }
+                }
+            }
+
+            await delay(400);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let el = getTileEl(r, c);
+                    el.style.transition = ''; el.style.transform = ''; el.style.opacity = '';
+                }
+            }
+
+            const newMatches = findMatches();
+            if (newMatches.length > 0) await processMatches(newMatches);
+            else isProcessing = false;
+        }
+
+        function createParticles(rect, icon, colorHex) {
+            const container = document.body;
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 6; i++) {
+                let p = document.createElement('div');
+                p.className = 'particle'; p.innerText = icon; p.style.left = x + 'px'; p.style.top = y + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 40 + Math.random() * 60;
+                p.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                p.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+                
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 600);
+            }
+        }
+
+        function createFloatingScore(rect, points) {
+            const el = document.createElement('div');
+            el.className = 'floating-text'; el.innerText = `+${points}`;
+            el.style.left = (rect.left + rect.width / 2 - 20) + 'px'; el.style.top = rect.top + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 800);
+        }
+
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    </script>
+</body>
+</html>
