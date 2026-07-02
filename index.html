@@ -255,6 +255,14 @@
                         </div>
                 </div>
 
+                <!-- NEW: Related Items Container -->
+                <div id="modalRelatedArea" class="hidden mt-4 mb-2 flex-col gap-2">
+                    <h4 class="font-bold text-gray-800 text-sm mb-1">Frequently Bought Together</h4>
+                    <div id="related-slider" class="flex gap-3 overflow-x-auto hide-scrollbar pb-2 snap-x">
+                        <!-- Related items injected here -->
+                    </div>
+                </div>
+
                 <div class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100">
                     <div class="flex gap-3">
                         <button onclick="smartWhatsAppOrder()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
@@ -278,6 +286,14 @@
                     </p>
                 </div>
             </div>
+        </div>
+    </div>
+  <div id="screensaver-overlay" class="fixed inset-0 z-[100] bg-black hidden flex-col items-center justify-center transition-opacity duration-500 opacity-0">
+        <button onclick="closeScreensaver()" class="absolute top-6 right-6 z-50 bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div id="screensaver-slider" class="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory px-[5%] hide-scrollbar py-10" style="scroll-behavior: smooth;">
+            <!-- Flash cards injected here via JS -->
         </div>
     </div>
 <!-- Top Right Cart Button -->
@@ -432,6 +448,12 @@
                 if(sMenuAr && workbook.Sheets[sMenuAr]) {
                     const arRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuAr], { header: "A", defval: "" });
                     if(arRows.length > 1) rawMenuAr = arRows.slice(1);
+                }
+                
+                // NEW: Load RelatedItems Sheet
+                const sRelated = sNames.find(n => n.toLowerCase().includes("relateditems"));
+                if(sRelated && workbook.Sheets[sRelated]) {
+                    relatedItemsData = XLSX.utils.sheet_to_json(workbook.Sheets[sRelated], { header: "A", defval: "" });
                 }
 
                 document.getElementById('loading-state').classList.add('hidden');
@@ -726,7 +748,8 @@
                     img: row.K || `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/${encodeURIComponent(String(row.B).trim())}/${encodeURIComponent(String(row.D).trim())}.jpg`,
                     
                     video: row.L || "",
-                    reviewLinks: row.M || "" 
+                    reviewLinks: row.M || "",
+                    flashCards: row.N || "" // NEW: Grabs Column N
                 };
 
                 activeMenuData.push(item);
@@ -867,6 +890,10 @@
                 container.classList.add('flex');
                 emptyState.classList.add('hidden');
             }
+            
+            // NEW: Gather flashcards whenever the menu loads
+            gatherFlashCards(); 
+            buildScreensaver();
         }
 
         function renderSection(title, items, container, isHighlight) {
@@ -942,8 +969,8 @@
                 </div>
                 ` : '<div></div>'}
                 
-                <button id="quick-add-btn-${item.id}" onclick="event.stopPropagation(); toggleQuickCart('${item.id}')" class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-colors duration-300">
-                    <i id="quick-add-icon-${item.id}" class="fas fa-plus text-sm"></i>
+                <button onclick="event.stopPropagation(); toggleQuickCart('${item.id}')" class="quick-add-btn-${item.id} bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-colors duration-300">
+                    <i class="quick-add-icon-${item.id} fas fa-plus text-sm transition-transform duration-500"></i>
                 </button>
             </div>
         </div>
@@ -1071,6 +1098,44 @@
                 reviewArea.classList.add('hidden');
                 reviewArea.classList.remove('flex');
             }
+
+            // --- NEW: RELATED ITEMS LOGIC ---
+            const relatedArea = document.getElementById('modalRelatedArea');
+            const relatedSlider = document.getElementById('related-slider');
+            relatedSlider.innerHTML = '';
+            
+            const relatedRow = relatedItemsData.find(row => String(row['C']).trim() === String(item.id).trim());
+            
+            if (relatedRow) {
+                let relatedIDs = [];
+                ['D','E','F','G','H','I','J','K','L','M'].forEach(col => {
+                    if (relatedRow[col]) relatedIDs.push(String(relatedRow[col]).trim());
+                });
+
+                const matchedItems = activeMenuData.filter(menuItem => relatedIDs.includes(String(menuItem.id))).slice(0, 10);
+
+                if (matchedItems.length > 0) {
+                    matchedItems.forEach(relItem => {
+                        relatedSlider.innerHTML += `
+                            <div onclick="openModal('${relItem.id}')" class="w-28 flex-shrink-0 snap-start bg-white border border-gray-100 rounded-xl p-2 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                                <img src="${relItem.img}" class="w-full h-16 object-cover rounded-lg mb-2">
+                                <h4 class="text-[10px] font-bold text-gray-800 line-clamp-1">${relItem.name}</h4>
+                                <p class="text-[10px] text-orange-600 font-bold mt-1">${relItem.price} ${globalCurrency}</p>
+                            </div>
+                        `;
+                    });
+                    relatedArea.classList.remove('hidden');
+                    relatedArea.classList.add('flex');
+                    setupDraggable('related-slider');
+                } else {
+                    relatedArea.classList.add('hidden');
+                    relatedArea.classList.remove('flex');
+                }
+            } else {
+                relatedArea.classList.add('hidden');
+                relatedArea.classList.remove('flex');
+            }
+            // ---------------------------------
 
             const modal = document.getElementById('productModal');
             const backdrop = document.getElementById('modalBackdrop');
@@ -1393,20 +1458,26 @@ function toggleQuickCart(id) {
         }
 
         function updateQuickAddButtons() {
-            // Loop through all active items on the screen to update their +/- state
+            // Loop through all active items on the screen and find EVERY duplicate copy
             activeMenuData.forEach(item => {
-                const btn = document.getElementById(`quick-add-btn-${item.id}`);
-                const icon = document.getElementById(`quick-add-icon-${item.id}`);
-                if (btn && icon) {
-                    const isInCart = cart.some(c => String(c.id) === String(item.id));
-                    if (isInCart) {
-                        btn.className = "bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 hover:scale-110 transition-colors duration-300";
-                        icon.className = "fas fa-minus text-sm";
-                    } else {
-                        btn.className = "bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-orange-600 hover:scale-110 transition-colors duration-300";
-                        icon.className = "fas fa-plus text-sm";
-                    }
-                }
+                const btns = document.querySelectorAll(`.quick-add-btn-${item.id}`);
+                const icons = document.querySelectorAll(`.quick-add-icon-${item.id}`);
+                
+                const isInCart = cart.some(c => String(c.id) === String(item.id));
+                
+                // Update every button instance
+                btns.forEach(btn => {
+                    btn.className = isInCart 
+                        ? `quick-add-btn-${item.id} bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 hover:scale-110 transition-colors duration-300`
+                        : `quick-add-btn-${item.id} bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-orange-600 hover:scale-110 transition-colors duration-300`;
+                });
+
+                // Update every icon instance with a 180-degree rotation animation
+                icons.forEach(icon => {
+                    icon.className = isInCart
+                        ? `quick-add-icon-${item.id} fas fa-minus text-sm transition-transform duration-500 rotate-180`
+                        : `quick-add-icon-${item.id} fas fa-plus text-sm transition-transform duration-500 rotate-0`;
+                });
             });
         }
         function updateCartUI() {
@@ -1445,10 +1516,16 @@ function toggleQuickCart(id) {
                         </div>
                         <div class="flex flex-col items-end gap-1 shrink-0">
                             <span class="font-bold text-red-600 text-xs">${itemTotal.toFixed(2)}</span>
-                            <div class="flex items-center gap-1 bg-gray-100 rounded p-0.5">
-                                <button onclick="changeQty('${item.id}', -1)" class="w-5 h-5 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-minus text-[10px]"></i></button>
-                                <span class="font-bold text-xs w-3 text-center">${item.qty}</span>
-                                <button onclick="changeQty('${item.id}', 1)" class="w-5 h-5 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-plus text-[10px]"></i></button>
+                            <div class="flex items-center">
+                                <button onclick="removeFromCart('${item.id}')" class="w-6 h-6 flex items-center justify-center text-red-400 hover:text-red-600 transition-colors me-1">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </button>
+                                
+                                <div class="flex items-center gap-1 bg-gray-100 rounded p-0.5">
+                                    <button onclick="changeQty('${item.id}', -1)" class="w-5 h-5 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-minus text-[10px]"></i></button>
+                                    <span class="font-bold text-xs w-3 text-center">${item.qty}</span>
+                                    <button onclick="changeQty('${item.id}', 1)" class="w-5 h-5 flex items-center justify-center bg-white rounded text-gray-600 shadow-sm"><i class="fas fa-plus text-[10px]"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1476,6 +1553,11 @@ function toggleQuickCart(id) {
                 }
                 updateCartUI();
             }
+        }
+      function removeFromCart(id) {
+            // Instantly delete the item regardless of quantity
+            cart = cart.filter(c => String(c.id) !== String(id));
+            updateCartUI();
         }
 
         function openCartModal() {
@@ -1554,6 +1636,81 @@ function toggleQuickCart(id) {
             window.open(`https://wa.me/${rawBranding.D}?text=${encodeURIComponent(msg)}`, '_blank');
             closeCartModal(); // Automatically close the bill
         }
+
+        // --- NEW: SCREENSAVER LOGIC ---
+        let idleTimer;
+        let screensaverSlideTimer;
+        let isScreensaverActive = false;
+        let allFlashCards = [];
+
+        function gatherFlashCards() {
+            allFlashCards = [];
+            activeMenuData.forEach(item => {
+                if (item.flashCards) {
+                    const urls = item.flashCards.split(',').map(u => u.trim()).filter(u => u !== "");
+                    allFlashCards.push(...urls);
+                }
+            });
+        }
+
+        function buildScreensaver() {
+            const slider = document.getElementById('screensaver-slider');
+            slider.innerHTML = '';
+            
+            const shuffledCards = allFlashCards.sort(() => 0.5 - Math.random());
+
+            shuffledCards.forEach((url) => {
+                const cardHtml = `
+                    <div class="w-[90vw] sm:w-[80vw] h-[70vh] flex-shrink-0 snap-center rounded-3xl overflow-hidden shadow-2xl relative">
+                        <img src="${url}" class="w-full h-full object-cover" alt="Promo">
+                    </div>
+                `;
+                slider.insertAdjacentHTML('beforeend', cardHtml);
+            });
+            setupDraggable('screensaver-slider');
+        }
+
+        function showScreensaver() {
+            if (allFlashCards.length === 0 || isScreensaverActive) return;
+            isScreensaverActive = true;
+            
+            const overlay = document.getElementById('screensaver-overlay');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 50);
+
+            const slider = document.getElementById('screensaver-slider');
+            let scrollPos = 0;
+            screensaverSlideTimer = setInterval(() => {
+                scrollPos += slider.clientWidth * 0.9; 
+                if (scrollPos >= slider.scrollWidth) scrollPos = 0; 
+                slider.scrollTo({ left: scrollPos, behavior: 'smooth' });
+            }, 3000);
+        }
+
+        function closeScreensaver() {
+            if (!isScreensaverActive) return;
+            isScreensaverActive = false;
+            clearInterval(screensaverSlideTimer);
+            
+            const overlay = document.getElementById('screensaver-overlay');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 500);
+            resetIdleTimer();
+        }
+
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            if (!isScreensaverActive) {
+                idleTimer = setTimeout(showScreensaver, 20000);
+            }
+        }
+
+        ['touchstart', 'mousemove', 'mousedown', 'scroll', 'keydown', 'click'].forEach(evt => {
+            document.addEventListener(evt, resetIdleTimer, true);
+        });
+        resetIdleTimer();
+        // ------------------------------
+
         window.onload = init;
         setupSearch();
 
