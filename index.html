@@ -246,8 +246,9 @@
             <div class="p-5 md:p-6 overflow-y-auto relative">
                 
                 <!-- NEW: Sticky Title & Price Header -->
-                <div class="sticky -top-5 md:-top-6 z-30 bg-white/95 backdrop-blur-md pt-5 md:pt-6 pb-3 -mx-5 px-5 md:-mx-6 md:px-6 mb-3 border-b border-gray-100 shadow-[0_5px_10px_-10px_rgba(0,0,0,0.1)]">
-                    <div class="flex justify-between items-start gap-4">
+                <!-- NEW: Sticky Title & Price Header -->
+                <div class="sticky -top-5 md:-top-6 -mt-5 md:-mt-6 z-30 bg-white/95 backdrop-blur-md pt-4 md:pt-5 pb-2 -mx-5 px-5 md:-mx-6 md:px-6 mb-2 border-b border-gray-100 shadow-[0_5px_10px_-10px_rgba(0,0,0,0.1)]">
+                    <div class="flex justify-between items-start gap-2">
                         <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
                         <div class="text-end shrink-0">
                             <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap"></span>
@@ -879,8 +880,12 @@
                 const btn = document.createElement('button');
                 const isActive = selectedSubCategories.has(subCat);
                 
+                // NEW: Add matching ID for ScrollSpy tracking
+                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+                btn.id = 'sub-btn-' + safeId;
+                
                 // Pill-shaped small buttons
-                btn.className = `shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isActive ? activeClass : inactiveClass}`;
+                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold transition-colors ${isActive ? activeClass : inactiveClass}`;
                 btn.textContent = subCat;
                 btn.onclick = () => {
                     if (selectedSubCategories.has(subCat)) selectedSubCategories.delete(subCat);
@@ -965,6 +970,35 @@
             
             // Update last scroll position
             lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY; 
+
+            // --- NEW: ScrollSpy for Sub-Categories ---
+            // Check which food category is currently touching the top of the screen
+            const sections = document.querySelectorAll('.menu-section-tracker');
+            let currentActiveSectionId = null;
+            
+            sections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                // 180px offset accounts perfectly for your sticky headers!
+                if (rect.top <= 180 && rect.bottom >= 180) {
+                    currentActiveSectionId = sec.id.replace('section-', '');
+                }
+            });
+
+            // If we found the active section, smoothly slide the horizontal bar to match it
+            if (currentActiveSectionId) {
+                const activeBtn = document.getElementById('sub-btn-' + currentActiveSectionId);
+                const subContainer = document.getElementById('sub-category-filters');
+                
+                if (activeBtn && subContainer) {
+                    // Smoothly auto-scroll left so the user doesn't have to!
+                    subContainer.scrollTo({
+                        left: activeBtn.offsetLeft - 10,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+            // -----------------------------------------
+
         }, {passive: true});
 
         function executeFilter() {
@@ -1052,7 +1086,12 @@
         function renderSection(title, items, container, isHighlight) {
             const section = document.createElement('div');
             
-            const headerClasses = isHighlight 
+            // NEW: Add tracking class and safe ID for the ScrollSpy
+            const safeId = title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+            section.className = 'menu-section-tracker';
+            section.id = 'section-' + safeId;
+            
+            const headerClasses = isHighlight
                 ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500 mb-4 inline-block"
                 : "text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4 inline-block";
                 
