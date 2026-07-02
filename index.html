@@ -769,7 +769,7 @@
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
                     
                     // NEW: Auto-fetch from GitHub folders if Column K is blank!
-                    img: row.K || `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/${encodeURIComponent(String(row.B).trim())}/${encodeURIComponent(String(row.D).trim())}.jpg`,
+                    img: row.K || `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`,
                     
                     video: row.L || "",
                     reviewLinks: row.M || "",
@@ -1148,7 +1148,10 @@
                         <i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i>
                     </button>
                     <div class="relative h-32 sm:h-40 overflow-hidden img-loading shrink-0">
-                        <img src="${item.img}" alt="Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; this.parentElement.classList.remove('img-loading')" onload="this.parentElement.classList.remove('img-loading')">
+                        <!-- NEW: Smart Fallback. Tries .jpg -> then .png -> then .jpeg -> then Placeholder -->
+                        <img src="${item.img}" alt="Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                             onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; this.parentElement.classList.remove('img-loading'); }" 
+                             onload="this.parentElement.classList.remove('img-loading')">
                         ${badgeHtml}
                     </div>
                     <div class="p-3 sm:p-4 flex flex-col flex-grow">
@@ -1862,26 +1865,69 @@ function toggleQuickCart(id) {
         }
 
         // --- NEW: SCREENSAVER LOGIC ---
+        // --- NEW: SCREENSAVER LOGIC ---
         let idleTimer;
         let screensaverSlideTimer;
         let isScreensaverActive = false;
-        let allFlashCards = [];
+        let validFlashCards = []; // CHANGED: Now only stores verified images
 
         function gatherFlashCards() {
-            allFlashCards = [];
+            validFlashCards = []; // Reset
+
+            // 1. Gather all explicit URLs from Column N
             activeMenuData.forEach(item => {
                 if (item.flashCards) {
-                    const urls = item.flashCards.split(',').map(u => u.trim()).filter(u => u !== "");
-                    allFlashCards.push(...urls);
+                    const files = item.flashCards.split(',').map(u => u.trim()).filter(u => u !== "");
+                    files.forEach(file => {
+                        if (file.startsWith('http')) {
+                            validFlashCards.push(file);
+                        }
+                    });
                 }
             });
+
+            // 2. Auto-probe GitHub folder for FlashCard01 to FlashCard15
+            const maxAutoCards = 15;
+            const baseUrl = 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/FlashCard/FlashCard';
+            
+            for (let i = 1; i <= maxAutoCards; i++) {
+                const num = String(i).padStart(2, '0'); // Creates "01", "02", etc.
+                probeImageExtensions(`${baseUrl}${num}`);
+            }
+            
+            // Build immediately with any Column N URLs we found
+            buildScreensaver();
+        }
+
+        // NEW: Background Prober to find GitHub images automatically!
+        function probeImageExtensions(basePath) {
+            const extensions = ['.jpg', '.png', '.jpeg'];
+            
+            function testNext(index) {
+                if (index >= extensions.length) return; // All extensions failed, file doesn't exist!
+                
+                const img = new Image();
+                img.onload = () => {
+                    // Success! The image exists on GitHub. Add it and rebuild the slider!
+                    validFlashCards.push(img.src);
+                    buildScreensaver(); 
+                };
+                img.onerror = () => {
+                    // Failed! Try the next extension (.jpg -> .png -> .jpeg)
+                    testNext(index + 1);
+                };
+                img.src = basePath + extensions[index];
+            }
+            
+            testNext(0); // Start testing
         }
 
         function buildScreensaver() {
             const slider = document.getElementById('screensaver-slider');
             slider.innerHTML = '';
             
-            const shuffledCards = allFlashCards.sort(() => 0.5 - Math.random());
+            // Mix the explicit URLs and the discovered GitHub images
+            const shuffledCards = validFlashCards.sort(() => 0.5 - Math.random());
 
             shuffledCards.forEach((url) => {
                 const cardHtml = `
@@ -1895,16 +1941,17 @@ function toggleQuickCart(id) {
         }
 
         function showScreensaver() {
-            // Check if any windows are open before showing screensaver
             const isProductModalOpen = !document.getElementById('productModal').classList.contains('hidden');
             const isCartModalOpen = !document.getElementById('cartModal').classList.contains('hidden');
             const isGameModalOpen = !document.getElementById('gameModal').classList.contains('hidden');
             
-            if (allFlashCards.length === 0 || isScreensaverActive || isProductModalOpen || isCartModalOpen || isGameModalOpen) {
-                // If a modal is open, just silently restart the clock
+            // CHANGED: Check validFlashCards instead of allFlashCards
+            // If 0 images found (No URLs and no GitHub images), DO NOT open the screensaver!
+            if (validFlashCards.length === 0 || isScreensaverActive || isProductModalOpen || isCartModalOpen || isGameModalOpen) {
                 if (isProductModalOpen || isCartModalOpen || isGameModalOpen) resetIdleTimer();
-                return;
+                return; 
             }
+            
             isScreensaverActive = true;
             
             const overlay = document.getElementById('screensaver-overlay');
@@ -1934,7 +1981,7 @@ function toggleQuickCart(id) {
         function resetIdleTimer() {
             clearTimeout(idleTimer);
             if (!isScreensaverActive) {
-                idleTimer = setTimeout(showScreensaver, 35000); // Changed to 35 Seconds
+                idleTimer = setTimeout(showScreensaver, 35000); 
             }
         }
 
