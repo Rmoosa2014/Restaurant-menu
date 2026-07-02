@@ -74,7 +74,7 @@
         </div>
     </nav>
 
-    <header id="hero-section" class="pt-24 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative overflow-hidden rounded-b-3xl sm:rounded-b-none bg-gray-900 text-white mb-6 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95));">
+    <header id="hero-section" class="pt-24 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative overflow-hidden rounded-b-3xl sm:rounded-b-none bg-gray-900 text-white mb-2 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95));">
         <div class="relative z-10 py-6">
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-md">
                 <span id="hero-title1">Welcome to</span> <br/>
@@ -106,10 +106,12 @@
             <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
         </div>
 
-        <!-- NEW MAIN CATEGORY GRID (4x2 layout, narrow gap) -->
-        <!-- The style tag mathematically forces exactly 4 buttons per screen width! -->
-        <div class="grid grid-rows-2 grid-flow-col gap-1.5 overflow-x-auto hide-scrollbar px-1 py-1 snap-x" style="grid-auto-columns: calc(25% - 4.5px);" id="category-filters">
-            <!-- Main category buttons -->
+        <!-- NEW MAIN CATEGORY GRID (Two Rows for perfect left-to-right flow) -->
+        <div id="main-category-wrapper" class="overflow-x-auto hide-scrollbar px-1 py-1 snap-x w-full">
+            <div class="flex flex-col gap-1.5 min-w-full w-max">
+                <div id="category-row-1" class="flex gap-1.5"></div>
+                <div id="category-row-2" class="flex gap-1.5"></div>
+            </div>
         </div>
 
         <!-- NEW SUB CATEGORY ROW (Single row, hidden scrollbar) -->
@@ -792,47 +794,53 @@
         }
 
         function renderCategoryFilters() {
-            const container = document.getElementById('category-filters');
-            container.innerHTML = '';
+            const row1 = document.getElementById('category-row-1');
+            const row2 = document.getElementById('category-row-2');
+            row1.innerHTML = '';
+            row2.innerHTML = '';
             
             const t = staticText[currentLang];
             const activeClass = 'bg-red-500 text-white border-red-500 shadow-sm z-10';
             const inactiveClass = 'bg-white text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-500';
 
-            const allBtn = document.createElement('button');
-            const isActiveAll = selectedMainCategories.size === 0; // "All" is active if NOTHING is selected
-            
-            // Compact 4x2 button design (Icon above Text)
-            allBtn.className = `snap-start flex flex-col items-center justify-center gap-1 whitespace-nowrap p-1.5 rounded-xl border border-gray-200 font-bold text-[10px] leading-tight transition-colors ${isActiveAll ? activeClass : inactiveClass}`;
-            allBtn.innerHTML = `<i class="fas fa-th-large text-sm ${isActiveAll ? 'text-white' : 'text-red-400'}"></i> <span>${t.all}</span>`;
-            allBtn.onclick = () => { 
-                selectedMainCategories.clear(); 
-                selectedSubCategories.clear(); // Clear all filters
-                renderCategoryFilters(); 
-                renderSubCategoryFilters();
-                executeFilter(); 
-            };
-            container.appendChild(allBtn);
+            // Create a single array with 'All' at the very beginning
+            const allCats = ['All', ...mainCategories];
 
-            mainCategories.forEach(cat => {
-                const icon = getCategoryIcon(cat);
+            allCats.forEach((cat, index) => {
+                const isAll = cat === 'All';
+                const isActive = isAll ? selectedMainCategories.size === 0 : selectedMainCategories.has(cat);
+                const icon = isAll ? 'fa-th-large' : getCategoryIcon(cat);
+                const label = isAll ? t.all : cat;
+
                 const btn = document.createElement('button');
-                const isActive = selectedMainCategories.has(cat);
                 
-                btn.className = `snap-start flex flex-col items-center justify-center gap-1 whitespace-nowrap p-1.5 rounded-xl border font-bold text-[10px] leading-tight transition-colors ${isActive ? activeClass : inactiveClass}`;
-                btn.innerHTML = `<i class="fas ${icon} text-sm ${isActive ? 'text-white' : 'text-red-400'}"></i> <span class="truncate w-full text-center">${cat}</span>`;
+                // MATH MAGIC: w-[calc(25vw-9px)] perfectly divides screen width into exactly 4 blocks!
+                btn.className = `w-[calc(25vw-9px)] sm:w-[120px] shrink-0 snap-start flex flex-col items-center justify-center gap-1 whitespace-nowrap p-1.5 rounded-xl border font-bold text-[10px] leading-tight transition-colors ${isActive ? activeClass : inactiveClass}`;
+                btn.innerHTML = `<i class="fas ${icon} text-sm ${isActive ? 'text-white' : 'text-red-400'}"></i> <span class="truncate w-full text-center">${label}</span>`;
+                
                 btn.onclick = () => { 
-                    // Multi-Select Toggle Logic
-                    if (selectedMainCategories.has(cat)) selectedMainCategories.delete(cat);
-                    else selectedMainCategories.add(cat);
-                    
+                    if (isAll) {
+                        selectedMainCategories.clear(); 
+                        selectedSubCategories.clear(); 
+                    } else {
+                        if (selectedMainCategories.has(cat)) selectedMainCategories.delete(cat);
+                        else selectedMainCategories.add(cat);
+                    }
                     renderCategoryFilters(); 
-                    renderSubCategoryFilters(); // Dynamically update sub-filters
+                    renderSubCategoryFilters();
                     executeFilter(); 
                 };
-                container.appendChild(btn);
+                
+                // Logic to push buttons into rows left-to-right (4 per row)
+                const posInBlock = index % 8;
+                if (posInBlock < 4) {
+                    row1.appendChild(btn);
+                } else {
+                    row2.appendChild(btn);
+                }
             });
-            setupDraggable('category-filters');
+            
+            setupDraggable('main-category-wrapper'); // Allow desktop drag
         }
 
         function renderSubCategoryFilters() {
@@ -862,7 +870,7 @@
                 const isActive = selectedSubCategories.has(subCat);
                 
                 // Pill-shaped small buttons
-                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold transition-colors ${isActive ? activeClass : inactiveClass}`;
+                btn.className = `shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isActive ? activeClass : inactiveClass}`;
                 btn.textContent = subCat;
                 btn.onclick = () => {
                     if (selectedSubCategories.has(subCat)) selectedSubCategories.delete(subCat);
@@ -1019,8 +1027,9 @@
                     : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
 
                 let badgeHtml = '';
-                if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1"><i class="fas fa-play"></i> Video</div>`;
-                else if(isHighlight) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm"><i class="fas fa-star text-[10px]"></i> Special</div>`;
+                // NEW LOGIC: Always show the Special badge if the item is a special, regardless of where it is on the screen!
+                if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm"><i class="fas fa-star text-[10px]"></i> Special</div>`;
+                else if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1"><i class="fas fa-play"></i> Video</div>`;
 
                 card.innerHTML = `
                     <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-10 text-sm">
