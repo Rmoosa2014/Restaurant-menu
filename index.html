@@ -243,11 +243,15 @@
                 </a>
             </div>
 
-            <div class="p-5 md:p-6 overflow-y-auto">
-                <div class="flex justify-between items-start mb-2 gap-4">
-                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
-                    <div class="text-end shrink-0">
-                        <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap"></span>
+            <div class="p-5 md:p-6 overflow-y-auto relative">
+                
+                <!-- NEW: Sticky Title & Price Header -->
+                <div class="sticky -top-5 md:-top-6 z-30 bg-white/95 backdrop-blur-md pt-5 md:pt-6 pb-3 -mx-5 px-5 md:-mx-6 md:px-6 mb-3 border-b border-gray-100 shadow-[0_5px_10px_-10px_rgba(0,0,0,0.1)]">
+                    <div class="flex justify-between items-start gap-4">
+                        <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
+                        <div class="text-end shrink-0">
+                            <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap"></span>
+                        </div>
                     </div>
                 </div>
                 
@@ -272,7 +276,6 @@
                         </div>
                 </div>
 
-                <!-- NEW: Related Items Container -->
                 <div id="modalRelatedArea" class="hidden mt-4 mb-2 flex-col gap-2">
                     <h4 class="font-bold text-gray-800 text-sm mb-1">Frequently Bought Together</h4>
                     <div id="related-slider" class="flex gap-3 overflow-x-auto hide-scrollbar pb-2 snap-x">
@@ -280,7 +283,7 @@
                     </div>
                 </div>
 
-                <<div id="modal-action-footer" class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100 transition-all duration-300">
+                <div id="modal-action-footer" class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100 transition-all duration-300">
                     <div class="flex gap-3">
                         <button onclick="smartWhatsAppOrder()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
     <i class="fab fa-whatsapp text-lg"></i> <span id="label-wa">Order Now</span>
@@ -1072,15 +1075,15 @@
                 const delay = index * 30; 
                 const card = document.createElement('div');
                 
-                // --- NEW: Card Size & Orphan Logic ---
-                let cardClasses = 'menu-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group';
+                // --- NEW: Pastel Background & Orphan Logic ---
+                // Give specials a soft pastel background, normal items stay white
+                const bgClass = item.isTodaySpecial ? 'bg-amber-50/60 border-amber-200' : 'bg-white border-gray-100';
+                let cardClasses = `menu-card ${bgClass} rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group`;
                 
                 if (isHighlight) {
                     cardClasses += ' w-[40vw] sm:w-[220px] snap-start shrink-0';
                 } else {
-                    // Check if this is the standard grid, if it is the VERY LAST item, AND if there is an ODD number of items
                     if (index === items.length - 1 && items.length % 2 !== 0) {
-                        // Make it span 2 columns on mobile, but keep it at 1 column on desktop (md:)
                         cardClasses += ' col-span-2 md:col-span-1'; 
                     }
                 }
@@ -1109,7 +1112,7 @@
                         <img src="${item.img}" alt="Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; this.parentElement.classList.remove('img-loading')" onload="this.parentElement.classList.remove('img-loading')">
                         ${badgeHtml}
                     </div>
-                    <div class="p-3 sm:p-4 flex flex-col flex-grow bg-white">
+                    <div class="p-3 sm:p-4 flex flex-col flex-grow">
             <div class="flex justify-between items-start mb-1 sm:mb-2 gap-2">
                 <h4 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">${item.name}</h4>
                 <span class="font-extrabold text-red-600 whitespace-nowrap text-sm sm:text-base shrink-0">
@@ -1273,7 +1276,7 @@
                 if (matchedItems.length > 0) {
                     matchedItems.forEach(relItem => {
                         relatedSlider.innerHTML += `
-                            <div class="relative w-[28vw] sm:w-[110px] flex-shrink-0 snap-start bg-white border border-gray-100 rounded-xl p-2 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                            <div class="relative w-[28vw] sm:w-[110px] flex-shrink-0 snap-start bg-orange-50 border border-orange-100 rounded-xl p-2 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
                                 <div onclick="openModal('${relItem.id}')">
                                     <img src="${relItem.img}" class="w-full h-16 object-cover rounded-lg mb-1.5">
                                     <h4 class="text-[10px] font-bold text-gray-800 line-clamp-1">${relItem.name}</h4>
