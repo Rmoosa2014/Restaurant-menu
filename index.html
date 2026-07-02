@@ -263,7 +263,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100">
+                <<div id="modal-action-footer" class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100 transition-all duration-300">
                     <div class="flex gap-3">
                         <button onclick="smartWhatsAppOrder()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
     <i class="fab fa-whatsapp text-lg"></i> <span id="label-wa">Order Now</span>
@@ -288,7 +288,7 @@
             </div>
         </div>
     </div>
-  <div id="screensaver-overlay" class="fixed inset-0 z-[100] bg-black hidden flex-col items-center justify-center transition-opacity duration-500 opacity-0">
+  <div id="screensaver-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden flex-col items-center justify-center transition-opacity duration-500 opacity-0">
         <button onclick="closeScreensaver()" class="absolute top-6 right-6 z-50 bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer">
             <i class="fas fa-times text-xl"></i>
         </button>
@@ -297,7 +297,7 @@
         </div>
     </div>
 <!-- Top Right Cart Button -->
-    <button id="cart-floating-btn" onclick="openCartModal()" class="hidden fixed top-3 end-4 sm:end-6 z-[60] bg-green-500 text-white w-10 h-10 rounded-full items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
+    <button id="cart-floating-btn" onclick="openCartModal()" class="hidden fixed top-3 end-4 sm:end-6 z-40 bg-green-500 text-white w-10 h-10 rounded-full items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
         <i class="fas fa-shopping-cart text-sm"></i>
         <span id="cart-count-badge" class="absolute -top-1.5 -end-1.5 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">0</span>
     </button>
@@ -1117,16 +1117,24 @@
                 if (matchedItems.length > 0) {
                     matchedItems.forEach(relItem => {
                         relatedSlider.innerHTML += `
-                            <div onclick="openModal('${relItem.id}')" class="w-28 flex-shrink-0 snap-start bg-white border border-gray-100 rounded-xl p-2 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                                <img src="${relItem.img}" class="w-full h-16 object-cover rounded-lg mb-2">
-                                <h4 class="text-[10px] font-bold text-gray-800 line-clamp-1">${relItem.name}</h4>
-                                <p class="text-[10px] text-orange-600 font-bold mt-1">${relItem.price} ${globalCurrency}</p>
+                            <div class="relative w-[28vw] sm:w-[110px] flex-shrink-0 snap-start bg-white border border-gray-100 rounded-xl p-2 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                                <div onclick="openModal('${relItem.id}')">
+                                    <img src="${relItem.img}" class="w-full h-16 object-cover rounded-lg mb-1.5">
+                                    <h4 class="text-[10px] font-bold text-gray-800 line-clamp-1">${relItem.name}</h4>
+                                </div>
+                                <div class="flex justify-between items-center mt-1">
+                                    <p class="text-[10px] text-orange-600 font-bold">${relItem.price} ${globalCurrency}</p>
+                                    <button onclick="event.stopPropagation(); toggleQuickCart('${relItem.id}')" class="quick-add-btn-${relItem.id} bg-orange-500 text-white w-5 h-5 rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-colors">
+                                        <i class="quick-add-icon-${relItem.id} fas fa-plus text-[8px] transition-transform duration-500"></i>
+                                    </button>
+                                </div>
                             </div>
                         `;
                     });
                     relatedArea.classList.remove('hidden');
                     relatedArea.classList.add('flex');
                     setupDraggable('related-slider');
+                    updateQuickAddButtons();
                 } else {
                     relatedArea.classList.add('hidden');
                     relatedArea.classList.remove('flex');
@@ -1152,6 +1160,24 @@
             content.classList.add('translate-y-0', 'md:scale-100', 'opacity-100');
 
             document.body.style.overflow = 'hidden';
+
+            // --- NEW: Sticky Footer Magic ---
+            const actionFooter = document.getElementById('modal-action-footer');
+            const scrollArea = actionFooter.parentElement;
+            
+            // 1. Force the footer to stick to the bottom
+            actionFooter.classList.add('sticky', 'bottom-0', 'bg-white', 'z-20', 'shadow-[0_-15px_20px_-15px_rgba(0,0,0,0.15)]', 'pb-4');
+            
+            // 2. Function to remove stickiness
+            function releaseSticky() {
+                actionFooter.classList.remove('sticky', 'bottom-0', 'bg-white', 'z-20', 'shadow-[0_-15px_20px_-15px_rgba(0,0,0,0.15)]', 'pb-4');
+                scrollArea.removeEventListener('scroll', releaseSticky);
+                scrollArea.removeEventListener('touchmove', releaseSticky);
+            }
+            
+            // 3. The exact moment they swipe or scroll, release it!
+            scrollArea.addEventListener('scroll', releaseSticky, {once: true});
+            scrollArea.addEventListener('touchmove', releaseSticky, {once: true});
         }
 
         function closeModal() {
@@ -1671,7 +1697,16 @@ function toggleQuickCart(id) {
         }
 
         function showScreensaver() {
-            if (allFlashCards.length === 0 || isScreensaverActive) return;
+            // Check if any windows are open before showing screensaver
+            const isProductModalOpen = !document.getElementById('productModal').classList.contains('hidden');
+            const isCartModalOpen = !document.getElementById('cartModal').classList.contains('hidden');
+            const isGameModalOpen = !document.getElementById('gameModal').classList.contains('hidden');
+            
+            if (allFlashCards.length === 0 || isScreensaverActive || isProductModalOpen || isCartModalOpen || isGameModalOpen) {
+                // If a modal is open, just silently restart the clock
+                if (isProductModalOpen || isCartModalOpen || isGameModalOpen) resetIdleTimer();
+                return;
+            }
             isScreensaverActive = true;
             
             const overlay = document.getElementById('screensaver-overlay');
@@ -1701,7 +1736,7 @@ function toggleQuickCart(id) {
         function resetIdleTimer() {
             clearTimeout(idleTimer);
             if (!isScreensaverActive) {
-                idleTimer = setTimeout(showScreensaver, 20000);
+                idleTimer = setTimeout(showScreensaver, 45000); // Changed to 35 Seconds
             }
         }
 
