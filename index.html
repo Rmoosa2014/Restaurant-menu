@@ -398,6 +398,24 @@
             </div>
         </div>
     </div>
+  <!-- NEW: Dedicated Category Page Overlay -->
+    <div id="category-page-overlay" class="fixed inset-0 z-[70] bg-[#f8fafc] hidden flex-col transform translate-x-full transition-transform duration-300">
+        
+        <!-- Sticky Header with Back Button -->
+        <div class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-gray-100 px-4 h-16 flex items-center gap-4 shrink-0">
+            <button onclick="closeCategoryPage()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition shadow-sm">
+                <i id="cat-page-back-icon" class="fas fa-arrow-left"></i>
+            </button>
+            <h2 id="category-page-title" class="text-xl font-bold text-gray-900 truncate">Category Name</h2>
+        </div>
+        
+        <!-- Scrollable Content Grid -->
+        <div class="flex-grow overflow-y-auto p-4 sm:p-6 pb-24" id="category-page-scroll-area">
+            <div id="category-page-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto">
+                <!-- Items injected here via JS -->
+            </div>
+        </div>
+    </div>
     <script>
         // --- Core State ---
         let rawBranding = {};
@@ -840,6 +858,8 @@
                     renderCategoryFilters(); 
                     renderSubCategoryFilters();
                     executeFilter(); 
+                    // NEW: Smooth scroll up so the user doesn't get stuck looking at the footer!
+                    window.scrollTo({ top: document.getElementById('filter-header-island').offsetTop - 10, behavior: 'smooth' });
                 };
                 
                 // Logic to push buttons into rows left-to-right (4 per row)
@@ -893,6 +913,8 @@
                     
                     renderSubCategoryFilters();
                     executeFilter();
+                    // NEW: Smooth scroll fix for sub-categories
+                    window.scrollTo({ top: document.getElementById('filter-header-island').offsetTop - 10, behavior: 'smooth' });
                 };
                 container.appendChild(btn);
             });
@@ -1092,10 +1114,24 @@
             section.id = 'section-' + safeId;
             
             const headerClasses = isHighlight
-                ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500 mb-4 inline-block"
-                : "text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4 inline-block";
+                ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500"
+                : "text-xl font-bold text-gray-800";
                 
-            section.innerHTML = `<h3 class="${headerClasses}">${title}</h3>`;
+            // NEW: Clickable Header that opens the Dedicated Page
+            const titleWrapper = document.createElement('div');
+            titleWrapper.className = "flex items-center justify-between border-b-2 border-red-100 pb-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity group";
+            titleWrapper.onclick = () => openCategoryPage(title, isHighlight);
+            
+            // Auto-flips the arrow depending on Arabic vs English
+            const arrowIcon = currentLang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right';
+            
+            titleWrapper.innerHTML = `
+                <h3 class="${headerClasses}">${title}</h3>
+                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-red-500 group-hover:bg-red-100 transition-colors shadow-sm">
+                    <i class="fas ${arrowIcon} text-sm"></i>
+                </div>
+            `;
+            section.appendChild(titleWrapper);
             
             const grid = document.createElement('div');
             
@@ -1864,7 +1900,118 @@ function toggleQuickCart(id) {
             closeCartModal(); // Automatically close the bill
         }
 
-        // --- NEW: SCREENSAVER LOGIC ---
+        // --- NEW: DEDICATED CATEGORY PAGE LOGIC ---
+        function openCategoryPage(title, isHighlight) {
+            // 1. Filter the exact items we need
+            let items = [];
+            if (isHighlight) {
+                items = activeMenuData.filter(i => i.isTodaySpecial);
+            } else {
+                items = activeMenuData.filter(i => i.subCat === title);
+            }
+            items.sort((a, b) => a.order - b.order);
+
+            // 2. Set Up the Page Header
+            document.getElementById('category-page-title').textContent = title;
+            document.getElementById('cat-page-back-icon').className = currentLang === 'ar' ? 'fas fa-arrow-right' : 'fas fa-arrow-left';
+            
+            const grid = document.getElementById('category-page-grid');
+            grid.innerHTML = '';
+
+            // 3. Render the Cards
+            items.forEach((item, index) => {
+                const delay = index * 30; 
+                const card = document.createElement('div');
+                
+                const bgClass = item.isTodaySpecial ? 'bg-amber-50/60 border-amber-200' : 'bg-white border-gray-100';
+                let cardClasses = `menu-card ${bgClass} rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group`;
+                
+                // Keep the orphan 2-column logic
+                if (index === items.length - 1 && items.length % 2 !== 0) cardClasses += ' col-span-2 md:col-span-1'; 
+                
+                card.className = cardClasses;
+                card.style.animation = `fadeInUp 0.4s ease forwards ${delay}ms`;
+                card.onclick = () => openModal(item.id);
+
+                const isLiked = likedItems.has(item.id);
+                const priceHtml = currentLang === 'en' 
+                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5 text-gray-500">${globalCurrency}</span><span class="text-base sm:text-lg">${item.price}</span>`
+                    : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
+
+                let badgeHtml = '';
+                if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm"><i class="fas fa-star text-[10px]"></i> Special</div>`;
+                else if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1"><i class="fas fa-play"></i> Video</div>`;
+
+                const imgTag = `<img src="${item.img}" alt="Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; this.parentElement.classList.remove('img-loading'); }" onload="this.parentElement.classList.remove('img-loading')">`;
+
+                card.innerHTML = `
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-10 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
+                    <div class="relative h-32 sm:h-40 overflow-hidden img-loading shrink-0">${imgTag}${badgeHtml}</div>
+                    <div class="p-3 sm:p-4 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-1 sm:mb-2 gap-2">
+                            <h4 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">${item.name}</h4>
+                            <span class="font-extrabold text-red-600 whitespace-nowrap text-sm sm:text-base shrink-0">${priceHtml}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 line-clamp-2 mt-1 mb-2 flex-grow">${item.desc}</p>
+                        <div class="flex justify-between items-end mt-1">
+                            ${item.calories ? `<div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-orange-500 bg-orange-50 w-fit px-2 py-1 rounded-md"><i class="fas fa-fire"></i> ${item.calories} Cal</div>` : '<div></div>'}
+                            <button onclick="event.stopPropagation(); toggleQuickCart('${item.id}')" class="quick-add-btn-${item.id} bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-colors duration-300">
+                                <i class="quick-add-icon-${item.id} fas fa-plus text-sm transition-transform duration-500"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // 4. Slide It In!
+            const page = document.getElementById('category-page-overlay');
+            page.classList.remove('hidden');
+            // Give browser a microsecond to render before animating
+            setTimeout(() => {
+                page.classList.remove('translate-x-full');
+            }, 10);
+            
+            // Lock background scrolling
+            document.body.style.overflow = 'hidden';
+            updateQuickAddButtons(); // Sync cart icons
+            document.getElementById('category-page-scroll-area').scrollTop = 0; // Scroll to top
+        }
+
+        function closeCategoryPage() {
+            const page = document.getElementById('category-page-overlay');
+            page.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+            
+            // Wait for animation to finish before hiding completely
+            setTimeout(() => {
+                page.classList.add('hidden');
+            }, 300);
+        }
+
+        // 5. Smart Swipe-to-Close Gestures
+        let catSwipeStartX = 0;
+        document.addEventListener('touchstart', e => {
+            if (e.touches.length === 1) catSwipeStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', e => {
+            const page = document.getElementById('category-page-overlay');
+            // Only trigger if the Category Page is currently open
+            if (page && !page.classList.contains('hidden')) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const isLTR = currentLang === 'en';
+                
+                // English (LTR): Swipe Right from the far left edge
+                if (isLTR && catSwipeStartX < 40 && touchEndX > catSwipeStartX + 60) {
+                    closeCategoryPage();
+                }
+                // Arabic (RTL): Swipe Left from the far right edge
+                else if (!isLTR && catSwipeStartX > window.innerWidth - 40 && touchEndX < catSwipeStartX - 60) {
+                    closeCategoryPage();
+                }
+            }
+        }, { passive: true });
         // --- NEW: SCREENSAVER LOGIC ---
         let idleTimer;
         let screensaverSlideTimer;
