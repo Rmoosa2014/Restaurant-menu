@@ -86,13 +86,13 @@
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sticky top-16 z-30 bg-[#f8fafc] py-4 shadow-sm transition-all">
-        <div class="relative max-w-xl mx-auto mb-4 bg-white border border-gray-200 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
-            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none px-4 z-10">
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-2 sticky top-16 z-30 bg-[#f8fafc] py-2 shadow-sm transition-all">
+        <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
+            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none px-3 z-10">
                 <i class="fas fa-search text-gray-400"></i>
             </div>
             
-            <div id="search-placeholder-wrapper" class="absolute inset-y-0 start-12 end-4 flex items-center pointer-events-none z-10 text-sm font-medium text-gray-400">
+            <div id="search-placeholder-wrapper" class="absolute inset-y-0 start-10 end-4 flex items-center pointer-events-none z-10 text-sm font-medium text-gray-400">
                 <span id="search-prefix" class="whitespace-nowrap"></span>
                 
                 <div class="h-5 overflow-hidden w-full relative ms-1">
@@ -103,11 +103,19 @@
                 </div>
             </div>
 
-            <input type="text" id="searchInput" class="block w-full ps-12 pe-4 py-3 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
+            <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
         </div>
 
-        <div class="flex overflow-x-auto hide-scrollbar gap-3 px-1 py-2 justify-start md:justify-center" id="category-filters">
-            </div>
+        <!-- NEW MAIN CATEGORY GRID (4x2 layout, narrow gap) -->
+        <!-- The style tag mathematically forces exactly 4 buttons per screen width! -->
+        <div class="grid grid-rows-2 grid-flow-col gap-1.5 overflow-x-auto hide-scrollbar px-1 py-1 snap-x" style="grid-auto-columns: calc(25% - 4.5px);" id="category-filters">
+            <!-- Main category buttons -->
+        </div>
+
+        <!-- NEW SUB CATEGORY ROW (Single row, hidden scrollbar) -->
+        <div class="flex overflow-x-auto hide-scrollbar gap-1.5 px-1 pt-2 mt-1 border-t border-gray-200" id="sub-category-filters">
+            <!-- Sub category buttons -->
+        </div>
     </section>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 min-h-[50vh]">
@@ -391,7 +399,10 @@
 
         let activeMenuData = []; 
         let mainCategories = []; 
-        let currentMainCategory = 'All';
+        let allSubCategories = []; // NEW: Stores subcategories 
+        
+        let selectedMainCategories = new Set(); // NEW: Multi-select logic
+        let selectedSubCategories = new Set();  // NEW: Multi-select logic
         let searchQuery = '';
         
         let likedItems = new Set(JSON.parse(localStorage.getItem('likedItems')) || []);
@@ -754,11 +765,13 @@
 
                 activeMenuData.push(item);
                 if(!mainCategories.includes(item.mainCat)) mainCategories.push(item.mainCat);
+                if(!allSubCategories.includes(item.subCat)) allSubCategories.push(item.subCat);
             });
 
             renderCategoryFilters();
+            renderSubCategoryFilters(); // Build the sub-category row
             executeFilter();
-          animateSearchPlaceholder();
+            animateSearchPlaceholder();
         }
 
         function getCategoryIcon(catName) {
@@ -783,26 +796,84 @@
             container.innerHTML = '';
             
             const t = staticText[currentLang];
-            const activeClass = 'bg-red-500 text-white border-red-500 shadow-md transform scale-105';
-            const inactiveClass = 'bg-white text-gray-700 border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-500';
+            const activeClass = 'bg-red-500 text-white border-red-500 shadow-sm z-10';
+            const inactiveClass = 'bg-white text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-500';
 
             const allBtn = document.createElement('button');
-            const isActiveAll = currentMainCategory === 'All';
-            allBtn.className = `category-btn shrink-0 flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActiveAll ? activeClass : inactiveClass}`;
-            allBtn.innerHTML = `<i class="fas fa-th-large ${isActiveAll ? 'text-white' : 'text-red-400'}"></i> ${t.all}`;
-            allBtn.onclick = () => { currentMainCategory = 'All'; renderCategoryFilters(); executeFilter(); };
+            const isActiveAll = selectedMainCategories.size === 0; // "All" is active if NOTHING is selected
+            
+            // Compact 4x2 button design (Icon above Text)
+            allBtn.className = `snap-start flex flex-col items-center justify-center gap-1 whitespace-nowrap p-1.5 rounded-xl border border-gray-200 font-bold text-[10px] leading-tight transition-colors ${isActiveAll ? activeClass : inactiveClass}`;
+            allBtn.innerHTML = `<i class="fas fa-th-large text-sm ${isActiveAll ? 'text-white' : 'text-red-400'}"></i> <span>${t.all}</span>`;
+            allBtn.onclick = () => { 
+                selectedMainCategories.clear(); 
+                selectedSubCategories.clear(); // Clear all filters
+                renderCategoryFilters(); 
+                renderSubCategoryFilters();
+                executeFilter(); 
+            };
             container.appendChild(allBtn);
 
             mainCategories.forEach(cat => {
                 const icon = getCategoryIcon(cat);
                 const btn = document.createElement('button');
-                const isActive = currentMainCategory === cat;
+                const isActive = selectedMainCategories.has(cat);
                 
-                btn.className = `category-btn shrink-0 flex items-center gap-2 whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 font-bold text-sm transition-all duration-300 ${isActive ? activeClass : inactiveClass}`;
-                btn.innerHTML = `<i class="fas ${icon} ${isActive ? 'text-white' : 'text-red-400'}"></i> ${cat}`;
-                btn.onclick = () => { currentMainCategory = cat; renderCategoryFilters(); executeFilter(); };
+                btn.className = `snap-start flex flex-col items-center justify-center gap-1 whitespace-nowrap p-1.5 rounded-xl border font-bold text-[10px] leading-tight transition-colors ${isActive ? activeClass : inactiveClass}`;
+                btn.innerHTML = `<i class="fas ${icon} text-sm ${isActive ? 'text-white' : 'text-red-400'}"></i> <span class="truncate w-full text-center">${cat}</span>`;
+                btn.onclick = () => { 
+                    // Multi-Select Toggle Logic
+                    if (selectedMainCategories.has(cat)) selectedMainCategories.delete(cat);
+                    else selectedMainCategories.add(cat);
+                    
+                    renderCategoryFilters(); 
+                    renderSubCategoryFilters(); // Dynamically update sub-filters
+                    executeFilter(); 
+                };
                 container.appendChild(btn);
             });
+            setupDraggable('category-filters');
+        }
+
+        function renderSubCategoryFilters() {
+            const container = document.getElementById('sub-category-filters');
+            container.innerHTML = '';
+            
+            const activeClass = 'bg-gray-800 text-white border-gray-800 shadow-sm';
+            const inactiveClass = 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100';
+
+            // Smart Sub-Categories: Only show sub-categories that belong to the active Main Categories
+            let relevantSubCats = new Set();
+            if (selectedMainCategories.size === 0) {
+                allSubCategories.forEach(sub => relevantSubCats.add(sub));
+            } else {
+                activeMenuData.forEach(item => {
+                    if (selectedMainCategories.has(item.mainCat)) relevantSubCats.add(item.subCat);
+                });
+            }
+
+            // Remove ghost sub-categories if user deselected their parent
+            selectedSubCategories.forEach(sub => {
+                if (!relevantSubCats.has(sub)) selectedSubCategories.delete(sub);
+            });
+
+            Array.from(relevantSubCats).sort().forEach(subCat => {
+                const btn = document.createElement('button');
+                const isActive = selectedSubCategories.has(subCat);
+                
+                // Pill-shaped small buttons
+                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold transition-colors ${isActive ? activeClass : inactiveClass}`;
+                btn.textContent = subCat;
+                btn.onclick = () => {
+                    if (selectedSubCategories.has(subCat)) selectedSubCategories.delete(subCat);
+                    else selectedSubCategories.add(subCat);
+                    
+                    renderSubCategoryFilters();
+                    executeFilter();
+                };
+                container.appendChild(btn);
+            });
+            setupDraggable('sub-category-filters');
         }
 
         function setupSearch() {
@@ -828,8 +899,14 @@
 
             let filteredData = activeMenuData;
             
-            if (currentMainCategory !== 'All') {
-                filteredData = filteredData.filter(i => i.mainCat === currentMainCategory);
+            // 1. Filter by Multiple Main Categories
+            if (selectedMainCategories.size > 0) {
+                filteredData = filteredData.filter(i => selectedMainCategories.has(i.mainCat));
+            }
+
+            // 2. Filter by Multiple Sub Categories
+            if (selectedSubCategories.size > 0) {
+                filteredData = filteredData.filter(i => selectedSubCategories.has(i.subCat));
             }
 
             if (searchQuery) {
@@ -845,7 +922,7 @@
                 });
             }
 
-            if (currentMainCategory === 'All' && !searchQuery) {
+            if (selectedMainCategories.size === 0 && selectedSubCategories.size === 0 && !searchQuery) {
                 const specials = activeMenuData.filter(i => i.isTodaySpecial);
                 if (specials.length > 0) {
                     hasItems = true;
@@ -1736,7 +1813,7 @@ function toggleQuickCart(id) {
         function resetIdleTimer() {
             clearTimeout(idleTimer);
             if (!isScreensaverActive) {
-                idleTimer = setTimeout(showScreensaver, 45000); // Changed to 35 Seconds
+                idleTimer = setTimeout(showScreensaver, 35000); // Changed to 35 Seconds
             }
         }
 
