@@ -221,7 +221,7 @@
         </div>
     </footer>
 
-    <div id="productModal" class="fixed inset-0 z-[60] hidden items-end md:items-center justify-center p-0 md:p-6">
+    <div id="productModal" class="fixed inset-0 z-[80] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
         
         <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
@@ -230,9 +230,13 @@
                 <i class="fas fa-times"></i>
             </button>
 
-            <div class="relative h-56 md:h-64 w-full shrink-0 bg-gray-100">
-                <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
-                <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm"></div>
+            <div class="relative h-56 md:h-64 w-full shrink-0 bg-gray-100 group">
+                <!-- NEW: Image Slider -->
+                <div id="modal-image-slider" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="scroll-behavior: smooth;"></div>
+                <!-- NEW: Pagination Dots -->
+                <div id="modal-image-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none"></div>
+
+                <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm z-20"></div>
                 
                 <div id="modalTodaySpecialBadge" class="hidden absolute top-3 start-3 md:end-12 md:start-auto bg-gradient-to-r from-orange-400 to-red-500 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-white shadow-lg flex items-center gap-1 z-20">
                     <i class="fas fa-star text-yellow-200"></i> <span id="label-modal-special">Today's Special</span>
@@ -266,9 +270,14 @@
                     </div>
                 </div>
 
-                <div id="modalRecipeArea" class="hidden mb-4 bg-yellow-50 border border-yellow-100 rounded-xl p-4">
+                <!-- NEW: Expandable Recipe Area -->
+                <div id="modalRecipeArea" class="hidden mb-4 bg-yellow-50 border border-yellow-100 rounded-xl p-4 cursor-pointer relative transition-all" onclick="toggleRecipe()">
                     <h4 class="font-bold text-yellow-800 text-sm mb-1 flex items-center gap-2"><i class="fas fa-book-open"></i> <span id="label-recipe">Recipe / Ingredients</span></h4>
-                    <p id="modalRecipe" class="text-sm text-yellow-700 leading-relaxed"></p>
+                    <div class="relative overflow-hidden">
+                        <p id="modalRecipe" class="text-sm text-yellow-700 leading-relaxed line-clamp-2 transition-all duration-300"></p>
+                        <div id="recipeFade" class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-yellow-50 to-transparent pointer-events-none"></div>
+                    </div>
+                    <div id="recipeToggleText" class="text-center text-[10px] font-bold text-yellow-600 mt-1 hidden"><i class="fas fa-chevron-down"></i> Read More</div>
                 </div>
 
                 <div id="modalReviewArea" class="hidden mb-2 flex-col gap-2">
@@ -310,10 +319,12 @@
         </div>
     </div>
   <div id="screensaver-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden flex-col items-center justify-center transition-opacity duration-500 opacity-0">
-        <button onclick="closeScreensaver()" class="absolute top-6 right-6 z-50 bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer">
+        <!-- FIX: Changed right-6 to end-6 and boosted z-index so it never hides -->
+        <button onclick="closeScreensaver()" class="absolute top-6 end-6 z-[110] bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer">
             <i class="fas fa-times text-xl"></i>
         </button>
-        <div id="screensaver-slider" class="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory px-[5%] hide-scrollbar py-10" style="scroll-behavior: smooth;">
+        <!-- FIX: Removed py-10 and added items-center for perfect mathematical centering -->
+        <div id="screensaver-slider" class="w-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory px-[5%] hide-scrollbar" style="scroll-behavior: smooth;">
             <!-- Flash cards injected here via JS -->
         </div>
     </div>
@@ -787,7 +798,8 @@
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
                     
                     // NEW: Auto-fetch from GitHub folders if Column K is blank!
-                    img: row.K || `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`,
+                    imgUrls: row.K ? String(row.K).split(',').map(u => u.trim()).filter(u => u !== "") : [`https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`],
+                    img: row.K ? String(row.K).split(',')[0].trim() : `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`,
                     
                     video: row.L || "",
                     reviewLinks: row.M || "",
@@ -858,8 +870,9 @@
                     renderCategoryFilters(); 
                     renderSubCategoryFilters();
                     executeFilter(); 
-                    // NEW: Smooth scroll up so the user doesn't get stuck looking at the footer!
-                    window.scrollTo({ top: document.getElementById('filter-header-island').offsetTop - 10, behavior: 'smooth' });
+                    // FIX: Scroll perfectly to the top of the menu items (avoiding sticky header overlap)
+                    const menuTop = document.getElementById('menu-container').getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({ top: menuTop - 190, behavior: 'smooth' });
                 };
                 
                 // Logic to push buttons into rows left-to-right (4 per row)
@@ -913,8 +926,9 @@
                     
                     renderSubCategoryFilters();
                     executeFilter();
-                    // NEW: Smooth scroll fix for sub-categories
-                    window.scrollTo({ top: document.getElementById('filter-header-island').offsetTop - 10, behavior: 'smooth' });
+                    // FIX: Scroll perfectly to the top of the menu items (avoiding sticky header overlap)
+                    const menuTop = document.getElementById('menu-container').getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({ top: menuTop - 190, behavior: 'smooth' });
                 };
                 container.appendChild(btn);
             });
@@ -1175,19 +1189,26 @@
                     : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
 
                 let badgeHtml = '';
-                // NEW LOGIC: Always show the Special badge if the item is a special, regardless of where it is on the screen!
-                if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm"><i class="fas fa-star text-[10px]"></i> Special</div>`;
-                else if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1"><i class="fas fa-play"></i> Video</div>`;
+                if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[10px]"></i> Special</div>`;
+                else if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1 z-10"><i class="fas fa-play"></i> Video</div>`;
+
+                // --- NEW: Multi-Image Builder for Mini Cards ---
+                const urls = item.imgUrls || [item.img];
+                let imagesHtml = '';
+                urls.forEach(url => {
+                    imagesHtml += `<img src="${url}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; }">`;
+                });
+                // ---------------------------------------------
 
                 card.innerHTML = `
-                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-10 text-sm">
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm">
                         <i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i>
                     </button>
-                    <div class="relative h-32 sm:h-40 overflow-hidden img-loading shrink-0">
-                        <!-- NEW: Smart Fallback. Tries .jpg -> then .png -> then .jpeg -> then Placeholder -->
-                        <img src="${item.img}" alt="Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                             onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; this.parentElement.classList.remove('img-loading'); }" 
-                             onload="this.parentElement.classList.remove('img-loading')">
+                    <div class="relative h-32 sm:h-40 overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
+                        <!-- Mini Slider Container -->
+                        <div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
+                            ${imagesHtml}
+                        </div>
                         ${badgeHtml}
                     </div>
                     <div class="p-3 sm:p-4 flex flex-col flex-grow">
@@ -1226,7 +1247,38 @@
 
             const t = staticText[currentLang];
 
-            document.getElementById('modalImg').src = item.img;
+            // --- NEW: Image Carousel Logic ---
+            const slider = document.getElementById('modal-image-slider');
+            const dots = document.getElementById('modal-image-dots');
+            slider.innerHTML = '';
+            dots.innerHTML = '';
+
+            const urls = item.imgUrls || [item.img];
+            urls.forEach((url, i) => {
+                const imgHtml = `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-center" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; }">`;
+                slider.insertAdjacentHTML('beforeend', imgHtml);
+                if (urls.length > 1) {
+                    dots.insertAdjacentHTML('beforeend', `<div id="dot-${i}" class="w-2 h-2 rounded-full transition-all duration-300 ${i===0 ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}"></div>`);
+                }
+            });
+
+            clearInterval(window.modalCarouselTimer);
+            if (urls.length > 1) {
+                let currentIdx = 0;
+                slider.onscroll = () => {
+                    currentIdx = Math.round(slider.scrollLeft / slider.clientWidth);
+                    for(let k=0; k<urls.length; k++){
+                        const dot = document.getElementById(`dot-${k}`);
+                        if(dot) dot.className = `w-2 h-2 rounded-full transition-all duration-300 ${k===currentIdx ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}`;
+                    }
+                };
+                window.modalCarouselTimer = setInterval(() => {
+                    currentIdx = (currentIdx + 1) % urls.length;
+                    slider.scrollTo({ left: currentIdx * slider.clientWidth, behavior: 'smooth' });
+                }, 3000);
+            }
+            // ---------------------------------
+
             document.getElementById('modalCategoryBadge').textContent = item.subCat;
             document.getElementById('modalTitle').textContent = item.name;
             document.getElementById('modalDesc').textContent = item.desc;
@@ -1267,6 +1319,20 @@
             if(item.recipe) {
                 document.getElementById('modalRecipe').textContent = item.recipe;
                 recipeArea.classList.remove('hidden');
+                
+                window.toggleRecipe(true); // Reset to collapsed state
+                
+                // Smart check if text needs clamping
+                setTimeout(() => {
+                    const p = document.getElementById('modalRecipe');
+                    if (p.scrollHeight <= p.clientHeight + 5) {
+                        document.getElementById('recipeFade').classList.add('hidden');
+                        document.getElementById('recipeToggleText').classList.add('hidden');
+                        p.classList.remove('line-clamp-2');
+                    } else {
+                        document.getElementById('recipeToggleText').classList.remove('hidden');
+                    }
+                }, 50);
             } else {
                 recipeArea.classList.add('hidden');
             }
@@ -1939,14 +2005,23 @@ function toggleQuickCart(id) {
                     : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
 
                 let badgeHtml = '';
-                if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm"><i class="fas fa-star text-[10px]"></i> Special</div>`;
-                else if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1"><i class="fas fa-play"></i> Video</div>`;
+                if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[10px]"></i> Special</div>`;
+                else if(item.video) badgeHtml = `<div class="absolute top-2 end-2 bg-black/70 backdrop-blur px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm flex items-center gap-1 z-10"><i class="fas fa-play"></i> Video</div>`;
 
-                const imgTag = `<img src="${item.img}" alt="Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; this.parentElement.classList.remove('img-loading'); }" onload="this.parentElement.classList.remove('img-loading')">`;
+                const urls = item.imgUrls || [item.img];
+                let imagesHtml = '';
+                urls.forEach(url => {
+                    imagesHtml += `<img src="${url}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; }">`;
+                });
 
                 card.innerHTML = `
-                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-10 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
-                    <div class="relative h-32 sm:h-40 overflow-hidden img-loading shrink-0">${imgTag}${badgeHtml}</div>
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
+                    <div class="relative h-32 sm:h-40 overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
+                        <div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
+                            ${imagesHtml}
+                        </div>
+                        ${badgeHtml}
+                    </div>
                     <div class="p-3 sm:p-4 flex flex-col flex-grow">
                         <div class="flex justify-between items-start mb-1 sm:mb-2 gap-2">
                             <h4 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">${item.name}</h4>
@@ -2012,6 +2087,32 @@ function toggleQuickCart(id) {
                 }
             }
         }, { passive: true });
+      // --- NEW: Recipe Expand Logic ---
+        window.toggleRecipe = function(forceCollapse = false) {
+            const p = document.getElementById('modalRecipe');
+            const fade = document.getElementById('recipeFade');
+            const toggleText = document.getElementById('recipeToggleText');
+            
+            if (!toggleText.classList.contains('hidden') || forceCollapse) {
+                if (forceCollapse || !p.classList.contains('line-clamp-2')) {
+                    p.classList.add('line-clamp-2');
+                    fade.classList.remove('hidden');
+                    toggleText.innerHTML = '<i class="fas fa-chevron-down"></i> Read More';
+                } else {
+                    p.classList.remove('line-clamp-2');
+                    fade.classList.add('hidden');
+                    toggleText.innerHTML = '<i class="fas fa-chevron-up"></i> Show Less';
+                }
+            }
+        };
+
+        // Collapse recipe if user clicks anywhere else on the screen!
+        document.addEventListener('click', (e) => {
+            const recipeArea = document.getElementById('modalRecipeArea');
+            if (recipeArea && !recipeArea.contains(e.target) && !recipeArea.classList.contains('hidden')) {
+                window.toggleRecipe(true);
+            }
+        });
         // --- NEW: SCREENSAVER LOGIC ---
         let idleTimer;
         let screensaverSlideTimer;
@@ -2077,8 +2178,9 @@ function toggleQuickCart(id) {
             const shuffledCards = validFlashCards.sort(() => 0.5 - Math.random());
 
             shuffledCards.forEach((url) => {
+                // FIX: Changed h-[70vh] to h-[60vh] for mobile, leaving it large on desktop (md:h-[70vh])
                 const cardHtml = `
-                    <div class="w-[90vw] sm:w-[80vw] h-[70vh] flex-shrink-0 snap-center rounded-3xl overflow-hidden shadow-2xl relative">
+                    <div class="w-[90vw] sm:w-[80vw] h-[70vh] md:h-[70vh] flex-shrink-0 snap-center rounded-3xl overflow-hidden shadow-2xl relative">
                         <img src="${url}" class="w-full h-full object-cover" alt="Promo">
                     </div>
                 `;
@@ -2092,8 +2194,7 @@ function toggleQuickCart(id) {
             const isCartModalOpen = !document.getElementById('cartModal').classList.contains('hidden');
             const isGameModalOpen = !document.getElementById('gameModal').classList.contains('hidden');
             
-            // CHANGED: Check validFlashCards instead of allFlashCards
-            // If 0 images found (No URLs and no GitHub images), DO NOT open the screensaver!
+            // Safety Check: If no images exist, or a window is open, DO NOT start the screensaver!
             if (validFlashCards.length === 0 || isScreensaverActive || isProductModalOpen || isCartModalOpen || isGameModalOpen) {
                 if (isProductModalOpen || isCartModalOpen || isGameModalOpen) resetIdleTimer();
                 return; 
@@ -2103,6 +2204,7 @@ function toggleQuickCart(id) {
             
             const overlay = document.getElementById('screensaver-overlay');
             overlay.classList.remove('hidden');
+            overlay.classList.add('flex'); // FIX: Forces the browser to mathematically center the card!
             setTimeout(() => overlay.classList.remove('opacity-0'), 50);
 
             const slider = document.getElementById('screensaver-slider');
@@ -2121,13 +2223,18 @@ function toggleQuickCart(id) {
             
             const overlay = document.getElementById('screensaver-overlay');
             overlay.classList.add('opacity-0');
-            setTimeout(() => overlay.classList.add('hidden'), 500);
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex'); // FIX: Cleans up the layout when closed
+            }, 500);
             resetIdleTimer();
         }
 
         function resetIdleTimer() {
             clearTimeout(idleTimer);
             if (!isScreensaverActive) {
+                // TEST MODE: Changed from 35000 (35s) to 5000 (5s). 
+                // Don't forget to change this back to 35000 when you are done testing!
                 idleTimer = setTimeout(showScreensaver, 35000); 
             }
         }
@@ -2137,6 +2244,28 @@ function toggleQuickCart(id) {
         });
         resetIdleTimer();
         // ------------------------------
+      // --- NEW: Global Auto-Swipe for Mini Cards ---
+        setInterval(() => {
+            // Find all mini sliders currently on the screen
+            const sliders = document.querySelectorAll('.mini-img-slider');
+            
+            sliders.forEach(slider => {
+                const imgCount = parseInt(slider.getAttribute('data-img-count') || "1");
+                
+                // Only animate if there is more than 1 image!
+                if (imgCount > 1) {
+                    // Calculate which image we are currently looking at
+                    let currentIdx = Math.round(slider.scrollLeft / slider.clientWidth);
+                    
+                    // Move to the next image (or loop back to the start)
+                    let nextIdx = (currentIdx + 1) % imgCount;
+                    
+                    // Smooth swipe!
+                    slider.scrollTo({ left: nextIdx * slider.clientWidth, behavior: 'smooth' });
+                }
+            });
+        }, 4000); // 4000ms = 4 Seconds delay
+        // ---------------------------------------------
 
         window.onload = init;
         setupSearch();
