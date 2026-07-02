@@ -86,15 +86,16 @@
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-2 sticky top-16 z-30 bg-[#f8fafc] py-2 shadow-sm transition-all">
+    <!-- NEW: Master Sticky Filter Island -->
+    <section id="filter-header-island" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-4 sticky top-[64px] z-40 bg-[#f8fafc] py-2 transition-all duration-300 shadow-[0_8px_15px_-3px_rgba(0,0,0,0.05)] rounded-b-2xl border-b border-gray-100">
+        
+        <!-- Search Box -->
         <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
             <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none px-3 z-10">
                 <i class="fas fa-search text-gray-400"></i>
             </div>
-            
             <div id="search-placeholder-wrapper" class="absolute inset-y-0 start-10 end-4 flex items-center pointer-events-none z-10 text-sm font-medium text-gray-400">
                 <span id="search-prefix" class="whitespace-nowrap"></span>
-                
                 <div class="h-5 overflow-hidden w-full relative ms-1">
                     <div id="animated-placeholder-container" class="flex flex-col transition-transform duration-500 ease-in-out absolute w-full top-0 start-0">
                         <span class="truncate h-5 leading-5 block" id="search-text-1"></span>
@@ -102,21 +103,27 @@
                     </div>
                 </div>
             </div>
-
             <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
         </div>
 
-        <!-- NEW MAIN CATEGORY GRID (Two Rows for perfect left-to-right flow) -->
-        <div id="main-category-wrapper" class="overflow-x-auto hide-scrollbar px-1 py-1 snap-x w-full">
-            <div class="flex flex-col gap-1.5 min-w-full w-max">
-                <div id="category-row-1" class="flex gap-1.5"></div>
-                <div id="category-row-2" class="flex gap-1.5"></div>
+        <!-- Hidden Expandable Main Categories -->
+        <div id="main-category-container" class="max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out">
+            <div id="main-category-wrapper" class="overflow-x-auto hide-scrollbar px-1 py-1.5 snap-x w-full">
+                <div class="flex flex-col gap-1.5 min-w-full w-max">
+                    <div id="category-row-1" class="flex gap-1.5"></div>
+                    <div id="category-row-2" class="flex gap-1.5"></div>
+                </div>
             </div>
         </div>
 
-        <!-- NEW SUB CATEGORY ROW (Single row, hidden scrollbar) -->
-        <div class="flex overflow-x-auto hide-scrollbar gap-1.5 px-1 pt-2 mt-1 border-t border-gray-200" id="sub-category-filters">
+        <!-- Sub Categories -->
+        <div class="flex overflow-x-auto hide-scrollbar gap-1.5 px-1 pt-1 mb-1" id="sub-category-filters">
             <!-- Sub category buttons -->
+        </div>
+
+        <!-- Swipe Indicator Pill (Clickable for desktop users) -->
+        <div onclick="toggleMainCategories()" class="w-full flex justify-center pt-2 pb-0.5 cursor-pointer group">
+            <div id="swipe-pill" class="w-12 h-1.5 bg-gray-300 rounded-full group-hover:bg-red-400 transition-colors"></div>
         </div>
     </section>
 
@@ -887,17 +894,58 @@
         function setupSearch() {
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 const placeholderWrapper = document.getElementById('search-placeholder-wrapper');
-                // Hide animation if they are typing
                 if(e.target.value.length > 0) {
                     placeholderWrapper.classList.add('opacity-0');
                 } else {
                     placeholderWrapper.classList.remove('opacity-0');
                 }
-                
                 searchQuery = e.target.value.toLowerCase().trim();
                 executeFilter();
             });
         }
+
+        // --- NEW: SWIPE EXPAND LOGIC FOR CATEGORIES ---
+        let isMainCatOpen = false;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        function toggleMainCategories(forceState) {
+            const container = document.getElementById('main-category-container');
+            const pill = document.getElementById('swipe-pill');
+            
+            if (forceState !== undefined) {
+                isMainCatOpen = forceState;
+            } else {
+                isMainCatOpen = !isMainCatOpen;
+            }
+
+            if (isMainCatOpen) {
+                container.classList.remove('max-h-0', 'opacity-0');
+                container.classList.add('max-h-[300px]', 'opacity-100');
+                pill.classList.replace('bg-gray-300', 'bg-red-400');
+            } else {
+                container.classList.add('max-h-0', 'opacity-0');
+                container.classList.remove('max-h-[300px]', 'opacity-100');
+                pill.classList.replace('bg-red-400', 'bg-gray-300');
+            }
+        }
+
+        // Add touch listeners to the entire sticky island
+        const island = document.getElementById('filter-header-island');
+        
+        island.addEventListener('touchstart', e => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        island.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].screenY;
+            // 30 pixels of drag required to trigger
+            if (touchEndY > touchStartY + 30) {
+                toggleMainCategories(true); // Swipe Down = Open
+            } else if (touchEndY < touchStartY - 30) {
+                toggleMainCategories(false); // Swipe Up = Close
+            }
+        }, {passive: true});
 
         function executeFilter() {
             const container = document.getElementById('menu-container');
@@ -1007,12 +1055,17 @@
                 const delay = index * 30; 
                 const card = document.createElement('div');
                 
-                // --- NEW: Card Size Logic ---
+                // --- NEW: Card Size & Orphan Logic ---
                 let cardClasses = 'menu-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group';
                 
                 if (isHighlight) {
-                    // Changed from 45vw to 40vw to leave room for the 3rd card to peek!
                     cardClasses += ' w-[40vw] sm:w-[220px] snap-start shrink-0';
+                } else {
+                    // Check if this is the standard grid, if it is the VERY LAST item, AND if there is an ODD number of items
+                    if (index === items.length - 1 && items.length % 2 !== 0) {
+                        // Make it span 2 columns on mobile, but keep it at 1 column on desktop (md:)
+                        cardClasses += ' col-span-2 md:col-span-1'; 
+                    }
                 }
                 card.className = cardClasses;
                 // -----------------------------
