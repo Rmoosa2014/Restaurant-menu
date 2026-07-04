@@ -329,6 +329,12 @@
             <!-- Flash cards injected here via JS -->
         </div>
     </div>
+  <!-- NEW: Back to Top Floating Button -->
+    <button id="back-to-top-btn" onclick="scrollToTop()" class="hidden fixed bottom-6 end-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg hover:bg-red-500 hover:scale-110 transition-all duration-300">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Top Right Cart Button -->
 <!-- Top Right Cart Button -->
     <button id="cart-floating-btn" onclick="openCartModal()" class="hidden fixed top-3 end-4 sm:end-6 z-40 bg-green-500 text-white w-10 h-10 rounded-full items-center justify-center shadow-md hover:scale-105 transition-transform duration-300">
         <i class="fas fa-shopping-cart text-sm"></i>
@@ -435,7 +441,7 @@
         let rawMenuEn = [];
         let rawMenuAr = [];
         
-        let currentLang = 'ar'; 
+        let currentLang = 'en'; 
         let langSetup = 'English&Arabic'; 
         
         let globalCurrency = ""; 
@@ -561,7 +567,8 @@
                 langSetup = 'Arabic'; currentLang = 'ar';
                 toggleBtn.classList.add('hidden'); toggleBtn.classList.remove('flex');
             } else {
-                langSetup = 'Both'; currentLang = 'ar'; 
+                // FIX: When "Both" is selected in Excel, start the app in English!
+                langSetup = 'Both'; currentLang = 'en'; 
                 toggleBtn.classList.remove('hidden'); toggleBtn.classList.add('flex');
             }
           const gameTrigger = String(rawBranding.P || "").trim().toLowerCase();
@@ -1097,9 +1104,25 @@
             }
             // -----------------------------------------
 
+            // --- NEW: Back to Top Button Logic ---
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+            if (backToTopBtn) {
+                if (currentScrollY > 400) {
+                    backToTopBtn.classList.remove('hidden');
+                    backToTopBtn.classList.add('flex');
+                } else {
+                    backToTopBtn.classList.add('hidden');
+                    backToTopBtn.classList.remove('flex');
+                }
+            }
+
         }, {passive: true});
 
-        function executeFilter() {
+      // --- NEW: Scroll to Top Action ---
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }  
+      function executeFilter() {
             const container = document.getElementById('menu-container');
             const emptyState = document.getElementById('empty-state');
             container.innerHTML = '';
@@ -1315,7 +1338,7 @@
                     <!-- FIX: Removed fixed heights (h-32) and added aspect-[4/3] for perfect scaling -->
                     <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
                         <!-- FIX: Added mini-slider-${item.id} here as well -->
-                        <div class="mini-img-slider mini-slider-${item.id} flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
+                        <div class="mini-img-slider mini-slider-${item.id} flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
                             ${imagesHtml}
                         </div>
                         ${badgeHtml}
@@ -2128,7 +2151,7 @@ function toggleQuickCart(id) {
                     <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
                     <!-- FIX: Removed fixed heights (h-32) and added aspect-[4/3] for perfect scaling -->
                     <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
-                        <div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
+                        <div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
                             ${imagesHtml}
                         </div>
                         ${badgeHtml}
