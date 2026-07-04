@@ -86,8 +86,9 @@
         </div>
     </header>
 
-    <!-- NEW: Master Sticky Filter Island -->
-    <section id="filter-header-island" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-4 sticky top-[64px] z-40 bg-[#f8fafc] py-2 transition-all duration-300 shadow-[0_8px_15px_-3px_rgba(0,0,0,0.05)] rounded-b-2xl border-b border-gray-100">
+      
+    <!-- FIX: Changed mb-4 to mb-2 to pull the food menu cards closer to the header -->
+    <section id="filter-header-island" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-2 sticky top-[64px] z-40 bg-[#f8fafc] py-2 transition-all duration-300 shadow-[0_8px_15px_-3px_rgba(0,0,0,0.05)] rounded-b-2xl border-b border-gray-100">
         
         <!-- Search Box -->
         <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
@@ -117,13 +118,13 @@
         </div>
 
         <!-- Sub Categories -->
-        <div class="flex overflow-x-auto hide-scrollbar gap-1.5 px-1 pt-1 mb-1" id="sub-category-filters">
+        <div class="flex overflow-x-auto hide-scrollbar gap-0.5 px-1 pt-1 mb-0.5" id="sub-category-filters">
             <!-- Sub category buttons -->
         </div>
 
-        <!-- Swipe Indicator Pill (Clickable for desktop users) -->
-        <div onclick="toggleMainCategories()" class="w-full flex justify-center pt-2 pb-0.5 cursor-pointer group">
-            <div id="swipe-pill" class="w-12 h-1.5 bg-red-400 rounded-full group-hover:bg-gray-300 transition-colors"></div>
+        <!-- Toggle Arrow (Minimalist) -->
+        <div onclick="toggleMainCategories()" class="w-full flex justify-center pb-1 cursor-pointer group">
+            <i id="category-toggle-icon" class="fas fa-chevron-up text-gray-400 hover:text-red-500 text-[11px] transition-colors duration-300 px-6 py-1"></i>
         </div>
     </section>
 
@@ -588,9 +589,14 @@
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.documentElement.lang = currentLang;
 
+            // 1. Update the top navigation bar and bottom footer
             document.getElementById('nav-title').textContent = rawBranding.B || "My Restaurant";
-            document.getElementById('hero-title1').textContent = rawBranding.B || "Welcome";
             document.getElementById('footer-title').textContent = rawBranding.B || "My Restaurant";
+            
+            // 2. FIX: Properly split the Hero Header so it says "Welcome to / [Brand Name]"
+            const welcomeText = currentLang === 'en' ? "Welcome to" : "مرحباً بكم في";
+            document.getElementById('hero-title1').textContent = welcomeText;
+            document.getElementById('hero-title2').textContent = rawBranding.B || (currentLang === 'en' ? "Our Restaurant" : "مطعمنا");
             
             document.getElementById('f-phone').textContent = rawBranding.C || "--";
             document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
@@ -798,10 +804,24 @@
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
                     
                     // FIX: Always include the default GitHub Item ID image in the carousel!
+                    // FIX: Smart GitHub File Names! (No more long URLs in Excel)
                     imgUrls: (() => {
-                        let urls = row.K ? String(row.K).split(',').map(u => u.trim()).filter(u => u !== "") : [];
+                        let urls = row.K ? String(row.K).split(',').map(u => {
+                            let clean = u.trim();
+                            if (!clean) return null;
+                            // If it's a short file name like "ITM005-2.jpg", auto-build the long GitHub URL!
+                            if (!clean.startsWith('http')) {
+                                return `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${clean}`;
+                            } 
+                            return clean; // If it's already a full link, leave it alone
+                        }).filter(u => u !== null) : [];
+                        
+                        // Grab the default main image
                         let defaultGitUrl = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`;
-                        if (!urls.includes(defaultGitUrl)) urls.push(defaultGitUrl); // Appends the GitHub folder image to the end of the slider!
+                        
+                        // Put the main image at the FRONT of the slider so it always shows first!
+                        if (!urls.includes(defaultGitUrl)) urls.unshift(defaultGitUrl); 
+                        
                         return urls;
                     })(),
                     img: row.K ? String(row.K).split(',')[0].trim() : `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`,
@@ -959,9 +979,12 @@
         let touchEndY = 0;
         let lastScrollY = window.scrollY; // NEW: Tracks page scrolling
 
+        let menuOpenScrollY = 0; 
+        let ignoreScrollUntil = 0; // NEW: Blocks accidental closing during layout shifts
+
         function toggleMainCategories(forceState) {
             const container = document.getElementById('main-category-container');
-            const pill = document.getElementById('swipe-pill');
+            const icon = document.getElementById('category-toggle-icon');
             
             if (forceState !== undefined) {
                 isMainCatOpen = forceState;
@@ -970,13 +993,23 @@
             }
 
             if (isMainCatOpen) {
+                // Ignore all fake browser scrolls for 800ms while the menu animates open!
+                ignoreScrollUntil = Date.now() + 800; 
+                menuOpenScrollY = window.scrollY; 
+                
                 container.classList.remove('max-h-0', 'opacity-0');
                 container.classList.add('max-h-[300px]', 'opacity-100');
-                pill.classList.replace('bg-gray-300', 'bg-red-400');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down', 'text-gray-500');
+                    icon.classList.add('fa-chevron-up', 'text-red-400');
+                }
             } else {
                 container.classList.add('max-h-0', 'opacity-0');
                 container.classList.remove('max-h-[300px]', 'opacity-100');
-                pill.classList.replace('bg-red-400', 'bg-gray-300');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-up', 'text-red-400');
+                    icon.classList.add('fa-chevron-down', 'text-gray-500');
+                }
             }
         }
 
@@ -996,21 +1029,45 @@
             }
         }, {passive: true});
 
-        // NEW: Hide categories when scrolling DOWN the main page!
+       let hasPassedHeader = false;
+        let autoCloseTimeout; 
+        
+        // FIX: Smart hide categories ONLY when passing the hero header
         window.addEventListener('scroll', () => {
             const currentScrollY = window.scrollY;
-            
-            // If user scrolls DOWN more than 10 pixels, and is past the top header
-            if (currentScrollY > lastScrollY + 10 && currentScrollY > 100) {
-                if (isMainCatOpen) toggleMainCategories(false); // Auto-hide
+            const hideThreshold = 150; 
+
+            // 1. Auto-hide ONLY once when scrolling past the header
+            if (currentScrollY > hideThreshold && !hasPassedHeader) {
+                hasPassedHeader = true;
+                if (isMainCatOpen) toggleMainCategories(false);
             } 
-            // Optional: If they scroll all the way back to the very top, auto-open it
-            else if (currentScrollY < 10) {
+            // 2. Auto-show when scrolling back to the very top
+            else if (currentScrollY <= hideThreshold && hasPassedHeader) {
+                hasPassedHeader = false;
                 if (!isMainCatOpen) toggleMainCategories(true);
             }
-            
-            // Update last scroll position
-            lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY; 
+
+            // 3. User interaction checks (Only when past the header and menu is open)
+            if (hasPassedHeader && isMainCatOpen) {
+                
+                // If we are past the 800ms safe window, check for real user scrolling
+                if (Date.now() > ignoreScrollUntil) {
+                    
+                    // If they scrolled more than 50px away from the settled position, start the close timer
+                    if (Math.abs(currentScrollY - menuOpenScrollY) > 50) {
+                        clearTimeout(autoCloseTimeout);
+                        autoCloseTimeout = setTimeout(() => {
+                            if (isMainCatOpen) toggleMainCategories(false);
+                        }, 200); // 400ms delay AFTER they begin an active scroll
+                    }
+                } 
+                // If we are STILL inside the 800ms safe window, keep resetting the baseline 
+                // so the layout shift doesn't count as a user scroll!
+                else {
+                    menuOpenScrollY = currentScrollY;
+                }
+            }
 
             // --- NEW: ScrollSpy for Sub-Categories ---
             // Check which food category is currently touching the top of the screen
@@ -1088,9 +1145,11 @@
                 grouped[item.subCat].push(item);
             });
 
-            // 1. Setup a counter and grab the banner from Column O
+            // 1. Setup a counter and parse multiple URLs for the banner
             let categoryCount = 0; 
-            const inlineBannerUrl = rawBranding.O; 
+            // We use smartBanner to ensure it works in both English and Arabic layouts!
+            const excelBannerUrls = rawBranding.smartBanner ? String(rawBranding.smartBanner).split(',').map(u => u.trim()).filter(u => u !== "") : [];
+            let gitHubBannerIndex = 1; // Tracks which GitHub banner to load next
 
             for (const subCat in grouped) {
                 hasItems = true;
@@ -1100,15 +1159,55 @@
                 
                 categoryCount++;
 
-                // 2. Inject the banner exactly after the 5th category is rendered
-                if (categoryCount === 5 && inlineBannerUrl) {
+                // 2. Smart Banner Injection Logic
+                let showExcelBannerHere = (categoryCount === 5 && excelBannerUrls.length > 0);
+                let showGitHubBannerHere = (categoryCount >= 3 && categoryCount !== 5);
+
+                // If it is the 5th category but the Excel sheet has NO URLs, allow GitHub to fill the slot!
+                if (categoryCount === 5 && excelBannerUrls.length === 0) {
+                    showGitHubBannerHere = true;
+                }
+
+                if (showExcelBannerHere) {
+                    // Create the Excel Auto-Carousel
                     const bannerDiv = document.createElement('div');
-                    // Full width, fixed heights for mobile/desktop, perfectly rounds corners
-                    bannerDiv.className = "w-full h-32 sm:h-48 md:h-56 rounded-2xl overflow-hidden shadow-md relative";
-                    bannerDiv.innerHTML = `<img src="${inlineBannerUrl}" alt="Promo Banner" class="w-full h-full object-cover">`;
+                    bannerDiv.className = "w-full h-32 sm:h-48 md:h-56 rounded-2xl overflow-hidden shadow-md relative mb-6";
+                    
+                    let imagesHtml = '';
+                    excelBannerUrls.forEach(url => {
+                        imagesHtml += `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-center">`;
+                    });
+
+                    // FIX: Removed pointer-events-none to unlock mobile swiping! Changed class to excel-banner-slider.
+                    bannerDiv.innerHTML = `
+                        <div class="excel-banner-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="scroll-behavior: smooth;" data-img-count="${excelBannerUrls.length}">
+                            ${imagesHtml}
+                        </div>
+                    `;
                     container.appendChild(bannerDiv);
                 }
-            }
+                else if (showGitHubBannerHere) {
+                    // Construct the URL for Banner01.jpg, Banner02.jpg, etc.
+                    let numStr = String(gitHubBannerIndex).padStart(2, '0');
+                    let gitUrl = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/banner/Banner${numStr}.jpg`;
+                    
+                    // Deduplication Rule: If this exact GitHub URL is already in the Excel list, skip it and check the next number!
+                    while (excelBannerUrls.includes(gitUrl)) {
+                        gitHubBannerIndex++;
+                        numStr = String(gitHubBannerIndex).padStart(2, '0');
+                        gitUrl = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/banner/Banner${numStr}.jpg`;
+                    }
+
+                    const bannerDiv = document.createElement('div');
+                    bannerDiv.className = "w-full h-32 sm:h-48 md:h-56 rounded-2xl overflow-hidden shadow-md relative mb-6";
+                    
+                    // The onerror instantly removes the banner box silently if the file doesn't exist on GitHub
+                    bannerDiv.innerHTML = `<img src="${gitUrl}" class="w-full h-full object-cover" onerror="this.parentElement.remove()">`;
+                    container.appendChild(bannerDiv);
+                    
+                    gitHubBannerIndex++; // Move to the next GitHub image for the next category
+                }
+            } 
 
             if (!hasItems) {
                 container.classList.add('hidden');
@@ -1122,6 +1221,9 @@
             // NEW: Gather flashcards whenever the menu loads
             gatherFlashCards(); 
             buildScreensaver();
+            
+            // NEW: Trigger the background prober to find extra GitHub images!
+            autoDiscoverExtraImages(); 
         }
 
         function renderSection(title, items, container, isHighlight) {
@@ -1201,7 +1303,8 @@
                 const urls = item.imgUrls || [item.img];
                 let imagesHtml = '';
                 urls.forEach(url => {
-                    imagesHtml += `<img src="${url}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; }">`;
+                    // FIX: Checks if there are other valid images. If yes, it removes the broken image. If no, it shows the Logo!
+                    imagesHtml += `<img src="${url}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { if(this.parentElement && this.parentElement.children.length > 1) { this.remove(); } else { this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.smartLogo || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}'; } }">`;
                 });
                 // ---------------------------------------------
 
@@ -1209,9 +1312,10 @@
                     <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm">
                         <i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i>
                     </button>
-                    <div class="relative h-32 sm:h-40 overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
-                        <!-- Mini Slider Container -->
-                        <div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
+                    <!-- FIX: Removed fixed heights (h-32) and added aspect-[4/3] for perfect scaling -->
+                    <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
+                        <!-- FIX: Added mini-slider-${item.id} here as well -->
+                        <div class="mini-img-slider mini-slider-${item.id} flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
                             ${imagesHtml}
                         </div>
                         ${badgeHtml}
@@ -1260,7 +1364,8 @@
 
             const urls = item.imgUrls || [item.img];
             urls.forEach((url, i) => {
-                const imgHtml = `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-center" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; }">`;
+                // FIX: Added dot deletion logic if the image is removed so the pagination doesn't break!
+                const imgHtml = `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-center" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { if(this.parentElement && this.parentElement.children.length > 1) { this.remove(); let d = document.getElementById('dot-${i}'); if(d) d.remove(); } else { this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-8'); this.src='${rawBranding.smartLogo || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}'; } }">`;
                 slider.insertAdjacentHTML('beforeend', imgHtml);
                 if (urls.length > 1) {
                     dots.insertAdjacentHTML('beforeend', `<div id="dot-${i}" class="w-2 h-2 rounded-full transition-all duration-300 ${i===0 ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}"></div>`);
@@ -2016,12 +2121,13 @@ function toggleQuickCart(id) {
                 const urls = item.imgUrls || [item.img];
                 let imagesHtml = '';
                 urls.forEach(url => {
-                    imagesHtml += `<img src="${url}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { this.src='https://placehold.co/600x400/f1f5f9/cbd5e1?text=No+Image'; }">`;
+                    imagesHtml += `<img src="${url}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.endsWith('.jpg')) { this.src=this.src.replace('.jpg', '.png'); } else if(this.src.endsWith('.png')) { this.src=this.src.replace('.png', '.jpeg'); } else { if(this.parentElement && this.parentElement.children.length > 1) { this.remove(); } else { this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.smartLogo || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}'; } }">`;
                 });
 
                 card.innerHTML = `
                     <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
-                    <div class="relative h-32 sm:h-40 overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
+                    <!-- FIX: Removed fixed heights (h-32) and added aspect-[4/3] for perfect scaling -->
+                    <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl">
                         <div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-none sm:pointer-events-auto" style="scroll-behavior: smooth;" data-img-count="${urls.length}">
                             ${imagesHtml}
                         </div>
@@ -2271,9 +2377,71 @@ function toggleQuickCart(id) {
             });
         }, 4000); // 4000ms = 4 Seconds delay
         // ---------------------------------------------
-
+// --- NEW: Smart Background Prober for Extra Item Images ---
+        function autoDiscoverExtraImages() {
+            activeMenuData.forEach(item => {
+                let currentCheck = 2; // Start by checking for -2.jpg
+                const maxChecks = 4;  // Max limit is 4 to prevent heavy network lag
+                
+                function checkNextImage() {
+                    if (currentCheck > maxChecks) return;
+                    
+                    const testUrl = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${item.id}-${currentCheck}.jpg`;
+                    
+                    // If we already manually put this in Excel, skip it!
+                    if (item.imgUrls.includes(testUrl)) {
+                        currentCheck++;
+                        checkNextImage();
+                        return;
+                    }
+                    
+                    const img = new Image();
+                    img.onload = () => {
+                        // SUCCESS! The image exists on GitHub.
+                        item.imgUrls.push(testUrl); // Save it to the database for the popup modal
+                        
+                        // Instantly inject it into any UI cards currently on the screen
+                        const sliders = document.querySelectorAll(`.mini-slider-${item.id}`);
+                        sliders.forEach(slider => {
+                            const newImgHtml = `<img src="${testUrl}" alt="Image" class="w-full h-full object-cover shrink-0 snap-center group-hover:scale-105 transition-transform duration-500" onerror="this.remove();">`;
+                            slider.insertAdjacentHTML('beforeend', newImgHtml);
+                            
+                            // Update the image counter so the auto-swipe engine knows there is a new image!
+                            let currentCount = parseInt(slider.getAttribute('data-img-count') || "1");
+                            slider.setAttribute('data-img-count', currentCount + 1);
+                        });
+                        
+                        // It found -2, now let's see if -3 exists!
+                        currentCheck++;
+                        checkNextImage(); 
+                    };
+                    img.onerror = () => {
+                        // FAILED! File doesn't exist. Stop checking for this item.
+                    };
+                    img.src = testUrl;
+                }
+                
+                checkNextImage(); // Start the loop for this item
+            });
+        }
+      
+// --- NEW: 3-Second Auto-Swipe specifically for the Excel Banner ---
+        setInterval(() => {
+            const bannerSliders = document.querySelectorAll('.excel-banner-slider');
+            
+            bannerSliders.forEach(slider => {
+                const imgCount = parseInt(slider.getAttribute('data-img-count') || "1");
+                
+                // Only animate if there are multiple URLs parsed from the comma separation!
+                if (imgCount > 1 && document.body.contains(slider)) {
+                    let currentIdx = Math.round(slider.scrollLeft / slider.clientWidth);
+                    let nextIdx = (currentIdx + 1) % imgCount;
+                    slider.scrollTo({ left: nextIdx * slider.clientWidth, behavior: 'smooth' });
+                }
+            });
+        }, 5000); // 3000ms = 3 Seconds delay
         window.onload = init;
-        setupSearch();
+        setupSearch(); 
 
         // --- Register PWA Service Worker ---
         if ('serviceWorker' in navigator) {
