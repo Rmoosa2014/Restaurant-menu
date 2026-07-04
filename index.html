@@ -134,12 +134,6 @@
             <p class="text-gray-500 font-medium animate-pulse" id="loading-text">Loading Menu Master Data...</p>
         </div>
 
-        <div id="error-state" class="hidden flex-col items-center justify-center py-20 text-center">
-            <i class="fas fa-exclamation-triangle text-5xl text-orange-400 mb-4"></i>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Could not load menu data</h3>
-            <p class="text-gray-500 max-w-md">Please ensure `MenuMasterData.xlsx` is uploaded to your repository and formatted correctly.</p>
-        </div>
-
         <div id="menu-container" class="hidden flex-col gap-10">
             </div>
         
@@ -148,7 +142,8 @@
             <h3 id="empty-text" class="text-xl font-medium text-gray-500">No items found.</h3>
         </div>
     </main>
-    <button id="game-trigger-btn" onclick="openGameModal()" class="hidden fixed bottom-6 start-6 z-50 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-2 py-1 rounded-full items-center gap-3 shadow-2xl hover:scale-105 transition-transform duration-300 animate-bounce cursor-pointer border-2 border-white/20 group">
+    <!-- FIX: Replaced 'hidden' with smooth opacity transitions. Added flex by default but invisible. -->
+    <button id="game-trigger-btn" onclick="openGameModal()" class="flex opacity-0 pointer-events-none transition-opacity duration-500 fixed bottom-6 start-6 z-50 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-2 py-1 rounded-full items-center gap-3 shadow-2xl hover:scale-105 animate-bounce cursor-pointer border-2 border-white/20 group">
         <div class="bg-white/20 p-2 rounded-full group-hover:rotate-12 transition-transform">
             <i class="fas fa-gamepad text-xl"></i>
         </div>
@@ -319,18 +314,25 @@
             </div>
         </div>
     </div>
-  <div id="screensaver-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden flex-col items-center justify-center transition-opacity duration-500 opacity-0">
-        <!-- FIX: Changed right-6 to end-6 and boosted z-index so it never hides -->
-        <button onclick="closeScreensaver()" class="absolute top-6 end-6 z-[110] bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer">
-            <i class="fas fa-times text-xl"></i>
-        </button>
-        <!-- FIX: Removed py-10 and added items-center for perfect mathematical centering -->
-        <div id="screensaver-slider" class="w-full flex items-center gap-4 overflow-x-auto snap-x snap-mandatory px-[5%] hide-scrollbar" style="scroll-behavior: smooth;">
-            <!-- Flash cards injected here via JS -->
+  <!-- NEW: Smart Promo Popup Modal -->
+    <div id="promo-popup-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6">
+        <!-- Dark backdrop that user can click to close -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 opacity-0" id="promo-backdrop" onclick="closePromo()"></div>
+        
+        <!-- The actual Popup Card -->
+        <div class="relative z-10 w-[85vw] h-auto sm:w-auto sm:h-[70vh] aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col transform scale-95 opacity-0 transition-all duration-500" id="promo-content">
+            
+            <button onclick="closePromo()" class="absolute top-3 end-3 z-30 bg-black/50 hover:bg-black/80 backdrop-blur text-white w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div id="promo-slider" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar relative pointer-events-auto" style="scroll-behavior: smooth;">
+                <!-- Images injected here via JS -->
+            </div>
         </div>
     </div>
-  <!-- NEW: Back to Top Floating Button -->
-    <button id="back-to-top-btn" onclick="scrollToTop()" class="hidden fixed bottom-6 end-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg hover:bg-red-500 hover:scale-110 transition-all duration-300">
+  <!-- FIX: Replaced 'hidden' with smooth opacity transitions. -->
+    <button id="back-to-top-btn" onclick="scrollToTop()" class="flex opacity-0 pointer-events-none transition-all duration-500 fixed bottom-6 end-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg hover:bg-red-500">
         <i class="fas fa-arrow-up"></i>
     </button>
 
@@ -458,6 +460,8 @@
         let currentOpenItemId = null;
         let offerInterval = null;
         let currentOfferIndex = 0;
+      let uiScrollTimeout;
+        let isGameTriggerEnabled = false;
 
         // Static Translations
         const staticText = {
@@ -571,16 +575,23 @@
                 langSetup = 'Both'; currentLang = 'en'; 
                 toggleBtn.classList.remove('hidden'); toggleBtn.classList.add('flex');
             }
-          const gameTrigger = String(rawBranding.P || "").trim().toLowerCase();
+            
+            // FIX: Game button 10-second reveal logic
+            isGameTriggerEnabled = (String(rawBranding.P || "").trim().toLowerCase() === 'true');
             const gameBtn = document.getElementById('game-trigger-btn');
             
-            if (gameTrigger === 'true') {
-                gameBtn.classList.remove('hidden');
-                gameBtn.classList.add('flex');
-            } else {
-                gameBtn.classList.add('hidden');
-                gameBtn.classList.remove('flex');
+            if (isGameTriggerEnabled && gameBtn) {
+                setTimeout(() => {
+                    // Only show it if the user isn't actively scrolling when the 10 seconds hits
+                    if (!uiScrollTimeout) {
+                        gameBtn.classList.remove('opacity-0', 'pointer-events-none');
+                        gameBtn.classList.add('opacity-100');
+                    }
+                }, 10000); // 10-second delay
             }
+
+            // FIX: Ensure the toggle button always shows the OPPOSITE language on load
+            document.getElementById('lang-text').textContent = currentLang === 'en' ? 'AR' : 'EN';
 
             processDataForCurrentLang();
         }
@@ -1104,17 +1115,46 @@
             }
             // -----------------------------------------
 
-            // --- NEW: Back to Top Button Logic ---
+            // --- NEW: Smart Hide/Show Logic for Floating Buttons ---
             const backToTopBtn = document.getElementById('back-to-top-btn');
+            const gameBtn = document.getElementById('game-trigger-btn');
+            
+            // 1. As soon as the user scrolls, smoothly fade BOTH buttons out
             if (backToTopBtn) {
-                if (currentScrollY > 400) {
-                    backToTopBtn.classList.remove('hidden');
-                    backToTopBtn.classList.add('flex');
-                } else {
-                    backToTopBtn.classList.add('hidden');
-                    backToTopBtn.classList.remove('flex');
-                }
+                backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                backToTopBtn.classList.remove('opacity-100');
             }
+            if (gameBtn && isGameTriggerEnabled) {
+                gameBtn.classList.add('opacity-0', 'pointer-events-none');
+                gameBtn.classList.remove('opacity-100');
+            }
+
+            // 2. Clear the previous timer because they are still scrolling
+            clearTimeout(uiScrollTimeout);
+
+            // 3. Start a 3-second timer. If it finishes without being interrupted by another scroll, show the buttons!
+            uiScrollTimeout = setTimeout(() => {
+                
+                // Calculate if they have scrolled past 50% of the entire page
+                const totalPageHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercentage = (currentScrollY / totalPageHeight) * 100;
+
+                // Show Top Button ONLY if past 50%
+                if (backToTopBtn && scrollPercentage >= 50) {
+                    backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    backToTopBtn.classList.add('opacity-100');
+                }
+
+                // Show Game Button (always shows when stopped, if enabled)
+                if (gameBtn && isGameTriggerEnabled) {
+                    gameBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    gameBtn.classList.add('opacity-100');
+                }
+                
+                // Reset timer state
+                uiScrollTimeout = null;
+
+            }, 1000); // 3-second delay after scroll stops
 
         }, {passive: true});
 
@@ -2247,139 +2287,153 @@ function toggleQuickCart(id) {
                 window.toggleRecipe(true);
             }
         });
-        // --- NEW: SCREENSAVER LOGIC ---
+        // --- NEW: PROMO POPUP LOGIC ---
         let idleTimer;
-        let screensaverSlideTimer;
-        let isScreensaverActive = false;
-        let validFlashCards = []; // CHANGED: Now only stores verified images
+        let promoSlideTimer;
+        let isPromoActive = false;
+        let validFlashCards = []; 
 
         function gatherFlashCards() {
-            validFlashCards = []; // Reset
-
-            // 1. Gather all explicit URLs from Column N
+            validFlashCards = []; 
             activeMenuData.forEach(item => {
                 if (item.flashCards) {
                     const files = item.flashCards.split(',').map(u => u.trim()).filter(u => u !== "");
                     files.forEach(file => {
-                        if (file.startsWith('http')) {
-                            validFlashCards.push(file);
-                        }
+                        if (file.startsWith('http')) validFlashCards.push(file);
                     });
                 }
             });
 
-            // 2. Auto-probe GitHub folder for FlashCard01 to FlashCard15
-            const maxAutoCards = 15;
             const baseUrl = 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/FlashCard/FlashCard';
-            
-            for (let i = 1; i <= maxAutoCards; i++) {
-                const num = String(i).padStart(2, '0'); // Creates "01", "02", etc.
-                probeImageExtensions(`${baseUrl}${num}`);
+            for (let i = 1; i <= 15; i++) {
+                probeImageExtensions(`${baseUrl}${String(i).padStart(2, '0')}`);
             }
-            
-            // Build immediately with any Column N URLs we found
-            buildScreensaver();
+            buildPromo();
         }
 
-        // NEW: Background Prober to find GitHub images automatically!
         function probeImageExtensions(basePath) {
             const extensions = ['.jpg', '.png', '.jpeg'];
-            
             function testNext(index) {
-                if (index >= extensions.length) return; // All extensions failed, file doesn't exist!
-                
+                if (index >= extensions.length) return; 
                 const img = new Image();
                 img.onload = () => {
-                    // Success! The image exists on GitHub. Add it and rebuild the slider!
                     validFlashCards.push(img.src);
-                    buildScreensaver(); 
+                    buildPromo(); 
                 };
-                img.onerror = () => {
-                    // Failed! Try the next extension (.jpg -> .png -> .jpeg)
-                    testNext(index + 1);
-                };
+                img.onerror = () => testNext(index + 1);
                 img.src = basePath + extensions[index];
             }
-            
-            testNext(0); // Start testing
+            testNext(0);
         }
 
-        function buildScreensaver() {
-            const slider = document.getElementById('screensaver-slider');
+        function buildPromo() {
+            const slider = document.getElementById('promo-slider');
+            if(!slider) return;
             slider.innerHTML = '';
             
-            // Mix the explicit URLs and the discovered GitHub images
             const shuffledCards = validFlashCards.sort(() => 0.5 - Math.random());
-
             shuffledCards.forEach((url) => {
-                // FIX: Changed h-[70vh] to h-[60vh] for mobile, leaving it large on desktop (md:h-[70vh])
-                const cardHtml = `
-                    <div class="w-[90vw] sm:w-[80vw] h-[70vh] md:h-[70vh] flex-shrink-0 snap-center rounded-3xl overflow-hidden shadow-2xl relative">
-                        <img src="${url}" class="w-full h-full object-cover" alt="Promo">
-                    </div>
-                `;
+                const cardHtml = `<img src="${url}" class="w-full h-full object-cover flex-shrink-0 snap-center" alt="Promo">`;
                 slider.insertAdjacentHTML('beforeend', cardHtml);
             });
-            setupDraggable('screensaver-slider');
         }
 
-        function showScreensaver() {
+        function showPromo() {
             const isProductModalOpen = !document.getElementById('productModal').classList.contains('hidden');
             const isCartModalOpen = !document.getElementById('cartModal').classList.contains('hidden');
             const isGameModalOpen = !document.getElementById('gameModal').classList.contains('hidden');
             
-            // Safety Check: If no images exist, or a window is open, DO NOT start the screensaver!
-            if (validFlashCards.length === 0 || isScreensaverActive || isProductModalOpen || isCartModalOpen || isGameModalOpen) {
-                if (isProductModalOpen || isCartModalOpen || isGameModalOpen) resetIdleTimer();
+            // Safety Check
+            if (validFlashCards.length === 0 || isPromoActive || isProductModalOpen || isCartModalOpen || isGameModalOpen) {
+                resetIdleTimer();
                 return; 
             }
             
-            isScreensaverActive = true;
+            isPromoActive = true;
             
-            const overlay = document.getElementById('screensaver-overlay');
+            const overlay = document.getElementById('promo-popup-overlay');
+            const backdrop = document.getElementById('promo-backdrop');
+            const content = document.getElementById('promo-content');
+            
             overlay.classList.remove('hidden');
-            overlay.classList.add('flex'); // FIX: Forces the browser to mathematically center the card!
-            setTimeout(() => overlay.classList.remove('opacity-0'), 50);
+            overlay.classList.add('flex');
+            
+            // Wait 10ms for browser to render, then trigger smooth animations
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
 
-            const slider = document.getElementById('screensaver-slider');
+            const slider = document.getElementById('promo-slider');
             let scrollPos = 0;
-            screensaverSlideTimer = setInterval(() => {
-                scrollPos += slider.clientWidth * 0.9; 
-                if (scrollPos >= slider.scrollWidth) scrollPos = 0; 
+            promoSlideTimer = setInterval(() => {
+                // Check if user is manually touching it!
+                if (Date.now() - lastSliderInteraction < 5000) return;
+
+                scrollPos += slider.clientWidth; 
+                if (scrollPos >= slider.scrollWidth - 10) scrollPos = 0; 
                 slider.scrollTo({ left: scrollPos, behavior: 'smooth' });
             }, 3000);
         }
 
-        function closeScreensaver() {
-            if (!isScreensaverActive) return;
-            isScreensaverActive = false;
-            clearInterval(screensaverSlideTimer);
+        function closePromo() {
+            if (!isPromoActive) return;
+            isPromoActive = false;
+            clearInterval(promoSlideTimer);
             
-            const overlay = document.getElementById('screensaver-overlay');
-            overlay.classList.add('opacity-0');
+            const overlay = document.getElementById('promo-popup-overlay');
+            const backdrop = document.getElementById('promo-backdrop');
+            const content = document.getElementById('promo-content');
+            
+            // Fade out animations
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            // Wait for fade to finish before hiding HTML
             setTimeout(() => {
                 overlay.classList.add('hidden');
-                overlay.classList.remove('flex'); // FIX: Cleans up the layout when closed
+                overlay.classList.remove('flex'); 
             }, 500);
+            
             resetIdleTimer();
         }
 
         function resetIdleTimer() {
             clearTimeout(idleTimer);
-            if (!isScreensaverActive) {
-                // TEST MODE: Changed from 35000 (35s) to 5000 (5s). 
-                // Don't forget to change this back to 35000 when you are done testing!
-                idleTimer = setTimeout(showScreensaver, 35000); 
+            if (!isPromoActive) {
+                idleTimer = setTimeout(showPromo, 20000); // Exactly 20 seconds
             }
         }
 
-        ['touchstart', 'mousemove', 'mousedown', 'scroll', 'keydown', 'click'].forEach(evt => {
+        // FIX: Removed 'mousemove' so desktop mice don't glitch the timer anymore!
+        ['touchstart', 'mousedown', 'scroll', 'keydown', 'click'].forEach(evt => {
             document.addEventListener(evt, resetIdleTimer, true);
         });
         resetIdleTimer();
         // ------------------------------
+
+        // --- NEW: Smart Interaction Tracker to prevent auto-swipe hijacking ---
+        let lastSliderInteraction = 0;
+        
+        ['touchstart', 'touchmove', 'mousedown', 'wheel'].forEach(evt => {
+            document.addEventListener(evt, (e) => {
+                // If they touch a food card or the banner, record the exact time!
+                // FIX: Added '#promo-slider' so the popup card doesn't fight the user's swiping!
+                if (e.target.closest('.mini-img-slider') || e.target.closest('.excel-banner-slider') || e.target.closest('#promo-slider')) {
+                    lastSliderInteraction = Date.now();
+                }
+            }, { passive: true });
+        });
+
       // --- NEW: Global Auto-Swipe for Mini Cards ---
         setInterval(() => {
+            // FIX: If the user touched ANY slider in the last 5 seconds (5000ms), skip this turn!
+            if (Date.now() - lastSliderInteraction < 5000) return;
+
             // Find all mini sliders currently on the screen
             const sliders = document.querySelectorAll('.mini-img-slider');
             
@@ -2448,8 +2502,11 @@ function toggleQuickCart(id) {
             });
         }
       
-// --- NEW: 3-Second Auto-Swipe specifically for the Excel Banner ---
+// --- NEW: Auto-Swipe specifically for the Excel Banner ---
         setInterval(() => {
+            // FIX: If the user touched ANY slider in the last 5 seconds (5000ms), skip this turn!
+            if (Date.now() - lastSliderInteraction < 5000) return;
+
             const bannerSliders = document.querySelectorAll('.excel-banner-slider');
             
             bannerSliders.forEach(slider => {
