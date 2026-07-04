@@ -797,8 +797,13 @@
                     recipe: row.I || "",
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
                     
-                    // NEW: Auto-fetch from GitHub folders if Column K is blank!
-                    imgUrls: row.K ? String(row.K).split(',').map(u => u.trim()).filter(u => u !== "") : [`https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`],
+                    // FIX: Always include the default GitHub Item ID image in the carousel!
+                    imgUrls: (() => {
+                        let urls = row.K ? String(row.K).split(',').map(u => u.trim()).filter(u => u !== "") : [];
+                        let defaultGitUrl = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`;
+                        if (!urls.includes(defaultGitUrl)) urls.push(defaultGitUrl); // Appends the GitHub folder image to the end of the slider!
+                        return urls;
+                    })(),
                     img: row.K ? String(row.K).split(',')[0].trim() : `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${row.A}.jpg`,
                     
                     video: row.L || "",
