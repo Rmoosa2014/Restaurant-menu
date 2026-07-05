@@ -1,0 +1,3074 @@
+{
+  "Branding": [
+    {
+      "A": "SL#",
+      "B": "Brand name",
+      "C": "Contact",
+      "D": "Watsap",
+      "E": "Other Number",
+      "F": "E-mail",
+      "G": "Website",
+      "H": "Address",
+      "I": "Location",
+      "J": "Social Media",
+      "K": "Currency",
+      "L": "Language",
+      "M": "Delivery charge",
+      "N": "Logo Link",
+      "O": "Banner Image",
+      "P": "Game"
+    },
+    {
+      "A": 1,
+      "B": "Falcon Rest",
+      "C": 1254653,
+      "D": 966535531913,
+      "E": 5242332,
+      "F": "rf@gmail.com",
+      "G": "Falcon Rest.com",
+      "H": "Falcon,1253.Adas,India,54652",
+      "I": "https://maps.app.goo.gl/AHQsZChqfBk3TTuV8",
+      "J": "https://www.instagram.com,https://maps.app.goo.gl/AHQsZChqfBk3TTuV8",
+      "K": "SR",
+      "L": "English&Arabic",
+      "M": 15,
+      "N": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/logo.png",
+      "O": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/banner/Banner01.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/banner/Banner02.jpg",
+      "P": true
+    }
+  ],
+  "SpecialOffer": [
+    {
+      "A": "SL#",
+      "B": "Ofer Name",
+      "C": "Description",
+      "D": "Price Before",
+      "E": "Price After",
+      "F": "Image"
+    },
+    {
+      "A": 1,
+      "B": "10% Discount",
+      "C": "get flat 10% discount on Sunday Only",
+      "D": 115,
+      "E": 103,
+      "F": ""
+    },
+    {
+      "A": 2,
+      "B": "20% Discount",
+      "C": "get flat 20% discount on Weekends Only",
+      "D": 55,
+      "E": 20,
+      "F": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/Offer/Offer01.jpg"
+    },
+    {
+      "A": 3,
+      "B": "50% Discount",
+      "C": "get flat 50% discount on Mondayy Only",
+      "D": 10,
+      "E": 5,
+      "F": ""
+    },
+    {
+      "A": 4,
+      "B": "30% Discount",
+      "C": "get flat 30% discount on Wed-Thu Only",
+      "D": 200,
+      "E": 100,
+      "F": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/Offer/Offer02.jpg"
+    },
+    {
+      "A": 5,
+      "B": "70% Discount",
+      "C": "get flat 70% discount on Friday Only",
+      "D": 65,
+      "E": 30,
+      "F": ""
+    }
+  ],
+  "Menu-English": [
+    {
+      "A": "ItemID",
+      "B": "Main Category",
+      "C": "Sub Category",
+      "D": "Items Name",
+      "E": "Item Order Number Under Sub Category",
+      "F": "Price",
+      "G": "Description",
+      "H": "Calories",
+      "I": "Recipe",
+      "J": "Today Special",
+      "K": "Image",
+      "L": "Video",
+      "M": "Review social and Map",
+      "N": "Flash cards"
+    },
+    {
+      "A": "ITM001",
+      "B": "Break Fast",
+      "C": "Breads",
+      "D": "Puttu",
+      "E": 1,
+      "F": 15,
+      "G": "Traditional steamed rice flour cylinder",
+      "H": 225,
+      "I": "Rice flour 500g, Coconut 100g, Water, Salt",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "https://www.instagram.com,https://maps.app.goo.gl/AHQsZChqfBk3TTuV8",
+      "N": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/FlashCard/FlashCard04.jpg"
+    },
+    {
+      "A": "ITM002",
+      "B": "Break Fast",
+      "C": "Breads",
+      "D": "Appam",
+      "E": 2,
+      "F": 20,
+      "G": "Soft, lace-edged fermented rice pancake . ",
+      "H": 124,
+      "I": "Rice 500g, Coconut milk 200ml, Yeast, Sugar - Kerala Appam (or Palappam) is a traditional South Indian fermented pancake made with ground rice, coconut, and coconut milk . It is characterized by its fluffy, spongy center and ultra-crispy, lacy edges. Cooked in a specialized curved pan called an appachatti, it is famously served with meat or vegetable stew, egg roast, or sweetened coconut milk .",
+      "J": "",
+      "K": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM023.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM024.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM001.jpg",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM003",
+      "B": "Break Fast",
+      "C": "Breads",
+      "D": "Kerala Porotta",
+      "E": 3,
+      "F": 2,
+      "G": "Flaky, multi-layered roasted flatbread",
+      "H": 300,
+      "I": "Flour 500g, Water 200ml, Oil 2ts, Salt 1gm",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM004",
+      "B": "Break Fast",
+      "C": "Breads",
+      "D": "Idiyappam",
+      "E": 4,
+      "F": 2,
+      "G": "Traditional steamed rice string hoppers",
+      "H": 150,
+      "I": "Rice flour 200g, Water 100ml, Salt 1gm",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM005",
+      "B": "Break Fast",
+      "C": "Tiffin",
+      "D": "Masala Dosa",
+      "E": 1,
+      "F": 12,
+      "G": "Crispy crepe stuffed with spiced potatoes",
+      "H": 350,
+      "I": "Rice batter 200ml, Potato 100g, Oil 1ts",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/FlashCard/FlashCard03.jpg"
+    },
+    {
+      "A": "ITM006",
+      "B": "Break Fast",
+      "C": "Tiffin",
+      "D": "Plain Dosa",
+      "E": 2,
+      "F": 8,
+      "G": "Thin and crispy savory rice crepe",
+      "H": 200,
+      "I": "Rice batter 200ml, Oil 1ts",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/FlashCard/FlashCard.jpg"
+    },
+    {
+      "A": "ITM007",
+      "B": "Break Fast",
+      "C": "Curry",
+      "D": "Kadala Curry",
+      "E": 1,
+      "F": 8,
+      "G": "Spicy black chickpea curry",
+      "H": 250,
+      "I": "Chickpeas 200g, Onion 2, Spices 10g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM008",
+      "B": "Break Fast",
+      "C": "Curry",
+      "D": "Egg Roast",
+      "E": 2,
+      "F": 9,
+      "G": "Boiled eggs in a rich tomato-onion gravy",
+      "H": 220,
+      "I": "Eggs 2, Onion 2, Tomato 1, Spices 10g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "https://www.instagram.com,https://maps.app.goo.gl/AHQsZChqfBk3TTuV8",
+      "N": ""
+    },
+    {
+      "A": "ITM009",
+      "B": "Lunch",
+      "C": "Rice",
+      "D": "Kerala Rice",
+      "E": 1,
+      "F": 8,
+      "G": "Traditional boiled matta rice",
+      "H": 521,
+      "I": "Matta Rice 1KG, Water, Salt",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM010",
+      "B": "Lunch",
+      "C": "Rice",
+      "D": "Baric Rice",
+      "E": 2,
+      "F": 10,
+      "G": "Premium white long-grain rice",
+      "H": 154,
+      "I": "White Rice 1KG, Water, Salt",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM011",
+      "B": "Lunch",
+      "C": "Rice",
+      "D": "Ghee Rice (Neychoru)",
+      "E": 3,
+      "F": 12,
+      "G": "Fragrant Kaima rice cooked in pure ghee",
+      "H": 450,
+      "I": "Kaima Rice 500g, Ghee 50g, Spices 5g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM012",
+      "B": "Lunch",
+      "C": "Biriyani",
+      "D": "Biriyani Rice",
+      "E": 1,
+      "F": 6,
+      "G": "Flavorful spiced basmati rice",
+      "H": 523,
+      "I": "Basmati 1KG, Spices 20g, Ghee 50g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM013",
+      "B": "Lunch",
+      "C": "Biriyani",
+      "D": "Chicken Biriyani",
+      "E": 2,
+      "F": 11,
+      "G": "Authentic Malabar style chicken biriyani",
+      "H": 620,
+      "I": "Rice 500g, Chicken 300g, Spices 25g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM014",
+      "B": "Lunch",
+      "C": "Biriyani",
+      "D": "Beef Biriyani",
+      "E": 3,
+      "F": 12,
+      "G": "Spicy, aromatic beef biriyani",
+      "H": 856,
+      "I": "Rice 500g, Beef 300g, Spices 30g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/FlashCard/FlashCard02.jpg"
+    },
+    {
+      "A": "ITM015",
+      "B": "Lunch",
+      "C": "Meal",
+      "D": "Fish Meals",
+      "E": 1,
+      "F": 15,
+      "G": "Standard rice meal with daily fish fry",
+      "H": 650,
+      "I": "Rice 300g, Veg Curries, Fish Fry 1 pc",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "https://www.instagram.com,https://maps.app.goo.gl/AHQsZChqfBk3TTuV8",
+      "N": ""
+    },
+    {
+      "A": "ITM016",
+      "B": "Lunch",
+      "C": "Meal",
+      "D": "Pothichoru",
+      "E": 2,
+      "F": 18,
+      "G": "Traditional meal wrapped in a banana leaf",
+      "H": 600,
+      "I": "Rice 300g, Veg Curries, Omelette, Pickle",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM017",
+      "B": "Lunch",
+      "C": "Seafood",
+      "D": "Ayala Fish Curry",
+      "E": 1,
+      "F": 15,
+      "G": "Mackerel fish in spicy red tamarind curry",
+      "H": 320,
+      "I": "Mackerel 250g, Kokum 2, Chilli powder 10g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM018",
+      "B": "Lunch",
+      "C": "Seafood",
+      "D": "Fish Pollichathu",
+      "E": 2,
+      "F": 25,
+      "G": "Pearl spot fish roasted in banana leaves",
+      "H": 400,
+      "I": "Karimeen 1, Masala 50g, Coconut oil 2ts",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM019",
+      "B": "Dinner",
+      "C": "Arabian",
+      "D": "Chicken Shawarma",
+      "E": 1,
+      "F": 6,
+      "G": "Slices of roasted chicken wrapped in kuboos",
+      "H": 450,
+      "I": "Chicken 150g, Kuboos 1, Garlic Paste 20g",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM020",
+      "B": "Dinner",
+      "C": "Arabian",
+      "D": "Alfaham Chicken",
+      "E": 2,
+      "F": 20,
+      "G": "Charcoal-grilled Arabic marinated chicken",
+      "H": 750,
+      "I": "Chicken 500g, Arabic Spices 20g, Oil 2ts",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM021",
+      "B": "Dinner",
+      "C": "Arabian",
+      "D": "Broasted Chicken",
+      "E": 3,
+      "F": 17,
+      "G": "Crispy fried chicken (4 Pcs) with fries",
+      "H": 850,
+      "I": "Chicken 400g, Flour 100g, Oil for frying",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM022",
+      "B": "Dinner",
+      "C": "Arabian",
+      "D": "Mixed Grill",
+      "E": 4,
+      "F": 35,
+      "G": "Assortment of kebabs and grilled meats",
+      "H": 900,
+      "I": "Mutton 100g, Chicken 200g, Beef 100g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM023",
+      "B": "Dinner",
+      "C": "Meat",
+      "D": "Beef Roast (Nadan)",
+      "E": 1,
+      "F": 16,
+      "G": "Spicy Kerala-style dry beef roast",
+      "H": 550,
+      "I": "Beef 300g, Onion 2, Coconut slices 50g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM024",
+      "B": "Dinner",
+      "C": "Meat",
+      "D": "Beef Fry",
+      "E": 2,
+      "F": 12,
+      "G": "Crispy pan-fried beef with curry leaves",
+      "H": 450,
+      "I": "Beef 250g, Spices 15g, Coconut Oil",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM025",
+      "B": "Dinner",
+      "C": "Meat",
+      "D": "Mutton Curry",
+      "E": 3,
+      "F": 22,
+      "G": "Tender mutton pieces in a rich gravy",
+      "H": 600,
+      "I": "Mutton 300g, Onion 2, Tomato 1, Spices 15g",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM026",
+      "B": "Dinner",
+      "C": "Meat",
+      "D": "Chicken Fry",
+      "E": 4,
+      "F": 10,
+      "G": "Deep-fried spiced chicken pieces",
+      "H": 521,
+      "I": "Chicken 250g, Spices 20g, Oil for frying",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM027",
+      "B": "Dinner",
+      "C": "Curry",
+      "D": "Butter Chicken",
+      "E": 1,
+      "F": 20,
+      "G": "Creamy tomato-based chicken curry",
+      "H": 650,
+      "I": "Chicken 300g, Butter 50g, Tomato puree",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM028",
+      "B": "Dinner",
+      "C": "Breads",
+      "D": "Nadan Pathiri",
+      "E": 1,
+      "F": 2,
+      "G": "Soft, thin roasted rice flour flatbread",
+      "H": 120,
+      "I": "Rice flour 200g, Water 150ml, Salt 1gm",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM029",
+      "B": "Drinks",
+      "C": "Tea",
+      "D": "Normal Tea (Black)",
+      "E": 1,
+      "F": 2,
+      "G": "Classic brewed black tea",
+      "H": 5,
+      "I": "Water 150ml, Tea Leaves 5g, Sugar 10g",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM030",
+      "B": "Drinks",
+      "C": "Tea",
+      "D": "Milk Tea",
+      "E": 2,
+      "F": 3,
+      "G": "Rich brewed tea with fresh milk",
+      "H": 65,
+      "I": "Milk 100ml, Water 50ml, Tea Leaves, Sugar",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM031",
+      "B": "Drinks",
+      "C": "Tea",
+      "D": "Sulaimani",
+      "E": 3,
+      "F": 2,
+      "G": "Spiced black tea with a drop of lemon",
+      "H": 30,
+      "I": "Water 150ml, Tea, Lemon, Cardamom",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM032",
+      "B": "Drinks",
+      "C": "Coffee",
+      "D": "Black Coffee",
+      "E": 1,
+      "F": 3,
+      "G": "Strong brewed black coffee",
+      "H": 10,
+      "I": "Water 150ml, Coffee Powder 10g, Sugar",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM033",
+      "B": "Drinks",
+      "C": "Coffee",
+      "D": "Milk Coffee",
+      "E": 2,
+      "F": 4,
+      "G": "Hot coffee brewed with fresh milk",
+      "H": 85,
+      "I": "Milk 150ml, Coffee Powder 10g, Sugar",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM034",
+      "B": "Drinks",
+      "C": "Water",
+      "D": "Water Cup 250ml",
+      "E": 1,
+      "F": 1,
+      "G": "Sealed purified drinking water cup",
+      "H": 0,
+      "I": "100% Purified Water",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM035",
+      "B": "Drinks",
+      "C": "Water",
+      "D": "Water Bottle 500ml",
+      "E": 2,
+      "F": 2,
+      "G": "Purified bottled drinking water",
+      "H": 0,
+      "I": "100% Purified Water",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM036",
+      "B": "Drinks",
+      "C": "Water",
+      "D": "Water Bottle 1Ltr",
+      "E": 3,
+      "F": 3,
+      "G": "Large purified bottled drinking water",
+      "H": 0,
+      "I": "100% Purified Water",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM037",
+      "B": "Drinks",
+      "C": "Soft Drinks",
+      "D": "Pepsi 330ml",
+      "E": 1,
+      "F": 3,
+      "G": "Chilled carbonated cola beverage",
+      "H": 150,
+      "I": "Carbonated Water, Sugar, Color, Flavor",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM038",
+      "B": "Drinks",
+      "C": "Soft Drinks",
+      "D": "Coca-Cola 330ml",
+      "E": 2,
+      "F": 3,
+      "G": "Chilled carbonated cola beverage",
+      "H": 140,
+      "I": "Carbonated Water, Sugar, Color, Flavor",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM039",
+      "B": "Drinks",
+      "C": "Soft Drinks",
+      "D": "7 Up 330ml",
+      "E": 3,
+      "F": 3,
+      "G": "Chilled lemon-lime carbonated beverage",
+      "H": 140,
+      "I": "Carbonated Water, Sugar, Lemon Flavor",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM040",
+      "B": "Drinks",
+      "C": "Soft Drinks",
+      "D": "Mirinda 330ml",
+      "E": 4,
+      "F": 3,
+      "G": "Chilled orange carbonated beverage",
+      "H": 160,
+      "I": "Carbonated Water, Sugar, Orange Flavor",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM041",
+      "B": "Drinks",
+      "C": "Soft Drinks",
+      "D": "Kinza Cola 330ml",
+      "E": 5,
+      "F": 3,
+      "G": "Local premium carbonated cola",
+      "H": 145,
+      "I": "Carbonated Water, Sugar, Color, Flavor",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM042",
+      "B": "Drinks",
+      "C": "Soft Drinks",
+      "D": "Kinza Citrus 330ml",
+      "E": 6,
+      "F": 3,
+      "G": "Local premium citrus soda",
+      "H": 150,
+      "I": "Carbonated Water, Sugar, Citrus Flavor",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM043",
+      "B": "Drinks",
+      "C": "Juice",
+      "D": "Fresh Orange Juice",
+      "E": 1,
+      "F": 10,
+      "G": "Freshly squeezed orange juice",
+      "H": 135,
+      "I": "Fresh Oranges 3 pcs, Sugar syrup",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM044",
+      "B": "Drinks",
+      "C": "Juice",
+      "D": "Fresh Mango Juice",
+      "E": 2,
+      "F": 12,
+      "G": "Thick, sweet blended mango juice",
+      "H": 150,
+      "I": "Fresh Mango 1, Water 50ml, Sugar syrup",
+      "J": "",
+      "K": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM002.jpg",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM045",
+      "B": "Drinks",
+      "C": "Juice",
+      "D": "Fresh Lemon Mint",
+      "E": 3,
+      "F": 8,
+      "G": "Refreshing blended lemon and mint cooler",
+      "H": 110,
+      "I": "Lemon 2, Mint leaves 10, Sugar 20g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM046",
+      "B": "Drinks",
+      "C": "Shakes",
+      "D": "Avocado Shake",
+      "E": 1,
+      "F": 15,
+      "G": "Creamy fresh avocado blended with milk",
+      "H": 420,
+      "I": "Avocado 1, Milk 200ml, Honey 1ts",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM047",
+      "B": "Drinks",
+      "C": "Shakes",
+      "D": "Sharjah Shake",
+      "E": 2,
+      "F": 12,
+      "G": "Classic banana and milk shake with malt",
+      "H": 350,
+      "I": "Milk 200ml, Banana 1, Horlicks 2ts",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM048",
+      "B": "Dessert",
+      "C": "Ice Creams",
+      "D": "Vanilla Ice Cream",
+      "E": 1,
+      "F": 5,
+      "G": "Classic creamy vanilla ice cream (2 Scoops)",
+      "H": 220,
+      "I": "Cream, Milk, Sugar, Vanilla Extract",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM049",
+      "B": "Dessert",
+      "C": "Ice Creams",
+      "D": "Strawberry Ice Cream",
+      "E": 2,
+      "F": 5,
+      "G": "Sweet strawberry ice cream (2 Scoops)",
+      "H": 210,
+      "I": "Cream, Milk, Sugar, Strawberry puree",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM050",
+      "B": "Dessert",
+      "C": "Sweets",
+      "D": "Fruit Salad w/ Ice Cream",
+      "E": 1,
+      "F": 12,
+      "G": "Mixed fresh seasonal fruits with vanilla",
+      "H": 250,
+      "I": "Fruits 150g, Ice cream 1 scoop, Nuts 10g",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    },
+    {
+      "A": "ITM051",
+      "B": "Dessert",
+      "C": "Sweets",
+      "D": "Royal Falooda",
+      "E": 2,
+      "F": 15,
+      "G": "Layered rose milk dessert with vermicelli",
+      "H": 400,
+      "I": "Milk 200ml, Vermicelli 20g, Basil seeds 10g",
+      "J": "Today Special",
+      "K": "",
+      "L": "",
+      "M": "",
+      "N": ""
+    }
+  ],
+  "Menu-Arabic": [
+    {
+      "A": "Price",
+      "B": "Description",
+      "C": "Calories",
+      "D": "Recipe",
+      "E": "Today Special",
+      "F": "Image",
+      "G": "Video",
+      "H": "Review Map",
+      "I": "Flash cards",
+      "J": "Today Special",
+      "K": "Image",
+      "L": "Video",
+      "M": "Review Map"
+    },
+    {
+      "A": "ITM001",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM002",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM003",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM004",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM005",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM006",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM007",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM008",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM009",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM010",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM011",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM012",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM013",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM014",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM015",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM016",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM017",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM018",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM019",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": "ITM020",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    }
+  ],
+  "RelatedItems": [
+    {
+      "A": "Sl#",
+      "B": "Items Name",
+      "C": "ItemID",
+      "D": "Related IDs",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 1,
+      "B": "Puttu",
+      "C": "ITM001",
+      "D": "ITM003",
+      "E": "ITM004",
+      "F": "ITM005",
+      "G": "ITM014",
+      "H": "ITM018",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 2,
+      "B": "Appam",
+      "C": "ITM002",
+      "D": "ITM003",
+      "E": "ITM004",
+      "F": "ITM005",
+      "G": "ITM014",
+      "H": "ITM018",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 3,
+      "B": "Tea",
+      "C": "ITM003",
+      "D": "ITM014",
+      "E": "ITM005",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 4,
+      "B": "Coffee",
+      "C": "ITM004",
+      "D": "ITM014",
+      "E": "ITM005",
+      "F": "ITM005",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 5,
+      "B": "Water",
+      "C": "ITM005",
+      "D": "ITM004",
+      "E": "ITM014",
+      "F": "ITM005",
+      "G": "ITM005",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 6,
+      "B": "Biriyani rice",
+      "C": "ITM006",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 7,
+      "B": "Beef Biriyani",
+      "C": "ITM007",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "ITM019",
+      "J": "ITM020",
+      "K": "ITM014",
+      "L": "ITM005",
+      "M": "ITM017"
+    },
+    {
+      "A": 8,
+      "B": "Chicken Biriyani",
+      "C": "ITM008",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 9,
+      "B": "Baric Rice",
+      "C": "ITM009",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 10,
+      "B": "Kerala Rice",
+      "C": "ITM010",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 11,
+      "B": "Biriyani rice",
+      "C": "ITM011",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "ITM019",
+      "J": "ITM020",
+      "K": "ITM014",
+      "L": "ITM005",
+      "M": ""
+    },
+    {
+      "A": 12,
+      "B": "Beef Biriyani",
+      "C": "ITM012",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "ITM019",
+      "J": "ITM020",
+      "K": "ITM014",
+      "L": "ITM005",
+      "M": ""
+    },
+    {
+      "A": 13,
+      "B": "Chicken Biriyani",
+      "C": "ITM013",
+      "D": "ITM005",
+      "E": "ITM017",
+      "F": "ITM018",
+      "G": "ITM014",
+      "H": "ITM015",
+      "I": "ITM019",
+      "J": "ITM020",
+      "K": "ITM014",
+      "L": "ITM005",
+      "M": ""
+    },
+    {
+      "A": 14,
+      "B": "Beef Fry",
+      "C": "ITM014",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "ITM018",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 15,
+      "B": "Chicken Fry",
+      "C": "ITM015",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 16,
+      "B": "Mango",
+      "C": "ITM016",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "ITM018",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 17,
+      "B": "Orange",
+      "C": "ITM017",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "ITM018",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 18,
+      "B": "Mint",
+      "C": "ITM018",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "ITM018",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 19,
+      "B": "Vanilla",
+      "C": "ITM019",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "ITM018",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    },
+    {
+      "A": 20,
+      "B": "Strawberry",
+      "C": "ITM020",
+      "D": "ITM005",
+      "E": "ITM001",
+      "F": "ITM002",
+      "G": "ITM017",
+      "H": "ITM018",
+      "I": "ITM019",
+      "J": "",
+      "K": "",
+      "L": "",
+      "M": ""
+    }
+  ],
+  "Inventory": [
+    {
+      "A": "Sl#",
+      "B": "ItemID",
+      "C": "Items Name"
+    },
+    {
+      "A": 1,
+      "B": "ITM001",
+      "C": "Puttu"
+    },
+    {
+      "A": 2,
+      "B": "ITM002",
+      "C": "Appam"
+    },
+    {
+      "A": 3,
+      "B": "ITM003",
+      "C": "Kerala Porotta"
+    },
+    {
+      "A": 4,
+      "B": "ITM004",
+      "C": "Idiyappam"
+    },
+    {
+      "A": 5,
+      "B": "ITM005",
+      "C": "Masala Dosa"
+    },
+    {
+      "A": 6,
+      "B": "ITM006",
+      "C": "Plain Dosa"
+    },
+    {
+      "A": 7,
+      "B": "ITM007",
+      "C": "Kadala Curry"
+    },
+    {
+      "A": 8,
+      "B": "ITM008",
+      "C": "Egg Roast"
+    },
+    {
+      "A": 9,
+      "B": "ITM009",
+      "C": "Kerala Rice"
+    },
+    {
+      "A": 10,
+      "B": "ITM010",
+      "C": "Baric Rice"
+    },
+    {
+      "A": 11,
+      "B": "ITM011",
+      "C": "Ghee Rice (Neychoru)"
+    },
+    {
+      "A": 12,
+      "B": "ITM012",
+      "C": "Biriyani Rice"
+    },
+    {
+      "A": 13,
+      "B": "ITM013",
+      "C": "Chicken Biriyani"
+    },
+    {
+      "A": 14,
+      "B": "ITM014",
+      "C": "Beef Biriyani"
+    },
+    {
+      "A": 15,
+      "B": "ITM015",
+      "C": "Fish Meals"
+    },
+    {
+      "A": 16,
+      "B": "ITM016",
+      "C": "Pothichoru"
+    },
+    {
+      "A": 17,
+      "B": "ITM017",
+      "C": "Ayala Fish Curry"
+    },
+    {
+      "A": 18,
+      "B": "ITM018",
+      "C": "Fish Pollichathu"
+    },
+    {
+      "A": 19,
+      "B": "ITM019",
+      "C": "Chicken Shawarma"
+    },
+    {
+      "A": 20,
+      "B": "ITM020",
+      "C": "Alfaham Chicken"
+    },
+    {
+      "A": 21,
+      "B": "ITM021",
+      "C": "Broasted Chicken"
+    },
+    {
+      "A": 22,
+      "B": "ITM022",
+      "C": "Mixed Grill"
+    },
+    {
+      "A": 23,
+      "B": "ITM023",
+      "C": "Beef Roast (Nadan)"
+    },
+    {
+      "A": 24,
+      "B": "ITM024",
+      "C": "Beef Fry"
+    },
+    {
+      "A": 25,
+      "B": "ITM025",
+      "C": "Mutton Curry"
+    },
+    {
+      "A": 26,
+      "B": "ITM026",
+      "C": "Chicken Fry"
+    },
+    {
+      "A": 27,
+      "B": "ITM027",
+      "C": "Butter Chicken"
+    },
+    {
+      "A": 28,
+      "B": "ITM028",
+      "C": "Nadan Pathiri"
+    },
+    {
+      "A": 29,
+      "B": "ITM029",
+      "C": "Normal Tea (Black)"
+    },
+    {
+      "A": 30,
+      "B": "ITM030",
+      "C": "Milk Tea"
+    },
+    {
+      "A": 31,
+      "B": "ITM031",
+      "C": "Sulaimani"
+    },
+    {
+      "A": 32,
+      "B": "ITM032",
+      "C": "Black Coffee"
+    },
+    {
+      "A": 33,
+      "B": "ITM033",
+      "C": "Milk Coffee"
+    },
+    {
+      "A": 34,
+      "B": "ITM034",
+      "C": "Water Cup 250ml"
+    },
+    {
+      "A": 35,
+      "B": "ITM035",
+      "C": "Water Bottle 500ml"
+    },
+    {
+      "A": 36,
+      "B": "ITM036",
+      "C": "Water Bottle 1Ltr"
+    },
+    {
+      "A": 37,
+      "B": "ITM037",
+      "C": "Pepsi 330ml"
+    },
+    {
+      "A": 38,
+      "B": "ITM038",
+      "C": "Coca-Cola 330ml"
+    },
+    {
+      "A": 39,
+      "B": "ITM039",
+      "C": "7 Up 330ml"
+    },
+    {
+      "A": 40,
+      "B": "ITM040",
+      "C": "Mirinda 330ml"
+    },
+    {
+      "A": 41,
+      "B": "ITM041",
+      "C": "Kinza Cola 330ml"
+    },
+    {
+      "A": 42,
+      "B": "ITM042",
+      "C": "Kinza Citrus 330ml"
+    },
+    {
+      "A": 43,
+      "B": "ITM043",
+      "C": "Fresh Orange Juice"
+    },
+    {
+      "A": 44,
+      "B": "ITM044",
+      "C": "Fresh Mango Juice"
+    },
+    {
+      "A": 45,
+      "B": "ITM045",
+      "C": "Fresh Lemon Mint"
+    },
+    {
+      "A": 46,
+      "B": "ITM046",
+      "C": "Avocado Shake"
+    },
+    {
+      "A": 47,
+      "B": "ITM047",
+      "C": "Sharjah Shake"
+    },
+    {
+      "A": 48,
+      "B": "ITM048",
+      "C": "Vanilla Ice Cream"
+    },
+    {
+      "A": 49,
+      "B": "ITM049",
+      "C": "Strawberry Ice Cream"
+    },
+    {
+      "A": 50,
+      "B": "ITM050",
+      "C": "Fruit Salad w/ Ice Cream"
+    },
+    {
+      "A": 51,
+      "B": "ITM051",
+      "C": "Royal Falooda"
+    },
+    {
+      "A": 52,
+      "B": "ITM052",
+      "C": ""
+    },
+    {
+      "A": 53,
+      "B": "ITM053",
+      "C": ""
+    },
+    {
+      "A": 54,
+      "B": "ITM054",
+      "C": ""
+    },
+    {
+      "A": 55,
+      "B": "ITM055",
+      "C": ""
+    },
+    {
+      "A": 56,
+      "B": "ITM056",
+      "C": ""
+    },
+    {
+      "A": 57,
+      "B": "ITM057",
+      "C": ""
+    },
+    {
+      "A": 58,
+      "B": "ITM058",
+      "C": ""
+    },
+    {
+      "A": 59,
+      "B": "ITM059",
+      "C": ""
+    },
+    {
+      "A": 60,
+      "B": "ITM060",
+      "C": ""
+    },
+    {
+      "A": 61,
+      "B": "ITM061",
+      "C": ""
+    },
+    {
+      "A": 62,
+      "B": "ITM062",
+      "C": ""
+    },
+    {
+      "A": 63,
+      "B": "ITM063",
+      "C": ""
+    },
+    {
+      "A": 64,
+      "B": "ITM064",
+      "C": ""
+    },
+    {
+      "A": 65,
+      "B": "ITM065",
+      "C": ""
+    },
+    {
+      "A": 66,
+      "B": "ITM066",
+      "C": ""
+    },
+    {
+      "A": 67,
+      "B": "ITM067",
+      "C": ""
+    },
+    {
+      "A": 68,
+      "B": "ITM068",
+      "C": ""
+    },
+    {
+      "A": 69,
+      "B": "ITM069",
+      "C": ""
+    },
+    {
+      "A": 70,
+      "B": "ITM070",
+      "C": ""
+    },
+    {
+      "A": 71,
+      "B": "ITM071",
+      "C": ""
+    },
+    {
+      "A": 72,
+      "B": "ITM072",
+      "C": ""
+    },
+    {
+      "A": 73,
+      "B": "ITM073",
+      "C": ""
+    },
+    {
+      "A": 74,
+      "B": "ITM074",
+      "C": ""
+    },
+    {
+      "A": 75,
+      "B": "ITM075",
+      "C": ""
+    },
+    {
+      "A": 76,
+      "B": "ITM076",
+      "C": ""
+    },
+    {
+      "A": 77,
+      "B": "ITM077",
+      "C": ""
+    },
+    {
+      "A": 78,
+      "B": "ITM078",
+      "C": ""
+    },
+    {
+      "A": 79,
+      "B": "ITM079",
+      "C": ""
+    },
+    {
+      "A": 80,
+      "B": "ITM080",
+      "C": ""
+    },
+    {
+      "A": 81,
+      "B": "ITM081",
+      "C": ""
+    },
+    {
+      "A": 82,
+      "B": "ITM082",
+      "C": ""
+    },
+    {
+      "A": 83,
+      "B": "ITM083",
+      "C": ""
+    },
+    {
+      "A": 84,
+      "B": "ITM084",
+      "C": ""
+    },
+    {
+      "A": 85,
+      "B": "ITM085",
+      "C": ""
+    },
+    {
+      "A": 86,
+      "B": "ITM086",
+      "C": ""
+    },
+    {
+      "A": 87,
+      "B": "ITM087",
+      "C": ""
+    },
+    {
+      "A": 88,
+      "B": "ITM088",
+      "C": ""
+    },
+    {
+      "A": 89,
+      "B": "ITM089",
+      "C": ""
+    },
+    {
+      "A": 90,
+      "B": "ITM090",
+      "C": ""
+    },
+    {
+      "A": 91,
+      "B": "ITM091",
+      "C": ""
+    },
+    {
+      "A": 92,
+      "B": "ITM092",
+      "C": ""
+    },
+    {
+      "A": 93,
+      "B": "ITM093",
+      "C": ""
+    },
+    {
+      "A": 94,
+      "B": "ITM094",
+      "C": ""
+    },
+    {
+      "A": 95,
+      "B": "ITM095",
+      "C": ""
+    },
+    {
+      "A": 96,
+      "B": "ITM096",
+      "C": ""
+    },
+    {
+      "A": 97,
+      "B": "ITM097",
+      "C": ""
+    },
+    {
+      "A": 98,
+      "B": "ITM098",
+      "C": ""
+    },
+    {
+      "A": 99,
+      "B": "ITM099",
+      "C": ""
+    },
+    {
+      "A": 100,
+      "B": "ITM100",
+      "C": ""
+    },
+    {
+      "A": 101,
+      "B": "ITM101",
+      "C": ""
+    },
+    {
+      "A": 102,
+      "B": "ITM102",
+      "C": ""
+    },
+    {
+      "A": 103,
+      "B": "ITM103",
+      "C": ""
+    },
+    {
+      "A": 104,
+      "B": "ITM104",
+      "C": ""
+    },
+    {
+      "A": 105,
+      "B": "ITM105",
+      "C": ""
+    },
+    {
+      "A": 106,
+      "B": "ITM106",
+      "C": ""
+    },
+    {
+      "A": 107,
+      "B": "ITM107",
+      "C": ""
+    },
+    {
+      "A": 108,
+      "B": "ITM108",
+      "C": ""
+    },
+    {
+      "A": 109,
+      "B": "ITM109",
+      "C": ""
+    },
+    {
+      "A": 110,
+      "B": "ITM110",
+      "C": ""
+    },
+    {
+      "A": 111,
+      "B": "ITM111",
+      "C": ""
+    },
+    {
+      "A": 112,
+      "B": "ITM112",
+      "C": ""
+    },
+    {
+      "A": 113,
+      "B": "ITM113",
+      "C": ""
+    },
+    {
+      "A": 114,
+      "B": "ITM114",
+      "C": ""
+    },
+    {
+      "A": 115,
+      "B": "ITM115",
+      "C": ""
+    },
+    {
+      "A": 116,
+      "B": "ITM116",
+      "C": ""
+    },
+    {
+      "A": 117,
+      "B": "ITM117",
+      "C": ""
+    },
+    {
+      "A": 118,
+      "B": "ITM118",
+      "C": ""
+    },
+    {
+      "A": 119,
+      "B": "ITM119",
+      "C": ""
+    },
+    {
+      "A": 120,
+      "B": "ITM120",
+      "C": ""
+    },
+    {
+      "A": 121,
+      "B": "ITM121",
+      "C": ""
+    },
+    {
+      "A": 122,
+      "B": "ITM122",
+      "C": ""
+    },
+    {
+      "A": 123,
+      "B": "ITM123",
+      "C": ""
+    },
+    {
+      "A": 124,
+      "B": "ITM124",
+      "C": ""
+    },
+    {
+      "A": 125,
+      "B": "ITM125",
+      "C": ""
+    },
+    {
+      "A": 126,
+      "B": "ITM126",
+      "C": ""
+    },
+    {
+      "A": 127,
+      "B": "ITM127",
+      "C": ""
+    },
+    {
+      "A": 128,
+      "B": "ITM128",
+      "C": ""
+    },
+    {
+      "A": 129,
+      "B": "ITM129",
+      "C": ""
+    },
+    {
+      "A": 130,
+      "B": "ITM130",
+      "C": ""
+    },
+    {
+      "A": 131,
+      "B": "ITM131",
+      "C": ""
+    },
+    {
+      "A": 132,
+      "B": "ITM132",
+      "C": ""
+    },
+    {
+      "A": 133,
+      "B": "ITM133",
+      "C": ""
+    },
+    {
+      "A": 134,
+      "B": "ITM134",
+      "C": ""
+    },
+    {
+      "A": 135,
+      "B": "ITM135",
+      "C": ""
+    },
+    {
+      "A": 136,
+      "B": "ITM136",
+      "C": ""
+    },
+    {
+      "A": 137,
+      "B": "ITM137",
+      "C": ""
+    },
+    {
+      "A": 138,
+      "B": "ITM138",
+      "C": ""
+    },
+    {
+      "A": 139,
+      "B": "ITM139",
+      "C": ""
+    },
+    {
+      "A": 140,
+      "B": "ITM140",
+      "C": ""
+    },
+    {
+      "A": 141,
+      "B": "ITM141",
+      "C": ""
+    },
+    {
+      "A": 142,
+      "B": "ITM142",
+      "C": ""
+    },
+    {
+      "A": 143,
+      "B": "ITM143",
+      "C": ""
+    },
+    {
+      "A": 144,
+      "B": "ITM144",
+      "C": ""
+    },
+    {
+      "A": 145,
+      "B": "ITM145",
+      "C": ""
+    },
+    {
+      "A": 146,
+      "B": "ITM146",
+      "C": ""
+    },
+    {
+      "A": 147,
+      "B": "ITM147",
+      "C": ""
+    },
+    {
+      "A": 148,
+      "B": "ITM148",
+      "C": ""
+    },
+    {
+      "A": 149,
+      "B": "ITM149",
+      "C": ""
+    },
+    {
+      "A": 150,
+      "B": "ITM150",
+      "C": ""
+    },
+    {
+      "A": 151,
+      "B": "ITM151",
+      "C": ""
+    },
+    {
+      "A": 152,
+      "B": "ITM152",
+      "C": ""
+    },
+    {
+      "A": 153,
+      "B": "ITM153",
+      "C": ""
+    },
+    {
+      "A": 154,
+      "B": "ITM154",
+      "C": ""
+    },
+    {
+      "A": 155,
+      "B": "ITM155",
+      "C": ""
+    },
+    {
+      "A": 156,
+      "B": "ITM156",
+      "C": ""
+    },
+    {
+      "A": 157,
+      "B": "ITM157",
+      "C": ""
+    },
+    {
+      "A": 158,
+      "B": "ITM158",
+      "C": ""
+    },
+    {
+      "A": 159,
+      "B": "ITM159",
+      "C": ""
+    },
+    {
+      "A": 160,
+      "B": "ITM160",
+      "C": ""
+    },
+    {
+      "A": 161,
+      "B": "ITM161",
+      "C": ""
+    },
+    {
+      "A": 162,
+      "B": "ITM162",
+      "C": ""
+    },
+    {
+      "A": 163,
+      "B": "ITM163",
+      "C": ""
+    },
+    {
+      "A": 164,
+      "B": "ITM164",
+      "C": ""
+    },
+    {
+      "A": 165,
+      "B": "ITM165",
+      "C": ""
+    },
+    {
+      "A": 166,
+      "B": "ITM166",
+      "C": ""
+    },
+    {
+      "A": 167,
+      "B": "ITM167",
+      "C": ""
+    },
+    {
+      "A": 168,
+      "B": "ITM168",
+      "C": ""
+    },
+    {
+      "A": 169,
+      "B": "ITM169",
+      "C": ""
+    },
+    {
+      "A": 170,
+      "B": "ITM170",
+      "C": ""
+    },
+    {
+      "A": 171,
+      "B": "ITM171",
+      "C": ""
+    },
+    {
+      "A": 172,
+      "B": "ITM172",
+      "C": ""
+    },
+    {
+      "A": 173,
+      "B": "ITM173",
+      "C": ""
+    },
+    {
+      "A": 174,
+      "B": "ITM174",
+      "C": ""
+    },
+    {
+      "A": 175,
+      "B": "ITM175",
+      "C": ""
+    },
+    {
+      "A": 176,
+      "B": "ITM176",
+      "C": ""
+    },
+    {
+      "A": 177,
+      "B": "ITM177",
+      "C": ""
+    },
+    {
+      "A": 178,
+      "B": "ITM178",
+      "C": ""
+    },
+    {
+      "A": 179,
+      "B": "ITM179",
+      "C": ""
+    },
+    {
+      "A": 180,
+      "B": "ITM180",
+      "C": ""
+    },
+    {
+      "A": 181,
+      "B": "ITM181",
+      "C": ""
+    },
+    {
+      "A": 182,
+      "B": "ITM182",
+      "C": ""
+    },
+    {
+      "A": 183,
+      "B": "ITM183",
+      "C": ""
+    },
+    {
+      "A": 184,
+      "B": "ITM184",
+      "C": ""
+    },
+    {
+      "A": 185,
+      "B": "ITM185",
+      "C": ""
+    },
+    {
+      "A": 186,
+      "B": "ITM186",
+      "C": ""
+    },
+    {
+      "A": 187,
+      "B": "ITM187",
+      "C": ""
+    },
+    {
+      "A": 188,
+      "B": "ITM188",
+      "C": ""
+    },
+    {
+      "A": 189,
+      "B": "ITM189",
+      "C": ""
+    },
+    {
+      "A": 190,
+      "B": "ITM190",
+      "C": ""
+    },
+    {
+      "A": 191,
+      "B": "ITM191",
+      "C": ""
+    },
+    {
+      "A": 192,
+      "B": "ITM192",
+      "C": ""
+    },
+    {
+      "A": 193,
+      "B": "ITM193",
+      "C": ""
+    },
+    {
+      "A": 194,
+      "B": "ITM194",
+      "C": ""
+    },
+    {
+      "A": 195,
+      "B": "ITM195",
+      "C": ""
+    },
+    {
+      "A": 196,
+      "B": "ITM196",
+      "C": ""
+    },
+    {
+      "A": 197,
+      "B": "ITM197",
+      "C": ""
+    },
+    {
+      "A": 198,
+      "B": "ITM198",
+      "C": ""
+    },
+    {
+      "A": 199,
+      "B": "ITM199",
+      "C": ""
+    },
+    {
+      "A": 200,
+      "B": "ITM200",
+      "C": ""
+    }
+  ],
+  "Content rule": [
+    {
+      "A": "1. The Perfect Image Size & Ratio",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "Current File",
+      "J": "Sounds Like",
+      "K": "Suggested Original/Library Name"
+    },
+    {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX06.mp3",
+      "J": "Short digital impact with a soft electronic pulse; good as a UI confirmation or logo hit.",
+      "K": "UI_Click_Impact, Digital_Pop_Hit, Electronic_Tap"
+    },
+    {
+      "A": "Consistency is the most important rule. Pick one aspect ratio and use it for every single food item.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX07.mp3",
+      "J": "Long futuristic energy sweep with rising motion and a cinematic sci-fi feel. Suitable for transitions or reveals.",
+      "K": "SciFi_Riser, Energy_Sweep, Whoosh_Rise_Long, Future_Transition"
+    },
+    {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX08.mp3",
+      "J": "Fast electronic whoosh with a clean finish; ideal for motion graphics or object movement.",
+      "K": "Whoosh_Fast, Digital_Swish, Air_Sweep, Transition_Whoosh"
+    },
+    {
+      "A": "Aspect Ratio: 4:3 (Landscape) or 1:1 (Square) work best for your card layouts.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX09.mp3",
+      "J": "Mechanical/electronic movement with a subtle impact at the end. Feels like a device activating or interface animation.",
+      "K": "Tech_Move, Mechanical_Servo, UI_Transform, Digital_Movement"
+    },
+    {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX10.mp3",
+      "J": "Bright sparkle/chime with a magical or premium notification feeling.",
+      "K": "Magic_Chime, Success_Ding, Sparkle, Notification_Positive"
+    },
+    {
+      "A": "Dimensions: 800 x 600 pixels (for 4:3) or 800 x 800 pixels (for 1:1).",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX12.mp3",
+      "J": "Short cinematic hit with a low electronic punch. Great for emphasis or logo animations.",
+      "K": "Logo_Hit, Impact_Short, Trailer_Hit_Light, Cinematic_Punch"
+    },
+    {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX05.mp3",
+      "J": "Female voice saying \"Delicious!\" with an energetic, positive tone. Great for food games or reward feedback.",
+      "K": "VO_Female_Delicious, Female_Delicious_01, Voice_Delicious, Announcer_Delicious"
+    },
+    {
+      "A": "Why: This resolution is large enough to look crisp when a desktop user clicks to expand the item modal, but small enough that it won't ruin your loading speeds.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX04.mp3",
+      "J": "Rapid score counting/tally sound with ascending UI ticks. Common after completing a level or counting points.",
+      "K": "Score_Tally, Points_Count, Score_Count_Up, Tally_Count, Arcade_Score"
+    },
+    {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX03.mp3",
+      "J": "Cartoon-style explosion/impact with a punchy finish. More playful than realistic.",
+      "K": "Cartoon_Blast, Explosion_Light, Impact_Blast, Arcade_Explosion"
+    },
+    {
+      "A": "2. File Size & Format (Crucial)",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX02.mp3",
+      "J": "Short success sound indicating a match or completed action. Bright and satisfying.",
+      "K": "Match_Success, Puzzle_Match, Success_Plop, Correct_Match"
+    },
+    {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX01.mp3",
+      "J": "Clean UI button click with a soft electronic confirmation.",
+      "K": "UI_Click, Button_Click, Interface_Click, Menu_Select"
+    },
+    {
+      "A": "Because GitHub Pages is hosting this for free, heavy images will make the app feel sluggish.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "SFX11.mp3",
+      "J": "Female voice saying \"Moonstruck!\" in a cheerful, game-show style. Likely a reward or themed announcement.",
+      "K": "VO_Female_Moonstruck, Female_Moonstruck, Voice_Moonstruck, Announcer_Moonstruck"
+    },
+    {
+      "A": "Target File Size: Strictly under 150KB per image.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Best Formats: Save your files as WebP or highly compressed JPG. Avoid PNGs unless you absolutely need a transparent background, as they are far too heavy.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Pro Tip: Run your final batches through a compressor like TinyPNG or Squoosh.app before uploading them.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "3. Video Management",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Since video files are massive, hosting raw .mp4 files directly on GitHub will quickly eat up your 100GB monthly bandwidth limit and cause buffering for mobile users on slow connections.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "The Best Method: Upload your food videos to YouTube, Vimeo, or Instagram Reels.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "How to use them: Simply paste the URL of that uploaded video into the \"Video\" column (Column L) of your Excel sheet. Your app is already coded to display a \"Watch Video\" button that smartly links out to it!",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "1. Main Promotional Banners (Top Header & Inline Menu Banner)",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "These are the wide banners that stretch across the whole screen (like the one we just injected after the 5th category using Column O).",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Aspect Ratio: 16:9 (Widescreen) or 3:1 (Ultra-wide).",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Perfect Dimensions: 1200 x 600 pixels or 1200 x 400 pixels.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "The \"Safe Zone\" Rule: Because a mobile phone is tall and narrow, but a desktop monitor is wide, the browser will chop off the far left and far right edges of the banner on mobile. Always put your main focus, text, or logos dead-center in the image so they never get cropped out.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Max File Size: Keep these under 250KB.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "2. Offer Banners (The Sliding Carousel Cards)",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "These are the cards that slide at the top of the menu. They don't stretch the full width of the screen; they sit inside a rounded card container.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Aspect Ratio: 16:9 (Standard Widescreen).",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Perfect Dimensions: 800 x 450 pixels.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Design Tip: Since we added a dark, semi-transparent overlay over these images so the white offer text is readable, make sure the original images you upload are bright and high-contrast! If you are designing the text directly onto the image itself (like a Photoshop flyer), leave the Excel text columns (B, C, D, E) completely blank so the code doesn't write text over your graphic.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Max File Size: Keep these under 150KB.",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "F": "",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Image Type",
+      "B": "Excel Column / Location",
+      "C": "Aspect Ratio",
+      "D": "AI Prompt Tag",
+      "E": "Recommended Resolution",
+      "F": "Max File Size",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Brand Logo",
+      "B": "Branding Sheet: Column N",
+      "C": "1:1 (Square)",
+      "D": "--ar 1:1",
+      "E": "512 x 512 px",
+      "F": "< 100 KB",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Menu Items (Main)",
+      "B": "Menu Sheets: Column K or ItemImages",
+      "C": "4:3 (Standard Photo)",
+      "D": "--ar 4:3",
+      "E": "800 x 600 px",
+      "F": "< 150 KB",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Offer Carousel Backgrounds",
+      "B": "Offers Sheet: Column F",
+      "C": "16:9 (Widescreen)",
+      "D": "--ar 16:9",
+      "E": "800 x 450 px",
+      "F": "< 150 KB",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Inline Category Banner",
+      "B": "Branding Sheet: Column O",
+      "C": "21:9 (Ultra-Wide)",
+      "D": "--ar 21:9",
+      "E": "1200 x 400 px",
+      "F": "< 200 KB",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "Screensaver Flashcards",
+      "B": "Menu Sheets: Column N or FlashCard",
+      "C": "9:16 (Mobile Vertical)",
+      "D": "--ar 9:16",
+      "E": "1080 x 1920 px",
+      "F": "< 300 KB",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    },
+    {
+      "A": "PWA App Icon",
+      "B": "logo.png (Root Folder)",
+      "C": "1:1 (Square)",
+      "D": "--ar 1:1",
+      "E": "512 x 512 px",
+      "F": "< 100 KB",
+      "G": "",
+      "H": "",
+      "I": "",
+      "J": "",
+      "K": ""
+    }
+  ]
+}
