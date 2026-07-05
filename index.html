@@ -294,8 +294,9 @@
                         <button onclick="smartWhatsAppOrder()" class="flex-1 bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-md flex items-center justify-center gap-2">
     <i class="fab fa-whatsapp text-lg"></i> <span id="label-wa">Order Now</span>
 </button>
-                        <button onclick="addToCart()" class="flex-1 bg-orange-500 text-white text-center py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-md flex items-center justify-center gap-2">
-                            <i class="fas fa-cart-plus text-lg"></i> <span>Add to Cart</span>
+                        <!-- FIX: Upgraded to a Smart Toggle Button with dynamic IDs -->
+                        <button id="modal-cart-btn" onclick="toggleQuickCart(currentOpenItemId)" class="flex-1 bg-orange-500 text-white text-center py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-md flex items-center justify-center gap-2">
+                            <i id="modal-cart-icon" class="fas fa-cart-plus text-lg"></i> <span id="modal-cart-text">Add to Cart</span>
                         </button>
                     </div>
                     <div class="flex gap-3">
@@ -1446,6 +1447,9 @@
                     }
                 };
                 window.modalCarouselTimer = setInterval(() => {
+                    // FIX: If the user touched the modal slider in the last 5s, pause auto-swipe!
+                    if (Date.now() - lastSliderInteraction < 5000) return;
+                    
                     currentIdx = (currentIdx + 1) % urls.length;
                     slider.scrollTo({ left: currentIdx * slider.clientWidth, behavior: 'smooth' });
                 }, 3000);
@@ -1981,6 +1985,24 @@ function toggleQuickCart(id) {
                         : `quick-add-icon-${item.id} fas fa-plus text-sm transition-transform duration-500 rotate-0`;
                 });
             });
+
+            // --- FIX: Instantly update the large button inside the Expanded Modal too! ---
+            const modalCartBtn = document.getElementById('modal-cart-btn');
+            const modalCartIcon = document.getElementById('modal-cart-icon');
+            const modalCartText = document.getElementById('modal-cart-text');
+            
+            if (modalCartBtn && currentOpenItemId) {
+                const isInCart = cart.some(c => String(c.id) === String(currentOpenItemId));
+                if (isInCart) {
+                    modalCartBtn.className = "flex-1 bg-red-500 text-white text-center py-3 rounded-xl font-bold hover:bg-red-600 transition-all duration-300 shadow-md flex items-center justify-center gap-2";
+                    modalCartIcon.className = "fas fa-trash-alt text-lg";
+                    modalCartText.innerText = "Remove from Cart";
+                } else {
+                    modalCartBtn.className = "flex-1 bg-orange-500 text-white text-center py-3 rounded-xl font-bold hover:bg-orange-600 transition-all duration-300 shadow-md flex items-center justify-center gap-2";
+                    modalCartIcon.className = "fas fa-cart-plus text-lg";
+                    modalCartText.innerText = "Add to Cart";
+                }
+            }
         }
         function updateCartUI() {
             const countBadge = document.getElementById('cart-count-badge');
@@ -2422,8 +2444,8 @@ function toggleQuickCart(id) {
         ['touchstart', 'touchmove', 'mousedown', 'wheel'].forEach(evt => {
             document.addEventListener(evt, (e) => {
                 // If they touch a food card or the banner, record the exact time!
-                // FIX: Added '#promo-slider' so the popup card doesn't fight the user's swiping!
-                if (e.target.closest('.mini-img-slider') || e.target.closest('.excel-banner-slider') || e.target.closest('#promo-slider')) {
+                // FIX: Added '#modal-image-slider' to the tracker!
+                if (e.target.closest('.mini-img-slider') || e.target.closest('.excel-banner-slider') || e.target.closest('#promo-slider') || e.target.closest('#modal-image-slider')) {
                     lastSliderInteraction = Date.now();
                 }
             }, { passive: true });
@@ -2520,6 +2542,59 @@ function toggleQuickCart(id) {
                 }
             });
         }, 5000); // 3000ms = 3 Seconds delay
+      // --- NEW: Premium Pull-To-Close Elastic Engine for Expanded View ---
+        const pModal = document.getElementById('productModal');
+        const pContent = document.getElementById('modalContent');
+        let pullStartY = 0;
+        let isPulling = false;
+
+        pModal.addEventListener('touchstart', (e) => {
+            const scrollArea = pContent.querySelector('.overflow-y-auto');
+            // Only start tracking the pull if the user is currently at the absolute top of the scrolling text
+            if (scrollArea && scrollArea.scrollTop <= 0) {
+                pullStartY = e.touches[0].clientY;
+                isPulling = true;
+                // Temporarily disable CSS transitions so it sticks perfectly to their finger
+                pContent.classList.remove('transition-all', 'duration-300');
+            } else {
+                isPulling = false;
+            }
+        }, { passive: true });
+
+        pModal.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            const deltaY = e.touches[0].clientY - pullStartY;
+
+            // If pulling DOWN (deltaY is positive)
+            if (deltaY > 0) {
+                if (e.cancelable) e.preventDefault(); // Stop normal background scrolling
+                // Apply a 0.4 friction multiplier to create that satisfying "heavy elastic" feel
+                pContent.style.transform = `translateY(${deltaY * 0.4}px)`;
+            } else {
+                // If they push UP, cancel the pull and let native scrolling take over
+                pContent.style.transform = '';
+                isPulling = false; 
+            }
+        }, { passive: false });
+
+        pModal.addEventListener('touchend', () => {
+            if (!isPulling) return;
+            isPulling = false;
+            
+            // Turn CSS smooth transitions back on
+            pContent.classList.add('transition-all', 'duration-300');
+            
+            // If they pulled it down more than 100 pixels, snap it closed!
+            const currentPullAmount = parseInt(pContent.style.transform.replace(/[^\d.]/g, '') || "0");
+            if (currentPullAmount > 100) {
+                pContent.style.transform = ''; 
+                closeModal();
+            } else {
+                // Snap back to the top like a rubber band!
+                pContent.style.transform = ''; 
+            }
+        });
+        // ------------------------------------------------------------------
         window.onload = init;
         setupSearch(); 
 
