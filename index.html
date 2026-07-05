@@ -497,9 +497,8 @@
     <script>
       const allowedDomains = [
             "rmoosa2014.github.io", 
-            "localhost", 
-            "127.0.0.1",
-            "myrestaurant.com" 
+            "localhost",            
+            "127.0.0.1"             
         ];
         
         const currentDomain = window.location.hostname;
@@ -510,7 +509,7 @@
                 <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8fafc; font-family:sans-serif; color:#ef4444;">
                     <h2>Unauthorized Domain. Access Denied.</h2>
                 </div>`;
-            throw new Error("Security Lock Triggered."); // Stops all other code from running
+            throw new Error("Security Lock Triggered."); 
         }
       document.addEventListener('contextmenu', event => event.preventDefault());
 
