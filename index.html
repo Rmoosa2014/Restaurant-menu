@@ -15,7 +15,7 @@
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -495,6 +495,35 @@
         </div>
     </div>
     <script>
+      const allowedDomains = [
+            "rmoosa2014.github.io", 
+            "localhost", 
+            "127.0.0.1",
+            "myrestaurant.com" 
+        ];
+        
+        const currentDomain = window.location.hostname;
+        
+        // If they host it on their own site, the app self-destructs!
+        if (!allowedDomains.includes(currentDomain) && currentDomain !== "") {
+            document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8fafc; font-family:sans-serif; color:#ef4444;">
+                    <h2>Unauthorized Domain. Access Denied.</h2>
+                </div>`;
+            throw new Error("Security Lock Triggered."); // Stops all other code from running
+        }
+      document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+U)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || 
+               (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+               (e.ctrlKey && e.key === 'U') || 
+               (e.metaKey && e.altKey && e.key === 'I')) {
+                e.preventDefault();
+                return false;
+            }
+        });
         // --- Core State ---
         let rawBranding = {};
         let rawOffers = [];
@@ -539,43 +568,44 @@
             }
         };
 
-        // --- Master Initialization ---
+        /// --- Master Initialization (JSON Upgraded) ---
         async function init() {
             try {
-                const fileUrl = "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/MenuMasterData.xlsx?v=" + new Date().getTime();
+                // Point directly to the JSON file
+                const fileUrl = "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/MenuMasterData.json?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
-                if (!response.ok) throw new Error("Could not fetch file");
+                if (!response.ok) throw new Error("Could not fetch JSON file");
                 
-                const arrayBuffer = await response.arrayBuffer();
-                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                const sNames = workbook.SheetNames;
+                // Natively parse the JSON data (Extremely Fast!)
+                const jsonData = await response.json();
+                const sNames = Object.keys(jsonData);
                 
+                // Find the specific arrays by sheet name
                 const sBrand = sNames.find(n => n.includes("01") || n.includes("Brand") || n.replace(/\s/g,'') === "Sheet1") || sNames[0];
                 const sOffer = sNames.find(n => n.includes("2") || n.includes("Offer")) || sNames[1];
                 const sMenuEn = sNames.find(n => n.includes("3") || n.includes("English")) || sNames[2];
                 const sMenuAr = sNames.find(n => n.includes("4") || n.includes("Arabic")) || sNames[3];
+                const sRelated = sNames.find(n => n.toLowerCase().includes("relateditems"));
 
-                if(sBrand && workbook.Sheets[sBrand]) {
-                    const brandRows = XLSX.utils.sheet_to_json(workbook.Sheets[sBrand], { header: "A", defval: "" });
+                // Load Data
+                if(sBrand && jsonData[sBrand]) {
+                    const brandRows = jsonData[sBrand];
                     rawBranding = brandRows.find((r, i) => i > 0 && (r.K || r.B || r.L)) || brandRows[1] || brandRows[0] || {};
                 }
-                if(sOffer && workbook.Sheets[sOffer]) {
-                    const offerRows = XLSX.utils.sheet_to_json(workbook.Sheets[sOffer], { header: "A", defval: "" });
+                if(sOffer && jsonData[sOffer]) {
+                    const offerRows = jsonData[sOffer];
                     if(offerRows.length > 1) rawOffers = offerRows.slice(1);
                 }
-                if(sMenuEn && workbook.Sheets[sMenuEn]) {
-                    const enRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuEn], { header: "A", defval: "" });
+                if(sMenuEn && jsonData[sMenuEn]) {
+                    const enRows = jsonData[sMenuEn];
                     if(enRows.length > 1) rawMenuEn = enRows.slice(1);
                 }
-                if(sMenuAr && workbook.Sheets[sMenuAr]) {
-                    const arRows = XLSX.utils.sheet_to_json(workbook.Sheets[sMenuAr], { header: "A", defval: "" });
+                if(sMenuAr && jsonData[sMenuAr]) {
+                    const arRows = jsonData[sMenuAr];
                     if(arRows.length > 1) rawMenuAr = arRows.slice(1);
                 }
-                
-                // NEW: Load RelatedItems Sheet
-                const sRelated = sNames.find(n => n.toLowerCase().includes("relateditems"));
-                if(sRelated && workbook.Sheets[sRelated]) {
-                    relatedItemsData = XLSX.utils.sheet_to_json(workbook.Sheets[sRelated], { header: "A", defval: "" });
+                if(sRelated && jsonData[sRelated]) {
+                    relatedItemsData = jsonData[sRelated];
                 }
 
                 document.getElementById('loading-state').classList.add('hidden');
@@ -584,10 +614,15 @@
                 renderSocialMedia();
                 
             } catch (error) {
-                console.error("Excel Initialization Error:", error);
+                console.error("JSON Initialization Error:", error);
                 document.getElementById('loading-state').classList.add('hidden');
-                document.getElementById('error-state').classList.remove('hidden');
-                document.getElementById('error-state').classList.add('flex');
+                const errState = document.getElementById('error-state');
+                errState.classList.remove('hidden');
+                errState.classList.add('flex');
+                
+                // Dynamically update the error text if the JSON file is missing
+                const errText = errState.querySelector('p');
+                if(errText) errText.textContent = "Please ensure `MenuMasterData.json` is uploaded to your repository and formatted correctly.";
             }
         }
 
@@ -882,24 +917,30 @@
                     recipe: row.I || "",
                     isTodaySpecial: String(row.J || "").trim().toLowerCase() === 'today special',
                     
+                    // FIX: Unifies both GitHub Native Images AND Custom Excel Links into one carousel!
                     imgUrls: (() => {
                         let urls = [];
                         const v = "?v=" + new Date().getTime(); // Cache Buster
+                        const base = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${safeId}`;
                         
-                        if (row.K && String(row.K).includes(',')) {
-                            // User provided custom comma-separated list, respect their list!
-                            urls = String(row.K).split(',').map(u => {
+                        // 1. ALWAYS build the native GitHub matrix (Main, -2, -3, -4, -5)
+                        urls.push(`${base}.jpg${v}`, `${base}-2.jpg${v}`, `${base}-3.jpg${v}`, `${base}-4.jpg${v}`, `${base}-5.jpg${v}`);
+                        
+                        // 2. ALWAYS check Excel Column K for custom URLs (single or multiple)
+                        if (row.K) {
+                            const customUrls = String(row.K).split(',').map(u => {
                                 let clean = u.trim();
                                 if (!clean) return null;
                                 if (!clean.startsWith('http')) return `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${clean}${clean.includes('?') ? '' : v}`;
                                 return clean;
                             }).filter(u => u !== null);
-                        } else {
-                            // Auto-build the matrix natively! (Main, -2, -3, -4, -5)
-                            const base = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${safeId}`;
-                            urls = [`${base}.jpg${v}`, `${base}-2.jpg${v}`, `${base}-3.jpg${v}`, `${base}-4.jpg${v}`, `${base}-5.jpg${v}`];
+                            
+                            // Merge the custom Excel links with the native GitHub images!
+                            urls = urls.concat(customUrls);
                         }
-                        return urls;
+                        
+                        // Return the combined list (and use Set to automatically delete any accidental duplicates!)
+                        return [...new Set(urls)];
                     })(),
                     img: row.K ? String(row.K).split(',')[0].trim() : `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${safeId}.jpg`,
                     
