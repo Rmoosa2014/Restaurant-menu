@@ -1984,10 +1984,12 @@ function smartWhatsAppOrder() {
             const lobbyView = document.getElementById('game-lobby-view');
             const playView = document.getElementById('game-play-view');
             const frame = document.getElementById('gameFrame');
+            const closeBtn = document.getElementById('arcade-close-btn');
             
-            // Switch views
+            // Switch views and Hide the X button
             lobbyView.classList.add('hidden');
             playView.classList.remove('hidden');
+            if(closeBtn) closeBtn.classList.add('hidden');
             
             // Load the chosen game
             frame.src = gameUrl; 
@@ -1997,13 +1999,15 @@ function smartWhatsAppOrder() {
             const lobbyView = document.getElementById('game-lobby-view');
             const playView = document.getElementById('game-play-view');
             const frame = document.getElementById('gameFrame');
+            const closeBtn = document.getElementById('arcade-close-btn');
             
             // Stop the game and audio instantly
             frame.src = ''; 
             
-            // Switch back to lobby
+            // Switch back to lobby and Show the X button again
             playView.classList.add('hidden');
             lobbyView.classList.remove('hidden');
+            if(closeBtn) closeBtn.classList.remove('hidden');
         }
 
         function closeGameModal() {
