@@ -156,9 +156,10 @@
         
         <div class="relative z-10 w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] md:h-[700px] transform transition-all">
             <!-- Universal Close Button -->
-            <button onclick="closeGameModal()" class="absolute top-3 end-3 z-40 bg-black/50 hover:bg-black/80 backdrop-blur text-white w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
-                <i class="fas fa-times"></i>
-            </button>
+            <button id="arcade-close-btn" onclick="closeGameModal()" class="absolute top-3 end-3 z-40 bg-black/50 hover:bg-black/80 backdrop-blur text-white w-8 h-8 rounded-full flex items-center justify-center shadow transition-colors">
+    <i class="fas fa-times"></i>
+</button>
+
             
             <!-- VIEW 1: The Game Selection Lobby -->
             <div id="game-lobby-view" class="w-full h-full bg-slate-50 flex flex-col overflow-y-auto p-5 pt-10">
