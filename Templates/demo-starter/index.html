@@ -24,6 +24,8 @@
         .menu-card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
         .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        /* Smooth scrolling for the category sync */
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="text-gray-800 antialiased" ondragstart="return false;" onselectstart="return false;">
@@ -64,9 +66,9 @@
                 </div>
             </div>
         </div>
-        <div class="flex overflow-x-auto hide-scrollbar gap-0.5 px-1 pt-1 mb-0.5" id="sub-category-filters"></div>
+        <div class="flex overflow-x-auto hide-scrollbar gap-0.5 px-1 pt-1 mb-0.5 transition-all" id="sub-category-filters"></div>
         <div onclick="toggleMainCategories()" class="w-full flex justify-center pb-1 cursor-pointer group">
-            <i id="category-toggle-icon" class="fas fa-chevron-up text-gray-400 hover:text-red-500 text-[11px] px-6 py-1"></i>
+            <i id="category-toggle-icon" class="fas fa-chevron-up text-gray-400 hover:text-red-500 text-[11px] px-6 py-1 transition-transform duration-300"></i>
         </div>
     </section>
 
@@ -82,11 +84,14 @@
         </div>
     </main>
 
-    <!-- Updated Static Footer -->
+    <!-- Go To Top Button -->
+    <button id="goTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 end-6 z-40 bg-gray-900 text-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center hover:bg-black transition-all duration-300 transform scale-0 opacity-0 pointer-events-none">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Fully Interactive Footer (3-Column Mobile Contacts) -->
     <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-start">
-            
-            <!-- Brand & Social Media -->
             <div class="flex flex-col items-start">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shrink-0">
@@ -95,11 +100,9 @@
                     <span id="footer-title" class="font-bold text-xl tracking-tight">Restaurant Name</span>
                 </div>
                 <p id="footer-desc" class="text-gray-400 text-sm leading-relaxed mb-6">Made with fresh ingredients and authentic recipes to provide you with the best dining experience.</p>
-                <!-- Dynamic Social Media Container -->
                 <div id="social-media-container" class="flex gap-3 justify-start flex-wrap"></div>
             </div>
             
-            <!-- Clickable Contact Links (3 Columns on Mobile) -->
             <div class="flex flex-col items-start w-full">
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-headset text-red-500"></i> <span>Contact Us</span>
@@ -126,7 +129,6 @@
                 </ul>
             </div>
 
-            <!-- Clickable Location Link -->
             <div class="flex flex-col items-start">
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-map-marked-alt text-red-500"></i> <span>Location</span>
@@ -136,19 +138,22 @@
                     <span id="f-address" class="mt-1 leading-relaxed">--</span>
                 </a>
             </div>
-
         </div>
     </footer>
 
+    <!-- Product Modal with Swipe-to-Close -->
     <div id="productModal" class="fixed inset-0 z-[80] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
         <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
-            <button onclick="closeModal()" class="absolute top-3 end-3 z-30 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center shadow"><i class="fas fa-times"></i></button>
-            <div class="relative h-56 md:h-64 w-full shrink-0 bg-gray-100">
+            <!-- Swipe indicator line for UI -->
+            <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full z-40 md:hidden"></div>
+            
+            <button onclick="closeModal()" class="absolute top-4 end-4 z-30 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center shadow"><i class="fas fa-times"></i></button>
+            <div class="relative aspect-[4/3] w-full shrink-0 bg-gray-100">
                 <img id="modal-image" src="" class="w-full h-full object-cover">
                 <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm z-20"></div>
             </div>
-            <div class="p-5 md:p-6 overflow-y-auto relative">
+            <div class="p-5 md:p-6 overflow-y-auto relative overscroll-contain" id="modalScrollArea">
                 <div class="flex justify-between items-start gap-2 mb-2 border-b border-gray-100 pb-4">
                     <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
                     <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap"></span>
@@ -162,6 +167,7 @@
         </div>
     </div>
 
+    <!-- Brand Modal -->
     <div id="brandModal" class="fixed inset-0 z-[110] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="brandModalBackdrop" onclick="closeBrandModal()"></div>
         <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="brandModalContent">
@@ -181,6 +187,24 @@
         let activeMenuData = [], mainCategories = [], allSubCategories = [];
         let selectedMainCategories = new Set(), selectedSubCategories = new Set(), searchQuery = '';
         let currentOpenItemId = null;
+        let intersectionObserver = null;
+
+        // Auto-Typing Search Animation
+        const searchStrings = ["Search menu...", "Find your favorite...", "Craving something?"];
+        let typeIdx = 0, charIdx = 0, isDeleting = false;
+        function typeWriter() {
+            const input = document.getElementById('searchInput');
+            if(!input || document.activeElement === input) { setTimeout(typeWriter, 1000); return; }
+            const currentString = searchStrings[typeIdx];
+            if (isDeleting) {
+                input.placeholder = currentString.substring(0, charIdx--);
+                if (charIdx < 0) { isDeleting = false; typeIdx = (typeIdx + 1) % searchStrings.length; setTimeout(typeWriter, 500); return; }
+            } else {
+                input.placeholder = currentString.substring(0, charIdx++);
+                if (charIdx > currentString.length) { isDeleting = true; setTimeout(typeWriter, 2000); return; }
+            }
+            setTimeout(typeWriter, isDeleting ? 40 : 80);
+        }
 
         async function init() {
             try {
@@ -199,6 +223,7 @@
 
                 document.getElementById('loading-state').classList.add('hidden');
                 applySystemSetup();
+                typeWriter();
             } catch (error) { console.error("Error loading JSON"); }
         }
 
@@ -212,20 +237,15 @@
             document.getElementById('hero-title2').textContent = rawBranding.B || "Our Restaurant";
             document.getElementById('footer-title').textContent = rawBranding.B || "Restaurant";
 
-            // Footer Text & Link Injection
             document.getElementById('f-phone').textContent = rawBranding.C || "--";
             document.getElementById('link-phone').href = rawBranding.C ? `tel:${rawBranding.C}` : '#';
-            
             document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
             document.getElementById('link-whatsapp').href = rawBranding.D ? `https://wa.me/${rawBranding.D}` : '#';
-            
             document.getElementById('f-email').textContent = rawBranding.F || "--";
             document.getElementById('link-email').href = rawBranding.F ? `mailto:${rawBranding.F}` : '#';
-            
             document.getElementById('f-address').textContent = rawBranding.H || "--";
-            document.getElementById('link-location').href = rawBranding.I || '#'; // Column I is the Map Link
+            document.getElementById('link-location').href = rawBranding.I || '#';
             
-            // Dynamic Social Media Generator
             const socialContainer = document.getElementById('social-media-container');
             socialContainer.innerHTML = '';
             if(rawBranding.J && String(rawBranding.J).trim() !== "") {
@@ -233,14 +253,13 @@
                 links.forEach(link => {
                     let cleanLink = link.trim();
                     if(cleanLink) {
-                        let iconClass = "fas fa-link"; // Default icon
+                        let iconClass = "fas fa-link";
                         if(cleanLink.includes("instagram")) iconClass = "fab fa-instagram";
                         else if(cleanLink.includes("facebook")) iconClass = "fab fa-facebook-f";
                         else if(cleanLink.includes("twitter") || cleanLink.includes("x.com")) iconClass = "fab fa-twitter";
                         else if(cleanLink.includes("tiktok")) iconClass = "fab fa-tiktok";
                         else if(cleanLink.includes("snapchat")) iconClass = "fab fa-snapchat-ghost";
                         else if(cleanLink.includes("youtube")) iconClass = "fab fa-youtube";
-
                         socialContainer.innerHTML += `<a href="${cleanLink}" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm text-gray-300"><i class="${iconClass}"></i></a>`;
                     }
                 });
@@ -256,6 +275,19 @@
             formatMenuData(rawSource);
         }
 
+        // Icon mapping for categories
+        function getCategoryIcon(catName) {
+            const lower = catName.toLowerCase();
+            if(lower.includes('burger') || lower.includes('برجر')) return 'fa-hamburger';
+            if(lower.includes('pizza') || lower.includes('بيتزا')) return 'fa-pizza-slice';
+            if(lower.includes('drink') || lower.includes('juice') || lower.includes('مشروب')) return 'fa-glass-cheers';
+            if(lower.includes('coffee') || lower.includes('قهوة')) return 'fa-coffee';
+            if(lower.includes('salad') || lower.includes('سلطة')) return 'fa-leaf';
+            if(lower.includes('dessert') || lower.includes('sweet') || lower.includes('حلى')) return 'fa-ice-cream';
+            if(lower.includes('all') || lower.includes('الكل')) return 'fa-th-large';
+            return 'fa-utensils';
+        }
+
         function formatMenuData(rawSource) {
             activeMenuData = []; mainCategories = []; allSubCategories = [];
             const brandLogo = rawBranding.N || rawBranding.M || 'logo.png';
@@ -263,21 +295,15 @@
             rawSource.forEach(row => {
                 if(!row.B || !row.D) return;
                 const safeId = row.A ? String(row.A).trim() : Math.random().toString();
-                
-                let imgPath = brandLogo; 
-                let excelImg = "";
+                let imgPath = brandLogo; let excelImg = "";
 
-                // Starter Plan Custom Format: Image is exactly in Column H
                 if (row.H && String(row.H).trim() !== "") {
                     excelImg = String(row.H).split(',')[0].trim();
                 }
 
                 if (excelImg !== "") {
-                    if (excelImg.startsWith('http')) {
-                        imgPath = excelImg;
-                    } else {
-                        imgPath = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${excelImg}`;
-                    }
+                    if (excelImg.startsWith('http')) { imgPath = excelImg; } 
+                    else { imgPath = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${excelImg}`; }
                 }
                 
                 const item = {
@@ -298,8 +324,8 @@
             ['All', ...mainCategories].forEach((cat, index) => {
                 const isAll = cat === 'All', isActive = isAll ? selectedMainCategories.size === 0 : selectedMainCategories.has(cat);
                 const btn = document.createElement('button');
-                btn.className = `w-[100px] shrink-0 snap-start p-2 rounded-xl border font-bold text-[10px] transition-colors ${isActive ? 'bg-red-500 text-white' : 'bg-white text-gray-600'}`;
-                btn.textContent = isAll ? (currentLang==='ar'?'الكل':'All') : cat;
+                btn.className = `w-[100px] shrink-0 snap-start p-2 rounded-xl border font-bold text-[10px] transition-colors flex flex-col items-center justify-center ${isActive ? 'bg-red-500 text-white border-red-500' : 'bg-white text-gray-600'}`;
+                btn.innerHTML = `<i class="fas ${getCategoryIcon(cat)} mb-1 text-lg"></i> <span class="truncate w-full text-center">${isAll ? (currentLang==='ar'?'الكل':'All') : cat}</span>`;
                 btn.onclick = () => {
                     if (isAll) { selectedMainCategories.clear(); selectedSubCategories.clear(); }
                     else { selectedMainCategories.has(cat) ? selectedMainCategories.delete(cat) : selectedMainCategories.add(cat); }
@@ -319,7 +345,9 @@
             Array.from(relevant).sort().forEach(subCat => {
                 const isActive = selectedSubCategories.has(subCat);
                 const btn = document.createElement('button');
-                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold ${isActive ? 'bg-gray-800 text-white' : 'bg-white text-gray-600'}`;
+                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '');
+                btn.id = `sub-btn-${safeId}`;
+                btn.className = `sub-cat-btn shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isActive ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200'}`;
                 btn.textContent = subCat;
                 btn.onclick = () => {
                     selectedSubCategories.has(subCat) ? selectedSubCategories.delete(subCat) : selectedSubCategories.add(subCat);
@@ -341,18 +369,32 @@
             const grouped = {};
             filtered.forEach(item => { if(!grouped[item.subCat]) grouped[item.subCat] = []; grouped[item.subCat].push(item); });
 
+            // Setup Intersection Observer for scroll-sync
+            if(intersectionObserver) intersectionObserver.disconnect();
+            intersectionObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        const subId = entry.target.id.replace('section-', '');
+                        const btn = document.getElementById(`sub-btn-${subId}`);
+                        if(btn) btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    }
+                });
+            }, { rootMargin: '-20% 0px -70% 0px' });
+
             for (const subCat in grouped) {
                 const items = grouped[subCat].sort((a, b) => a.order - b.order);
                 const section = document.createElement('div');
-                section.innerHTML = `<h3 class="text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4">${subCat}</h3>`;
+                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '');
+                section.id = `section-${safeId}`;
+                
+                section.innerHTML = `<h3 class="text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4 pt-2">${subCat}</h3>`;
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-2 md:grid-cols-4 gap-3";
 
                 items.forEach((item) => {
                     const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full cursor-pointer";
+                    card.className = "bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full cursor-pointer";
                     card.onclick = () => openModal(item.id);
-                    // Added the robust onerror fallback directly to the image
                     card.innerHTML = `
                         <div class="relative aspect-[4/3] bg-gray-100"><img src="${item.img}" class="w-full h-full object-cover" onerror="this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.N || rawBranding.M || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}';"></div>
                         <div class="p-3 flex flex-col flex-grow">
@@ -361,12 +403,45 @@
                         </div>`;
                     grid.appendChild(card);
                 });
-                section.appendChild(grid); container.appendChild(section);
+                section.appendChild(grid); 
+                container.appendChild(section);
+                intersectionObserver.observe(section);
             }
             container.classList.remove('hidden'); container.classList.add('flex');
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase().trim(); executeFilter(); });
+
+        // Go to Top Scroll Listener
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('goTopBtn');
+            if (window.scrollY > 300) { btn.classList.remove('scale-0', 'opacity-0', 'pointer-events-none'); btn.classList.add('scale-100', 'opacity-100'); } 
+            else { btn.classList.add('scale-0', 'opacity-0', 'pointer-events-none'); btn.classList.remove('scale-100', 'opacity-100'); }
+        });
+
+        // Swipe-to-Close Modal Logic
+        const modalContent = document.getElementById('modalContent');
+        const modalScrollArea = document.getElementById('modalScrollArea');
+        let startY = 0, currentY = 0;
+        
+        modalContent.addEventListener('touchstart', (e) => {
+            if(modalScrollArea.scrollTop === 0) startY = e.touches[0].clientY;
+        }, {passive: true});
+        
+        modalContent.addEventListener('touchmove', (e) => {
+            if(startY === 0) return;
+            currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            if(diff > 0) { modalContent.style.transform = `translateY(${diff}px)`; modalContent.style.transition = 'none'; }
+        }, {passive: true});
+        
+        modalContent.addEventListener('touchend', (e) => {
+            if(startY === 0) return;
+            const diff = currentY - startY;
+            modalContent.style.transition = 'all 0.3s ease';
+            if(diff > 120) closeModal(); else modalContent.style.transform = '';
+            startY = 0;
+        });
 
         function openModal(id) {
             const item = activeMenuData.find(i => i.id === id);
@@ -379,6 +454,7 @@
             document.getElementById('modalDesc').textContent = item.desc;
             
             const modal = document.getElementById('productModal'), backdrop = document.getElementById('modalBackdrop'), content = document.getElementById('modalContent');
+            content.style.transform = ''; // Reset swipe transform
             modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth;
             backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100');
             content.classList.remove('translate-y-full', 'opacity-0'); content.classList.add('translate-y-0', 'opacity-100');
@@ -390,15 +466,21 @@
             backdrop.classList.remove('opacity-100'); backdrop.classList.add('opacity-0');
             content.classList.remove('translate-y-0', 'opacity-100'); content.classList.add('translate-y-full', 'opacity-0');
             document.body.style.overflow = '';
-            setTimeout(() => { modal.classList.remove('flex'); modal.classList.add('hidden'); }, 300);
+            setTimeout(() => { modal.classList.remove('flex'); modal.classList.add('hidden'); content.style.transform = ''; }, 300);
         }
 
         let isMainCatOpen = true;
         function toggleMainCategories() {
             isMainCatOpen = !isMainCatOpen;
             const container = document.getElementById('main-category-container');
-            isMainCatOpen ? (container.classList.remove('max-h-0', 'opacity-0'), container.classList.add('max-h-[300px]', 'opacity-100')) 
-                          : (container.classList.add('max-h-0', 'opacity-0'), container.classList.remove('max-h-[300px]', 'opacity-100'));
+            const icon = document.getElementById('category-toggle-icon');
+            if (isMainCatOpen) {
+                container.classList.remove('max-h-0', 'opacity-0'); container.classList.add('max-h-[300px]', 'opacity-100');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                container.classList.add('max-h-0', 'opacity-0'); container.classList.remove('max-h-[300px]', 'opacity-100');
+                icon.style.transform = 'rotate(180deg)';
+            }
         }
 
         function openBrandModal() { document.getElementById('brandModal').classList.remove('hidden'); document.getElementById('brandModal').classList.add('flex'); }
