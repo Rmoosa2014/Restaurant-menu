@@ -1,42 +1,28 @@
-const CACHE_NAME = 'restaurant-menu-v6'; // Change version to force an update!
-
-const URLS_TO_CACHE = [
-  '/Restaurant-menu/',
-  '/Restaurant-menu/index.html',
-  '/Restaurant-menu/manifest.json',
-  '/Restaurant-menu/logo.png'
-  // Add any other CSS or JS files here if you have them
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(URLS_TO_CACHE);
-      })
-  );
+// 1. Inside the INSTALL event
+self.addEventListener('install', event => {
+    self.skipWaiting(); // Forces the new service worker to activate immediately!
+    
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                return cache.addAll(urlsToCache);
+            })
+    );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
-  );
-});
-
-// Clear old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+// 2. Inside the ACTIVATE event
+self.addEventListener('activate', event => {
+    event.waitUntil(self.clients.claim()); // Forces the new service worker to take control of the page immediately!
+    
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
-      );
-    })
-  );
+    );
 });
