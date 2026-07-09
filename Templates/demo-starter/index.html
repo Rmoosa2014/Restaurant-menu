@@ -82,10 +82,47 @@
         </div>
     </main>
 
-    <footer class="bg-gray-900 text-white pt-12 pb-12 mt-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h4 class="text-xl font-bold mb-4" id="footer-title">Restaurant Name</h4>
-            <div id="social-media-container" class="flex justify-center gap-3 flex-wrap"></div>
+    <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shrink-0">
+                        <i class="fas fa-utensils text-white text-sm"></i>
+                    </div>
+                    <span id="footer-title" class="font-bold text-xl tracking-tight">Restaurant Name</span>
+                </div>
+                <p id="footer-desc" class="text-gray-400 text-sm leading-relaxed">Made with fresh ingredients and authentic recipes to provide you with the best dining experience.</p>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
+                    <i class="fas fa-headset text-red-500"></i> <span>Contact Us</span>
+                </h4>
+                <ul class="text-gray-400 text-[11px] sm:text-sm grid grid-cols-3 sm:flex sm:flex-col gap-2 sm:gap-3">
+                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 text-center sm:text-start overflow-hidden">
+                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-phone text-red-400 sm:text-base text-sm"></i></div>
+                        <span class="dir-ltr font-medium truncate w-full" id="f-phone">--</span>
+                    </li>
+                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 text-center sm:text-start overflow-hidden">
+                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-green-400 sm:text-lg text-base"></i></div>
+                        <span class="dir-ltr font-medium truncate w-full" id="f-whatsapp">--</span>
+                    </li>
+                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 text-center sm:text-start overflow-hidden">
+                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400 sm:text-base text-sm"></i></div>
+                        <span id="f-email" class="dir-ltr truncate w-full">--</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
+                    <i class="fas fa-map-marked-alt text-red-500"></i> <span>Location</span>
+                </h4>
+                <div class="flex items-start gap-3 text-gray-400">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-map-marker-alt"></i></div>
+                    <span id="f-address" class="mt-1 leading-relaxed">--</span>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -161,6 +198,10 @@
             document.getElementById('nav-title').textContent = rawBranding.B || "Restaurant";
             document.getElementById('hero-title2').textContent = rawBranding.B || "Our Restaurant";
             document.getElementById('footer-title').textContent = rawBranding.B || "Restaurant";
+document.getElementById('f-phone').textContent = rawBranding.C || "--";
+            document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
+            document.getElementById('f-email').textContent = rawBranding.F || "--";
+            document.getElementById('f-address').textContent = rawBranding.H || "--";
 
             if(rawBranding.N || rawBranding.M) {
                 document.getElementById('default-logo-icon').classList.add('hidden');
@@ -174,16 +215,28 @@
 
         function formatMenuData(rawSource) {
             activeMenuData = []; mainCategories = []; allSubCategories = [];
+            const brandLogo = rawBranding.N || rawBranding.M || 'logo.png';
+            
             rawSource.forEach(row => {
                 if(!row.B || !row.D) return;
                 const safeId = row.A ? String(row.A).trim() : Math.random().toString();
-                let imgPath = row.K ? String(row.K).split(',')[0].trim() : '';
-                if(imgPath && !imgPath.startsWith('http')) imgPath = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${imgPath}`;
+                
+                // FIXED IMAGE PATH LOGIC
+                let imgPath = brandLogo; // Default to logo
+                if (row.K && String(row.K).trim() !== "") {
+                    let excelImg = String(row.K).split(',')[0].trim();
+                    if (excelImg.startsWith('http')) {
+                        imgPath = excelImg;
+                    } else {
+                        // Point exactly to your main root images folder
+                        imgPath = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${excelImg}`;
+                    }
+                }
                 
                 const item = {
                     id: safeId, mainCat: String(row.B).trim(), subCat: String(row.C || "Other").trim(),
                     name: String(row.D).trim(), order: parseInt(row.E) || 999, price: row.F || 0,
-                    desc: row.G || "", img: imgPath || (rawBranding.N || 'logo.png')
+                    desc: row.G || "", img: imgPath
                 };
                 activeMenuData.push(item);
                 if(!mainCategories.includes(item.mainCat)) mainCategories.push(item.mainCat);
@@ -191,7 +244,6 @@
             });
             renderCategoryFilters(); renderSubCategoryFilters(); executeFilter();
         }
-
         function renderCategoryFilters() {
             const row1 = document.getElementById('category-row-1'), row2 = document.getElementById('category-row-2');
             row1.innerHTML = ''; row2.innerHTML = '';
@@ -253,7 +305,7 @@
                     card.className = "bg-white rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full cursor-pointer";
                     card.onclick = () => openModal(item.id);
                     card.innerHTML = `
-                        <div class="relative aspect-[4/3] bg-gray-100"><img src="${item.img}" class="w-full h-full object-cover"></div>
+                        <div class="relative aspect-[4/3] bg-gray-100"><img src="${item.img}" class="w-full h-full object-cover" onerror="this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.N || rawBranding.M || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}';"></div>
                         <div class="p-3 flex flex-col flex-grow">
                             <h4 class="text-sm font-bold text-gray-900 line-clamp-1">${item.name}</h4>
                             <span class="font-extrabold text-red-600 mt-1">${item.price} ${globalCurrency}</span>
