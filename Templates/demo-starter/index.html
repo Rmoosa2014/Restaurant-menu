@@ -84,46 +84,55 @@
 
     <!-- Updated Static Footer -->
     <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center sm:text-start">
+            
+            <div class="flex flex-col items-center sm:items-start">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shrink-0">
                         <i class="fas fa-utensils text-white text-sm"></i>
                     </div>
                     <span id="footer-title" class="font-bold text-xl tracking-tight">Restaurant Name</span>
                 </div>
-                <p id="footer-desc" class="text-gray-400 text-sm leading-relaxed">Made with fresh ingredients and authentic recipes to provide you with the best dining experience.</p>
+                <p id="footer-desc" class="text-gray-400 text-sm leading-relaxed mb-6">Made with fresh ingredients and authentic recipes to provide you with the best dining experience.</p>
+                <div id="social-media-container" class="flex gap-3 justify-center sm:justify-start flex-wrap"></div>
             </div>
             
-            <div>
-                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
+            <div class="flex flex-col items-center sm:items-start">
+                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-headset text-red-500"></i> <span>Contact Us</span>
                 </h4>
-                <ul class="text-gray-400 text-[11px] sm:text-sm grid grid-cols-3 sm:flex sm:flex-col gap-2 sm:gap-3">
-                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 text-center sm:text-start overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-phone text-red-400 sm:text-base text-sm"></i></div>
-                        <span class="dir-ltr font-medium truncate w-full" id="f-phone">--</span>
+                <ul class="text-gray-400 text-sm flex flex-col gap-3 w-full max-w-[200px]">
+                    <li>
+                        <a id="link-phone" href="#" class="flex items-center gap-3 hover:text-white transition group">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-phone text-red-400 group-hover:text-white"></i></div>
+                            <span class="dir-ltr font-medium truncate" id="f-phone">--</span>
+                        </a>
                     </li>
-                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 text-center sm:text-start overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fab fa-whatsapp text-green-400 sm:text-lg text-base"></i></div>
-                        <span class="dir-ltr font-medium truncate w-full" id="f-whatsapp">--</span>
+                    <li>
+                        <a id="link-whatsapp" href="#" target="_blank" class="flex items-center gap-3 hover:text-white transition group">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-green-500 group-hover:text-white transition-colors"><i class="fab fa-whatsapp text-green-400 text-lg group-hover:text-white"></i></div>
+                            <span class="dir-ltr font-medium truncate" id="f-whatsapp">--</span>
+                        </a>
                     </li>
-                    <li class="flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3 text-center sm:text-start overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-envelope text-blue-400 sm:text-base text-sm"></i></div>
-                        <span id="f-email" class="dir-ltr truncate w-full">--</span>
+                    <li>
+                        <a id="link-email" href="#" class="flex items-center gap-3 hover:text-white transition group">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fas fa-envelope text-blue-400 group-hover:text-white"></i></div>
+                            <span id="f-email" class="dir-ltr truncate">--</span>
+                        </a>
                     </li>
                 </ul>
             </div>
 
-            <div>
-                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
+            <div class="flex flex-col items-center sm:items-start">
+                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-map-marked-alt text-red-500"></i> <span>Location</span>
                 </h4>
-                <div class="flex items-start gap-3 text-gray-400">
-                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-map-marker-alt"></i></div>
+                <a id="link-location" href="#" target="_blank" class="flex items-start gap-3 text-gray-400 hover:text-white transition group text-start">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-map-marker-alt text-red-500 group-hover:text-white"></i></div>
                     <span id="f-address" class="mt-1 leading-relaxed">--</span>
-                </div>
+                </a>
             </div>
+
         </div>
     </footer>
 
@@ -199,11 +208,39 @@
             document.getElementById('hero-title2').textContent = rawBranding.B || "Our Restaurant";
             document.getElementById('footer-title').textContent = rawBranding.B || "Restaurant";
 
-            // Footer variable injection
+            // Footer Text & Link Injection
             document.getElementById('f-phone').textContent = rawBranding.C || "--";
+            document.getElementById('link-phone').href = rawBranding.C ? `tel:${rawBranding.C}` : '#';
+            
             document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
+            document.getElementById('link-whatsapp').href = rawBranding.D ? `https://wa.me/${rawBranding.D}` : '#';
+            
             document.getElementById('f-email').textContent = rawBranding.F || "--";
+            document.getElementById('link-email').href = rawBranding.F ? `mailto:${rawBranding.F}` : '#';
+            
             document.getElementById('f-address').textContent = rawBranding.H || "--";
+            document.getElementById('link-location').href = rawBranding.I || '#'; // Column I is the Map Link
+            
+            // Dynamic Social Media Generator
+            const socialContainer = document.getElementById('social-media-container');
+            socialContainer.innerHTML = '';
+            if(rawBranding.J && String(rawBranding.J).trim() !== "") {
+                const links = String(rawBranding.J).split(',');
+                links.forEach(link => {
+                    let cleanLink = link.trim();
+                    if(cleanLink) {
+                        let iconClass = "fas fa-link"; // Default icon
+                        if(cleanLink.includes("instagram")) iconClass = "fab fa-instagram";
+                        else if(cleanLink.includes("facebook")) iconClass = "fab fa-facebook-f";
+                        else if(cleanLink.includes("twitter") || cleanLink.includes("x.com")) iconClass = "fab fa-twitter";
+                        else if(cleanLink.includes("tiktok")) iconClass = "fab fa-tiktok";
+                        else if(cleanLink.includes("snapchat")) iconClass = "fab fa-snapchat-ghost";
+                        else if(cleanLink.includes("youtube")) iconClass = "fab fa-youtube";
+
+                        socialContainer.innerHTML += `<a href="${cleanLink}" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm text-gray-300"><i class="${iconClass}"></i></a>`;
+                    }
+                });
+            }
 
             if(rawBranding.N || rawBranding.M) {
                 document.getElementById('default-logo-icon').classList.add('hidden');
