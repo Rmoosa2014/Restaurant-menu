@@ -32,148 +32,201 @@
     </header>
 
     <section id="pricing" class="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 pb-0">
-        <div class="text-center mb-10 px-4">
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Choose Your Perfect Menu</h2>
-            <p class="text-gray-500 text-sm max-w-xl mx-auto">Compare our plans and test the live interactive demos below.</p>
+        <div class="text-center mb-6 sm:mb-10 px-4">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 sm:mb-4">Choose Your Perfect Menu</h2>
+            <p class="text-gray-500 text-[11px] sm:text-sm max-w-xl mx-auto">Compare our plans and test the live interactive demos below.</p>
         </div>
 
+        <!-- The Interactive Table Container -->
         <div class="w-full overflow-x-auto overflow-y-auto max-h-[75vh] bg-white rounded-none sm:rounded-3xl shadow-2xl border-y sm:border border-gray-200 relative hide-scrollbar">
-            <table class="w-full text-left border-collapse min-w-[700px]">
+            <table class="w-full text-left border-collapse min-w-[480px] sm:min-w-[700px]">
                 
+                <!-- STICKY HEADER ROW -->
                 <thead class="sticky top-0 z-40 bg-gray-900 shadow-md">
                     <tr>
-                        <th class="p-4 sm:p-6 border-b border-gray-700 sticky left-0 z-50 bg-gray-900 text-white w-1/3 sm:w-auto shadow-[4px_0_10px_-3px_rgba(0,0,0,0.3)]">
-                            <span class="text-lg font-bold">Features</span>
+                        <th class="px-3 py-2.5 sm:p-6 border-b border-gray-700 sticky left-0 z-50 bg-gray-900 text-white w-[130px] sm:w-auto shadow-[4px_0_10px_-3px_rgba(0,0,0,0.3)]">
+                            <span class="text-sm sm:text-lg font-bold">Features</span>
                         </th>
-                        <th class="p-4 sm:p-6 border-b border-gray-700 text-center min-w-[140px]">
-                            <h3 class="text-xl font-bold text-white mb-1">Starter</h3>
-                            <p class="text-xs text-gray-400 font-normal">Digital Catalog</p>
+                        <th class="px-1.5 py-2.5 sm:p-6 border-b border-gray-700 text-center min-w-[75px] sm:min-w-[140px]">
+                            <h3 class="text-[12px] sm:text-xl font-bold text-white mb-0.5">Starter</h3>
+                            <p class="text-[9px] sm:text-xs text-gray-400 font-normal leading-tight">Digital Catalog</p>
                         </th>
-                        <th class="p-4 sm:p-6 border-b border-gray-700 text-center min-w-[140px]">
-                            <h3 class="text-xl font-bold text-white mb-1">Professional</h3>
-                            <p class="text-xs text-gray-400 font-normal">WhatsApp Orders</p>
+                        <th class="px-1.5 py-2.5 sm:p-6 border-b border-gray-700 text-center min-w-[75px] sm:min-w-[140px]">
+                            <h3 class="text-[12px] sm:text-xl font-bold text-white mb-0.5">Pro</h3>
+                            <p class="text-[9px] sm:text-xs text-gray-400 font-normal leading-tight">WhatsApp</p>
                         </th>
-                        <th class="p-4 sm:p-6 border-b border-gray-700 text-center min-w-[140px] bg-red-600/10">
-                            <h3 class="text-xl font-bold text-red-400 mb-1">Premium</h3>
-                            <p class="text-xs text-red-200/70 font-normal">Full Commerce</p>
+                        <th class="px-1.5 py-2.5 sm:p-6 border-b border-gray-700 text-center min-w-[75px] sm:min-w-[140px] bg-red-600/10">
+                            <h3 class="text-[12px] sm:text-xl font-bold text-red-400 mb-0.5">Premium</h3>
+                            <p class="text-[9px] sm:text-xs text-red-200/70 font-normal leading-tight">Commerce</p>
                         </th>
-                        <th class="p-4 sm:p-6 border-b border-gray-700 text-center min-w-[140px]">
-                            <h3 class="text-xl font-bold text-yellow-500 mb-1">Gold</h3>
-                            <p class="text-xs text-gray-400 font-normal">Custom Built</p>
+                        <th class="px-1.5 py-2.5 sm:p-6 border-b border-gray-700 text-center min-w-[75px] sm:min-w-[140px]">
+                            <h3 class="text-[12px] sm:text-xl font-bold text-yellow-500 mb-0.5">Gold</h3>
+                            <p class="text-[9px] sm:text-xs text-gray-400 font-normal leading-tight">Custom</p>
                         </th>
                     </tr>
                 </thead>
 
-                <tbody class="text-sm sm:text-base">
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Digital Menu Catalog</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
+                <tbody class="text-[10px] sm:text-base">
+                    <!-- Feature 1 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Menu with Items</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
                     </tr>
-                    
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Direct WhatsApp Ordering</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
+                    <!-- Feature 2 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Single Language</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 3 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Multi-Language Toggle</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 4 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Direct WhatsApp Order</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 5 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Add to Cart & Order Preview</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 6 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Advanced WA Receipts (VAT)</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 7 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Today's Special Section</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 8 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Basic App Install (PWA)</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 9 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Category Dedicated Pages</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 10 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Multiple Images per Item</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 11 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Frequently Bought Tags</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 12 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Category Banners & Offers</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 13 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Google Review Connect</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 14 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Arcade / Games Integration</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 15 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Flash Card Promos</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-green-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 16 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Custom Domain (brand.com)</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-yellow-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 17 -->
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-3 py-2 sm:p-4 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Pro Image/Video Creation</td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2 bg-red-50/30"><i class="fas fa-times text-red-400 text-xs sm:text-lg"></i></td>
+                        <td class="text-center px-1 py-2"><i class="fas fa-check text-yellow-500 text-xs sm:text-lg"></i></td>
+                    </tr>
+                    <!-- Feature 18: Text row -->
+                    <tr class="bg-gray-50">
+                        <td class="px-3 py-2 sm:p-4 font-bold text-gray-900 sticky left-0 z-20 bg-gray-50 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] leading-tight">Menu Data Updates</td>
+                        <td class="text-center px-1 py-2 font-bold text-gray-600">1 / Mo</td>
+                        <td class="text-center px-1 py-2 font-bold text-gray-600">2 / Mo</td>
+                        <td class="text-center px-1 py-2 font-bold text-red-600 bg-red-50/30">4 / Mo</td>
+                        <td class="text-center px-1 py-2 font-bold text-yellow-600">Unlmt.</td>
                     </tr>
 
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Today's Specials Highlight</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Multiple Item Images</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Add to Cart & Order Preview</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Multi-Language (EN/AR)</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Category Promotional Banners</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Frequently Bought Together</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Advanced QR Code Generation</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Google Customer Reviews</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-green-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Custom Domain (brand.com)</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-yellow-500 text-lg"></i></td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 border-b border-gray-100 font-semibold text-gray-800 sticky left-0 z-20 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)] text-xs sm:text-sm">Pro Image/Video Creation</td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100 bg-red-50/30"><i class="fas fa-times text-red-500 text-lg"></i></td>
-                        <td class="text-center p-4 border-b border-gray-100"><i class="fas fa-check text-yellow-500 text-lg"></i></td>
-                    </tr>
-
+                    <!-- STICKY BOTTOM CTA ROW -->
                     <tr class="sticky bottom-0 z-40 bg-white border-t border-gray-200">
-                        <td class="p-4 sticky left-0 bottom-0 z-50 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)]"></td>
-                        <td class="p-4 text-center">
-                            <a href="Templates/demo-starter/index.html" class="inline-block px-5 py-2.5 bg-gray-100 text-gray-800 font-bold rounded-xl hover:bg-gray-200 transition text-sm shadow-sm whitespace-nowrap">View Demo</a>
+                        <td class="px-3 py-2 sm:p-4 sticky left-0 bottom-0 z-50 bg-white shadow-[4px_0_10px_-5px_rgba(0,0,0,0.1)]"></td>
+                        <td class="px-1 py-2 sm:p-4 text-center">
+                            <a href="Templates/demo-starter/index.html" class="inline-block px-2.5 py-1.5 sm:px-5 sm:py-2.5 bg-gray-100 text-gray-800 font-bold rounded-lg hover:bg-gray-200 transition text-[9px] sm:text-sm whitespace-nowrap">View Demo</a>
                         </td>
-                        <td class="p-4 text-center">
-                            <a href="Templates/demo-professional/index.html" class="inline-block px-5 py-2.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition text-sm shadow-md whitespace-nowrap">View Demo</a>
+                        <td class="px-1 py-2 sm:p-4 text-center">
+                            <a href="Templates/demo-professional/index.html" class="inline-block px-2.5 py-1.5 sm:px-5 sm:py-2.5 bg-gray-900 text-white font-bold rounded-lg hover:bg-black transition text-[9px] sm:text-sm whitespace-nowrap">View Demo</a>
                         </td>
-                        <td class="p-4 text-center bg-red-50/30">
-                            <a href="Templates/demo-premium/index.html" class="inline-block px-5 py-2.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition text-sm shadow-md whitespace-nowrap">View Demo</a>
+                        <td class="px-1 py-2 sm:p-4 text-center bg-red-50/30">
+                            <a href="Templates/demo-premium/index.html" class="inline-block px-2.5 py-1.5 sm:px-5 sm:py-2.5 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition text-[9px] sm:text-sm shadow-sm whitespace-nowrap">View Demo</a>
                         </td>
-                        <td class="p-4 text-center">
-                            <a href="https://wa.me/YOUR_PHONE_NUMBER?text=Hello,%20I%20am%20interested%20in%20discussing%20the%20Custom%20Gold%20Plan%20for%20my%20restaurant." target="_blank" class="inline-block px-5 py-2.5 border-2 border-yellow-500 text-yellow-600 font-bold rounded-xl hover:bg-yellow-50 transition text-sm shadow-sm whitespace-nowrap">Discuss Plan</a>
+                        <td class="px-1 py-2 sm:p-4 text-center">
+                            <!-- Removed WhatsApp link, using # placeholder -->
+                            <a href="#" class="inline-block px-2.5 py-1.5 sm:px-5 sm:py-2.5 border border-yellow-500 text-yellow-600 font-bold rounded-lg hover:bg-yellow-50 transition text-[9px] sm:text-sm whitespace-nowrap">Discuss</a>
                         </td>
                     </tr>
                 </tbody>
