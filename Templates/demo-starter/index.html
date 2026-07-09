@@ -82,6 +82,7 @@
         </div>
     </main>
 
+    <!-- Updated Static Footer -->
     <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div>
@@ -170,7 +171,6 @@
 
         async function init() {
             try {
-                // Pointing to the local JSON in the demo folder!
                 const fileUrl = "MenuMasterData.json?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
                 const jsonData = await response.json();
@@ -198,7 +198,9 @@
             document.getElementById('nav-title').textContent = rawBranding.B || "Restaurant";
             document.getElementById('hero-title2').textContent = rawBranding.B || "Our Restaurant";
             document.getElementById('footer-title').textContent = rawBranding.B || "Restaurant";
-document.getElementById('f-phone').textContent = rawBranding.C || "--";
+
+            // Footer variable injection
+            document.getElementById('f-phone').textContent = rawBranding.C || "--";
             document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
             document.getElementById('f-email').textContent = rawBranding.F || "--";
             document.getElementById('f-address').textContent = rawBranding.H || "--";
@@ -216,19 +218,23 @@ document.getElementById('f-phone').textContent = rawBranding.C || "--";
         function formatMenuData(rawSource) {
             activeMenuData = []; mainCategories = []; allSubCategories = [];
             const brandLogo = rawBranding.N || rawBranding.M || 'logo.png';
-            
+
             rawSource.forEach(row => {
                 if(!row.B || !row.D) return;
                 const safeId = row.A ? String(row.A).trim() : Math.random().toString();
                 
-                // FIXED IMAGE PATH LOGIC
-                let imgPath = brandLogo; // Default to logo
-                if (row.K && String(row.K).trim() !== "") {
-                    let excelImg = String(row.K).split(',')[0].trim();
+                let imgPath = brandLogo; 
+                let excelImg = "";
+
+                // Starter Plan Custom Format: Image is exactly in Column H
+                if (row.H && String(row.H).trim() !== "") {
+                    excelImg = String(row.H).split(',')[0].trim();
+                }
+
+                if (excelImg !== "") {
                     if (excelImg.startsWith('http')) {
                         imgPath = excelImg;
                     } else {
-                        // Point exactly to your main root images folder
                         imgPath = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${excelImg}`;
                     }
                 }
@@ -244,6 +250,7 @@ document.getElementById('f-phone').textContent = rawBranding.C || "--";
             });
             renderCategoryFilters(); renderSubCategoryFilters(); executeFilter();
         }
+
         function renderCategoryFilters() {
             const row1 = document.getElementById('category-row-1'), row2 = document.getElementById('category-row-2');
             row1.innerHTML = ''; row2.innerHTML = '';
@@ -304,6 +311,7 @@ document.getElementById('f-phone').textContent = rawBranding.C || "--";
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full cursor-pointer";
                     card.onclick = () => openModal(item.id);
+                    // Added the robust onerror fallback directly to the image
                     card.innerHTML = `
                         <div class="relative aspect-[4/3] bg-gray-100"><img src="${item.img}" class="w-full h-full object-cover" onerror="this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.N || rawBranding.M || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}';"></div>
                         <div class="p-3 flex flex-col flex-grow">
