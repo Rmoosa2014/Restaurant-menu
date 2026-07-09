@@ -84,9 +84,10 @@
 
     <!-- Updated Static Footer -->
     <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center sm:text-start">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-start">
             
-            <div class="flex flex-col items-center sm:items-start">
+            <!-- Brand & Social Media -->
+            <div class="flex flex-col items-start">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shrink-0">
                         <i class="fas fa-utensils text-white text-sm"></i>
@@ -94,36 +95,39 @@
                     <span id="footer-title" class="font-bold text-xl tracking-tight">Restaurant Name</span>
                 </div>
                 <p id="footer-desc" class="text-gray-400 text-sm leading-relaxed mb-6">Made with fresh ingredients and authentic recipes to provide you with the best dining experience.</p>
-                <div id="social-media-container" class="flex gap-3 justify-center sm:justify-start flex-wrap"></div>
+                <!-- Dynamic Social Media Container -->
+                <div id="social-media-container" class="flex gap-3 justify-start flex-wrap"></div>
             </div>
             
-            <div class="flex flex-col items-center sm:items-start">
+            <!-- Clickable Contact Links (3 Columns on Mobile) -->
+            <div class="flex flex-col items-start w-full">
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-headset text-red-500"></i> <span>Contact Us</span>
                 </h4>
-                <ul class="text-gray-400 text-sm flex flex-col gap-3 w-full max-w-[200px]">
-                    <li>
-                        <a id="link-phone" href="#" class="flex items-center gap-3 hover:text-white transition group">
+                <ul class="text-gray-400 text-[11px] sm:text-sm grid grid-cols-3 sm:flex sm:flex-col gap-2 sm:gap-3 w-full">
+                    <li class="w-full">
+                        <a id="link-phone" href="#" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
                             <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-phone text-red-400 group-hover:text-white"></i></div>
-                            <span class="dir-ltr font-medium truncate" id="f-phone">--</span>
+                            <span class="dir-ltr font-medium truncate w-full" id="f-phone">--</span>
                         </a>
                     </li>
-                    <li>
-                        <a id="link-whatsapp" href="#" target="_blank" class="flex items-center gap-3 hover:text-white transition group">
+                    <li class="w-full">
+                        <a id="link-whatsapp" href="#" target="_blank" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
                             <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-green-500 group-hover:text-white transition-colors"><i class="fab fa-whatsapp text-green-400 text-lg group-hover:text-white"></i></div>
-                            <span class="dir-ltr font-medium truncate" id="f-whatsapp">--</span>
+                            <span class="dir-ltr font-medium truncate w-full" id="f-whatsapp">--</span>
                         </a>
                     </li>
-                    <li>
-                        <a id="link-email" href="#" class="flex items-center gap-3 hover:text-white transition group">
+                    <li class="w-full">
+                        <a id="link-email" href="#" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
                             <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fas fa-envelope text-blue-400 group-hover:text-white"></i></div>
-                            <span id="f-email" class="dir-ltr truncate">--</span>
+                            <span id="f-email" class="dir-ltr truncate w-full">--</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <div class="flex flex-col items-center sm:items-start">
+            <!-- Clickable Location Link -->
+            <div class="flex flex-col items-start">
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-map-marked-alt text-red-500"></i> <span>Location</span>
                 </h4>
