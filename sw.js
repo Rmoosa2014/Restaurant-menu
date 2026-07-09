@@ -1,4 +1,4 @@
-const CACHE_NAME = 'restaurant-menu-v1'; // Change version to force an update!
+const CACHE_NAME = 'restaurant-menu-v6'; // Change version to force an update!
 
 const URLS_TO_CACHE = [
   '/Restaurant-menu/',
