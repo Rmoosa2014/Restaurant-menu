@@ -52,9 +52,18 @@
     </header>
 
     <section id="filter-header-island" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-2 sticky top-[64px] z-40 bg-[#f8fafc] py-2 transition-all duration-300 shadow-[0_8px_15px_-3px_rgba(0,0,0,0.05)] rounded-b-2xl border-b border-gray-100">
-        <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 overflow-hidden">
-            <div class="absolute inset-y-0 start-0 flex items-center px-3 z-10"><i class="fas fa-search text-gray-400"></i></div>
-            <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 bg-transparent focus:outline-none sm:text-sm text-gray-900 font-bold" placeholder="Search menu...">
+        <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
+            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none px-3 z-10"><i class="fas fa-search text-gray-400"></i></div>
+            <div id="search-placeholder-wrapper" class="absolute inset-y-0 start-10 end-4 flex items-center pointer-events-none z-10 text-sm font-medium text-gray-400">
+                <span id="search-prefix" class="whitespace-nowrap"></span>
+                <div class="h-5 overflow-hidden w-full relative ms-1">
+                    <div id="animated-placeholder-container" class="flex flex-col transition-transform duration-500 ease-in-out absolute w-full top-0 start-0">
+                        <span class="truncate h-5 leading-5 block" id="search-text-1"></span>
+                        <span class="truncate h-5 leading-5 block" id="search-text-2"></span>
+                    </div>
+                </div>
+            </div>
+            <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
         </div>
         <div id="main-category-container" class="max-h-[300px] opacity-100 overflow-hidden transition-all duration-300">
             <div id="main-category-wrapper" class="overflow-x-auto hide-scrollbar px-1 py-1.5 snap-x w-full">
@@ -81,23 +90,53 @@
         </div>
     </main>
     
-    <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div>
-                <div class="flex items-center gap-3 mb-4"><div class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center"><i class="fas fa-utensils text-white text-sm"></i></div><span id="footer-title" class="font-bold text-xl tracking-tight">Restaurant Name</span></div>
-                <p class="text-gray-400 text-sm leading-relaxed">Made with fresh ingredients and authentic recipes.</p>
+    <footer class="bg-gray-900 text-white pt-12 pb-32 md:pb-12 rounded-t-3xl sm:rounded-none mt-10 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-start">
+            <div class="flex flex-col items-start">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center shrink-0">
+                        <i class="fas fa-utensils text-white text-sm"></i>
+                    </div>
+                    <span id="footer-title" class="font-bold text-xl tracking-tight">Restaurant Name</span>
+                </div>
+                <p id="footer-desc" class="text-gray-400 text-sm leading-relaxed mb-6">Made with fresh ingredients and authentic recipes to provide you with the best dining experience.</p>
+                <div id="social-media-container" class="flex gap-3 justify-start flex-wrap"></div>
             </div>
-            <div>
-                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2"><i class="fas fa-headset text-red-500 mr-2"></i>Contact Us</h4>
-                <ul class="text-gray-400 text-sm flex flex-col gap-3">
-                    <li class="flex items-center gap-3 hover:text-white transition cursor-pointer" onclick="callPhone()"><div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center"><i class="fas fa-phone text-red-400"></i></div><span id="f-phone" class="font-bold">--</span></li>
-                    <li class="flex items-center gap-3 hover:text-white transition cursor-pointer" onclick="openWhatsApp()"><div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center"><i class="fab fa-whatsapp text-green-400"></i></div><span id="f-whatsapp" class="font-bold">--</span></li>
+            
+            <div class="flex flex-col items-start w-full">
+                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
+                    <i class="fas fa-headset text-red-500"></i> <span>Contact Us</span>
+                </h4>
+                <ul class="text-gray-400 text-[11px] sm:text-sm grid grid-cols-3 sm:flex sm:flex-col gap-2 sm:gap-3 w-full">
+                    <li class="w-full">
+                        <div onclick="callPhone()" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-phone text-red-400 group-hover:text-white"></i></div>
+                            <span class="dir-ltr font-medium truncate w-full" id="f-phone">--</span>
+                        </div>
+                    </li>
+                    <li class="w-full">
+                        <div onclick="openWhatsApp()" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-green-500 group-hover:text-white transition-colors"><i class="fab fa-whatsapp text-green-400 text-lg group-hover:text-white"></i></div>
+                            <span class="dir-ltr font-medium truncate w-full" id="f-whatsapp">--</span>
+                        </div>
+                    </li>
+                    <li class="w-full">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fas fa-envelope text-blue-400 group-hover:text-white"></i></div>
+                            <span id="f-email" class="dir-ltr truncate w-full">--</span>
+                        </div>
+                    </li>
                 </ul>
             </div>
-            <div>
-                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2"><i class="fas fa-map-marked-alt text-red-500 mr-2"></i>Location</h4>
-                <a href="#" id="f-map-link" target="_blank" class="flex items-start gap-3 text-gray-400 hover:text-white transition"><div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0"><i class="fas fa-map-marker-alt"></i></div><span id="f-address">--</span></a>
-                <div id="social-media-container" class="mt-6 flex gap-3 flex-wrap"></div>
+
+            <div class="flex flex-col items-start">
+                <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
+                    <i class="fas fa-map-marked-alt text-red-500"></i> <span>Location</span>
+                </h4>
+                <a href="#" id="f-map-link" target="_blank" class="flex items-start gap-3 text-gray-400 hover:text-white transition group text-start">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-map-marker-alt text-red-500 group-hover:text-white"></i></div>
+                    <span id="f-address" class="mt-1 leading-relaxed">--</span>
+                </a>
             </div>
         </div>
     </footer>
@@ -220,6 +259,12 @@
             document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
             document.getElementById('f-address').textContent = rawBranding.H || "--";
             
+            // Added Email Mapping from Column F!
+            const emailEl = document.getElementById('f-email');
+            emailEl.textContent = rawBranding.F || "--";
+            
+            formatMenuData();
+            
             if(rawBranding.smartLogo) {
                 document.getElementById('default-logo-icon').classList.add('hidden');
                 document.getElementById('brand-logo-img').src = rawBranding.smartLogo;
@@ -273,6 +318,7 @@ function formatMenuData() {
                 if(!allSubCategories.includes(item.subCat)) allSubCategories.push(item.subCat);
             });
             renderCategoryFilters(); renderSubCategoryFilters(); executeFilter();
+            animateSearchPlaceholder(); // Starts the typing animation!
         }
 
         function renderCategoryFilters() {
@@ -542,6 +588,108 @@ function formatMenuData() {
             });
         }, 4000);
 
+        // 1. Go To Top Button Logic
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('back-to-top-btn');
+            if (window.scrollY > 300) { btn.classList.remove('opacity-0', 'pointer-events-none'); btn.classList.add('opacity-100'); } 
+            else { btn.classList.add('opacity-0', 'pointer-events-none'); btn.classList.remove('opacity-100'); }
+        });
+
+        // 2. Animated Search Placeholder Logic
+        let placeholderTimer;
+        function animateSearchPlaceholder() {
+            clearInterval(placeholderTimer);
+            const container = document.getElementById('animated-placeholder-container');
+            const span1 = document.getElementById('search-text-1');
+            const span2 = document.getElementById('search-text-2');
+            
+            if (!container || activeMenuData.length === 0) return;
+
+            const suggestions = [...activeMenuData].sort(() => 0.5 - Math.random()).slice(0, 5).map(item => item.name);
+            let currentIndex = 0;
+            
+            document.getElementById('search-prefix').innerText = currentLang === 'en' ? 'Try searching "' : 'جرب البحث عن "';
+            span1.innerText = suggestions[0] + '"...';
+
+            placeholderTimer = setInterval(() => {
+                currentIndex = (currentIndex + 1) % suggestions.length;
+                span2.innerText = suggestions[currentIndex] + '"...';
+                
+                container.style.transition = 'transform 0.5s ease-in-out';
+                container.style.transform = 'translateY(-20px)';
+
+                setTimeout(() => {
+                    container.style.transition = 'none';
+                    span1.innerText = span2.innerText;
+                    container.style.transform = 'translateY(0)';
+                }, 500); 
+            }, 3000);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => { 
+            const placeholderWrapper = document.getElementById('search-placeholder-wrapper');
+            if(e.target.value.length > 0) placeholderWrapper.classList.add('opacity-0');
+            else placeholderWrapper.classList.remove('opacity-0');
+            searchQuery = e.target.value.toLowerCase().trim(); 
+            executeFilter(); 
+        });
+        
+        // 3. Premium Swipe-To-Close Modal Physics
+        const pModal = document.getElementById('productModal');
+        const pContent = document.getElementById('modalContent');
+        let pullStartY = 0;
+        let isPulling = false;
+
+        pModal.addEventListener('touchstart', (e) => {
+            const scrollArea = pContent.querySelector('.overflow-y-auto');
+            if (scrollArea && scrollArea.scrollTop <= 0) {
+                pullStartY = e.touches[0].clientY;
+                isPulling = true;
+                pContent.classList.remove('transition-all', 'duration-300');
+            } else isPulling = false;
+        }, { passive: true });
+
+        pModal.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            const deltaY = e.touches[0].clientY - pullStartY;
+            if (deltaY > 0) {
+                if (e.cancelable) e.preventDefault(); 
+                pContent.style.transform = `translateY(${deltaY * 0.4}px)`;
+            } else {
+                pContent.style.transform = '';
+                isPulling = false; 
+            }
+        }, { passive: false });
+
+        pModal.addEventListener('touchend', () => {
+            if (!isPulling) return;
+            isPulling = false;
+            pContent.classList.add('transition-all', 'duration-300');
+            const currentPullAmount = parseInt(pContent.style.transform.replace(/[^\d.]/g, '') || "0");
+            if (currentPullAmount > 100) { pContent.style.transform = ''; closeModal(); } 
+            else pContent.style.transform = ''; 
+        });
+
+        // 4. Manual Carousel Swipe Logic
+        let carouselSwipeStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
+            if (slider && slider.children.length > 1) carouselSwipeStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
+            if (slider && slider.children.length > 1) {
+                const diff = carouselSwipeStartX - e.changedTouches[0].clientX; 
+                if (Math.abs(diff) > 40) {
+                    const currentScroll = Math.abs(slider.scrollLeft);
+                    if (diff > 40) slider.scrollTo({ left: currentScroll + slider.clientWidth, behavior: 'smooth' }); // Swiped left
+                    else slider.scrollTo({ left: currentScroll - slider.clientWidth, behavior: 'smooth' }); // Swiped right
+                }
+            }
+        }, { passive: true });
+
+        // Start App
         window.onload = init;
     </script>
 </body>
