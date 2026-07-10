@@ -363,12 +363,12 @@
             <path fill="currentColor" d="M3.62,190.51c1.85-3.4,4.63-11.11,8.33-12.04l62.35-13.27v-30.87l-63.28,13.58c-1.23,0,3.09-13.27,3.4-13.89,1.54-3.4,4.32-11.11,8.03-12.04l51.86-11.11V20.42c0-4.94,8.64-11.73,11.42-14.51.93-.62,9.88-8.64,9.88-4.94v105.57l24.69-5.56V31.84c0-4.94,8.64-11.73,11.73-14.2.62-.93,9.57-8.64,9.57-5.25v84.27l58.34-12.35h.31l1.23-.31c.93-.31-3.09,12.96-3.7,13.89-1.54,3.09-4.32,11.11-8.03,11.73l-48.15,10.5v24.39l60.19-12.66c1.23-.31-2.78,13.27-3.4,13.89-1.54,3.4-4.32,11.11-8.03,12.04l-68.53,14.82c-.93,0-1.54,0-1.54-1.23v-46.61l-24.69,5.25v31.79c0,6.79-13.27,25-20.06,26.86v-.31L.22,204.4c-1.23.31,3.09-12.96,3.4-13.89ZM196.55,194.83c-1.54,3.09-4.32,11.11-8.33,12.04l-68.84,13.89c-.93.31,3.09-12.96,3.7-13.89,1.54-3.4,4.32-11.11,8.03-12.04l68.84-13.89c1.54-.31-3.09,12.96-3.4,13.89Z"/>
         </svg>`;
 
-        // 2. The Logic to check the Excel sheet
-        let finalCurrencyDisplay = (globalCurrency.trim().toUpperCase() === 'SR') 
-            ? newRiyalIcon 
-            : `<span class="text-[0.8em] mr-1 opacity-90">${globalCurrency}</span>`;
-
         function executeFilter() {
+            // 2. The Logic to check the Excel sheet (Moved INSIDE the function)
+            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) 
+                ? newRiyalIcon 
+                : `<span class="text-[0.8em] mr-1 opacity-90">${globalCurrency}</span>`;
+
             const container = document.getElementById('menu-container');
             container.innerHTML = '';
             let filtered = activeMenuData;
@@ -465,7 +465,8 @@
             document.getElementById('modalCategoryBadge').textContent = item.subCat;
             document.getElementById('modalTitle').textContent = item.name;
             // 1. Check if it is SR and swap the SVG
-    let modalCurrencyDisplay = (globalCurrency.trim().toUpperCase() === 'SR') 
+    // 1. Check if it is SR and swap the SVG
+    let modalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) 
         ? newRiyalIcon 
         : `<span class="text-[0.8em] mr-1.5 opacity-90">${globalCurrency}</span>`;
 
