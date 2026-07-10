@@ -44,8 +44,7 @@
       "G": "Description",
       "H": "Calories",
       "I": "Recipe",
-      "J": "Today Special",
-      "K": "Image"
+      "J": "Image"
     },
     {
       "A": "ITM001",
@@ -57,8 +56,7 @@
       "G": "Traditional steamed rice flour cylinder",
       "H": 225,
       "I": "Rice flour 500g, Coconut 100g, Water, Salt",
-      "J": "",
-      "K": "ITM001.jpg"
+      "J": "ITM001.jpg"
     },
     {
       "A": "ITM002",
@@ -70,8 +68,7 @@
       "G": "Soft, lace-edged fermented rice pancake . ",
       "H": 124,
       "I": "Rice 500g, Coconut milk 200ml, Yeast, Sugar - Kerala Appam (or Palappam) is a traditional South Indian fermented pancake made with ground rice, coconut, and coconut milk . It is characterized by its fluffy, spongy center and ultra-crispy, lacy edges. Cooked in a specialized curved pan called an appachatti, it is famously served with meat or vegetable stew, egg roast, or sweetened coconut milk .",
-      "J": "",
-      "K": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM023.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM024.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM001.jpg"
+      "J": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM023.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM024.jpg,https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM001.jpg"
     },
     {
       "A": "ITM003",
@@ -83,8 +80,7 @@
       "G": "Flaky, multi-layered roasted flatbread",
       "H": 300,
       "I": "Flour 500g, Water 200ml, Oil 2ts, Salt 1gm",
-      "J": "",
-      "K": "ITM003.jpg"
+      "J": "ITM003.jpg"
     },
     {
       "A": "ITM004",
@@ -96,8 +92,7 @@
       "G": "Traditional steamed rice string hoppers",
       "H": 150,
       "I": "Rice flour 200g, Water 100ml, Salt 1gm",
-      "J": "",
-      "K": "ITM004.jpg"
+      "J": "ITM004.jpg"
     },
     {
       "A": "ITM005",
@@ -109,8 +104,7 @@
       "G": "Crispy crepe stuffed with spiced potatoes",
       "H": 350,
       "I": "Rice batter 200ml, Potato 100g, Oil 1ts",
-      "J": "Today Special",
-      "K": "ITM005.jpg,ITM005-2.jpg"
+      "J": "ITM005.jpg,ITM005-2.jpg"
     },
     {
       "A": "ITM006",
@@ -122,8 +116,7 @@
       "G": "Thin and crispy savory rice crepe",
       "H": 200,
       "I": "Rice batter 200ml, Oil 1ts",
-      "J": "",
-      "K": "ITM006.jpg"
+      "J": "ITM006.jpg"
     },
     {
       "A": "ITM007",
@@ -135,8 +128,7 @@
       "G": "Spicy black chickpea curry",
       "H": 250,
       "I": "Chickpeas 200g, Onion 2, Spices 10g",
-      "J": "",
-      "K": "ITM007.jpg"
+      "J": "ITM007.jpg"
     },
     {
       "A": "ITM008",
@@ -148,8 +140,7 @@
       "G": "Boiled eggs in a rich tomato-onion gravy",
       "H": 220,
       "I": "Eggs 2, Onion 2, Tomato 1, Spices 10g",
-      "J": "",
-      "K": "ITM008.jpg"
+      "J": "ITM008.jpg"
     },
     {
       "A": "ITM009",
@@ -161,8 +152,7 @@
       "G": "Traditional boiled matta rice",
       "H": 521,
       "I": "Matta Rice 1KG, Water, Salt",
-      "J": "",
-      "K": "ITM009.jpg"
+      "J": "ITM009.jpg"
     },
     {
       "A": "ITM010",
@@ -174,8 +164,7 @@
       "G": "Premium white long-grain rice",
       "H": 154,
       "I": "White Rice 1KG, Water, Salt",
-      "J": "",
-      "K": "ITM010.jpg"
+      "J": "ITM010.jpg"
     },
     {
       "A": "ITM011",
@@ -187,8 +176,7 @@
       "G": "Fragrant Kaima rice cooked in pure ghee",
       "H": 450,
       "I": "Kaima Rice 500g, Ghee 50g, Spices 5g",
-      "J": "",
-      "K": "ITM011.jpg"
+      "J": "ITM011.jpg"
     },
     {
       "A": "ITM012",
@@ -200,8 +188,7 @@
       "G": "Flavorful spiced basmati rice",
       "H": 523,
       "I": "Basmati 1KG, Spices 20g, Ghee 50g",
-      "J": "",
-      "K": "ITM012.jpg"
+      "J": "ITM012.jpg"
     },
     {
       "A": "ITM013",
@@ -213,8 +200,7 @@
       "G": "Authentic Malabar style chicken biriyani",
       "H": 620,
       "I": "Rice 500g, Chicken 300g, Spices 25g",
-      "J": "",
-      "K": "ITM013.jpg"
+      "J": "ITM013.jpg"
     },
     {
       "A": "ITM014",
@@ -226,8 +212,7 @@
       "G": "Spicy, aromatic beef biriyani",
       "H": 856,
       "I": "Rice 500g, Beef 300g, Spices 30g",
-      "J": "",
-      "K": "ITM014.jpg"
+      "J": "ITM014.jpg"
     },
     {
       "A": "ITM015",
@@ -239,8 +224,7 @@
       "G": "Standard rice meal with daily fish fry",
       "H": 650,
       "I": "Rice 300g, Veg Curries, Fish Fry 1 pc",
-      "J": "Today Special",
-      "K": "ITM015.jpg"
+      "J": "ITM015.jpg"
     },
     {
       "A": "ITM016",
@@ -252,8 +236,7 @@
       "G": "Traditional meal wrapped in a banana leaf",
       "H": 600,
       "I": "Rice 300g, Veg Curries, Omelette, Pickle",
-      "J": "",
-      "K": "ITM016.jpg"
+      "J": "ITM016.jpg"
     },
     {
       "A": "ITM017",
@@ -265,8 +248,7 @@
       "G": "Mackerel fish in spicy red tamarind curry",
       "H": 320,
       "I": "Mackerel 250g, Kokum 2, Chilli powder 10g",
-      "J": "",
-      "K": "ITM017.jpg"
+      "J": "ITM017.jpg"
     },
     {
       "A": "ITM018",
@@ -278,8 +260,7 @@
       "G": "Pearl spot fish roasted in banana leaves",
       "H": 400,
       "I": "Karimeen 1, Masala 50g, Coconut oil 2ts",
-      "J": "",
-      "K": "ITM018.jpg"
+      "J": "ITM018.jpg"
     },
     {
       "A": "ITM019",
@@ -291,8 +272,7 @@
       "G": "Slices of roasted chicken wrapped in kuboos",
       "H": 450,
       "I": "Chicken 150g, Kuboos 1, Garlic Paste 20g",
-      "J": "Today Special",
-      "K": "ITM019.jpg"
+      "J": "ITM019.jpg"
     },
     {
       "A": "ITM020",
@@ -304,8 +284,7 @@
       "G": "Charcoal-grilled Arabic marinated chicken",
       "H": 750,
       "I": "Chicken 500g, Arabic Spices 20g, Oil 2ts",
-      "J": "",
-      "K": "ITM020.jpg,ITM020-2.jpg"
+      "J": "ITM020.jpg,ITM020-2.jpg"
     },
     {
       "A": "ITM021",
@@ -317,8 +296,7 @@
       "G": "Crispy fried chicken (4 Pcs) with fries",
       "H": 850,
       "I": "Chicken 400g, Flour 100g, Oil for frying",
-      "J": "",
-      "K": "ITM021.jpg"
+      "J": "ITM021.jpg"
     },
     {
       "A": "ITM022",
@@ -330,8 +308,7 @@
       "G": "Assortment of kebabs and grilled meats",
       "H": 900,
       "I": "Mutton 100g, Chicken 200g, Beef 100g",
-      "J": "",
-      "K": "ITM022.jpg,ITM022-2.jpg"
+      "J": "ITM022.jpg,ITM022-2.jpg"
     },
     {
       "A": "ITM023",
@@ -343,8 +320,7 @@
       "G": "Spicy Kerala-style dry beef roast",
       "H": 550,
       "I": "Beef 300g, Onion 2, Coconut slices 50g",
-      "J": "",
-      "K": "ITM023.jpg,ITM023-2.jpg"
+      "J": "ITM023.jpg,ITM023-2.jpg"
     },
     {
       "A": "ITM024",
@@ -356,8 +332,7 @@
       "G": "Crispy pan-fried beef with curry leaves",
       "H": 450,
       "I": "Beef 250g, Spices 15g, Coconut Oil",
-      "J": "",
-      "K": "ITM024.jpg,ITM024-2.jpg"
+      "J": "ITM024.jpg,ITM024-2.jpg"
     },
     {
       "A": "ITM025",
@@ -369,8 +344,7 @@
       "G": "Tender mutton pieces in a rich gravy",
       "H": 600,
       "I": "Mutton 300g, Onion 2, Tomato 1, Spices 15g",
-      "J": "Today Special",
-      "K": "ITM025.jpg"
+      "J": "ITM025.jpg"
     },
     {
       "A": "ITM026",
@@ -382,8 +356,7 @@
       "G": "Deep-fried spiced chicken pieces",
       "H": 521,
       "I": "Chicken 250g, Spices 20g, Oil for frying",
-      "J": "",
-      "K": "ITM026.jpg,ITM026-2.jpg"
+      "J": "ITM026.jpg,ITM026-2.jpg"
     },
     {
       "A": "ITM027",
@@ -395,8 +368,7 @@
       "G": "Creamy tomato-based chicken curry",
       "H": 650,
       "I": "Chicken 300g, Butter 50g, Tomato puree",
-      "J": "",
-      "K": "ITM027.jpg,ITM027-2.jpg"
+      "J": "ITM027.jpg,ITM027-2.jpg"
     },
     {
       "A": "ITM028",
@@ -408,8 +380,7 @@
       "G": "Soft, thin roasted rice flour flatbread",
       "H": 120,
       "I": "Rice flour 200g, Water 150ml, Salt 1gm",
-      "J": "",
-      "K": "ITM028.jpg"
+      "J": "ITM028.jpg"
     },
     {
       "A": "ITM029",
@@ -421,8 +392,7 @@
       "G": "Classic brewed black tea",
       "H": 5,
       "I": "Water 150ml, Tea Leaves 5g, Sugar 10g",
-      "J": "Today Special",
-      "K": "ITM029.jpg"
+      "J": "ITM029.jpg"
     },
     {
       "A": "ITM030",
@@ -434,8 +404,7 @@
       "G": "Rich brewed tea with fresh milk",
       "H": 65,
       "I": "Milk 100ml, Water 50ml, Tea Leaves, Sugar",
-      "J": "",
-      "K": "ITM030.jpg"
+      "J": "ITM030.jpg"
     },
     {
       "A": "ITM031",
@@ -447,8 +416,7 @@
       "G": "Spiced black tea with a drop of lemon",
       "H": 30,
       "I": "Water 150ml, Tea, Lemon, Cardamom",
-      "J": "",
-      "K": "ITM031.jpg"
+      "J": "ITM031.jpg"
     },
     {
       "A": "ITM032",
@@ -460,8 +428,7 @@
       "G": "Strong brewed black coffee",
       "H": 10,
       "I": "Water 150ml, Coffee Powder 10g, Sugar",
-      "J": "",
-      "K": "ITM032.jpg"
+      "J": "ITM032.jpg"
     },
     {
       "A": "ITM033",
@@ -473,8 +440,7 @@
       "G": "Hot coffee brewed with fresh milk",
       "H": 85,
       "I": "Milk 150ml, Coffee Powder 10g, Sugar",
-      "J": "",
-      "K": "ITM033.jpg"
+      "J": "ITM033.jpg"
     },
     {
       "A": "ITM034",
@@ -486,8 +452,7 @@
       "G": "Sealed purified drinking water cup",
       "H": 0,
       "I": "100% Purified Water",
-      "J": "",
-      "K": "ITM034.jpg"
+      "J": "ITM034.jpg"
     },
     {
       "A": "ITM035",
@@ -499,8 +464,7 @@
       "G": "Purified bottled drinking water",
       "H": 0,
       "I": "100% Purified Water",
-      "J": "",
-      "K": "ITM035.jpg"
+      "J": "ITM035.jpg"
     },
     {
       "A": "ITM036",
@@ -512,8 +476,7 @@
       "G": "Large purified bottled drinking water",
       "H": 0,
       "I": "100% Purified Water",
-      "J": "",
-      "K": "ITM036.jpg"
+      "J": "ITM036.jpg"
     },
     {
       "A": "ITM037",
@@ -525,8 +488,7 @@
       "G": "Chilled carbonated cola beverage",
       "H": 150,
       "I": "Carbonated Water, Sugar, Color, Flavor",
-      "J": "Today Special",
-      "K": "ITM037.jpg"
+      "J": "ITM037.jpg"
     },
     {
       "A": "ITM038",
@@ -538,8 +500,7 @@
       "G": "Chilled carbonated cola beverage",
       "H": 140,
       "I": "Carbonated Water, Sugar, Color, Flavor",
-      "J": "",
-      "K": "ITM038.jpg,ITM038-2.jpg"
+      "J": "ITM038.jpg,ITM038-2.jpg"
     },
     {
       "A": "ITM039",
@@ -551,8 +512,7 @@
       "G": "Chilled lemon-lime carbonated beverage",
       "H": 140,
       "I": "Carbonated Water, Sugar, Lemon Flavor",
-      "J": "",
-      "K": "ITM039.jpg,ITM039-2.jpg"
+      "J": "ITM039.jpg,ITM039-2.jpg"
     },
     {
       "A": "ITM040",
@@ -564,8 +524,7 @@
       "G": "Chilled orange carbonated beverage",
       "H": 160,
       "I": "Carbonated Water, Sugar, Orange Flavor",
-      "J": "",
-      "K": "ITM040.jpg,ITM040-2.jpg"
+      "J": "ITM040.jpg,ITM040-2.jpg"
     },
     {
       "A": "ITM041",
@@ -577,8 +536,7 @@
       "G": "Local premium carbonated cola",
       "H": 145,
       "I": "Carbonated Water, Sugar, Color, Flavor",
-      "J": "",
-      "K": "ITM041.jpg,ITM041-2.jpg"
+      "J": "ITM041.jpg,ITM041-2.jpg"
     },
     {
       "A": "ITM042",
@@ -590,8 +548,7 @@
       "G": "Local premium citrus soda",
       "H": 150,
       "I": "Carbonated Water, Sugar, Citrus Flavor",
-      "J": "Today Special",
-      "K": "ITM042.jpg,ITM042-2.jpg"
+      "J": "ITM042.jpg,ITM042-2.jpg"
     },
     {
       "A": "ITM043",
@@ -603,8 +560,7 @@
       "G": "Freshly squeezed orange juice",
       "H": 135,
       "I": "Fresh Oranges 3 pcs, Sugar syrup",
-      "J": "",
-      "K": "ITM043.jpg,ITM043-2.jpg"
+      "J": "ITM043.jpg,ITM043-2.jpg"
     },
     {
       "A": "ITM044",
@@ -616,8 +572,7 @@
       "G": "Thick, sweet blended mango juice",
       "H": 150,
       "I": "Fresh Mango 1, Water 50ml, Sugar syrup",
-      "J": "",
-      "K": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM002.jpg,ITM044-2.jpg"
+      "J": "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/ITM002.jpg,ITM044-2.jpg"
     },
     {
       "A": "ITM045",
@@ -629,8 +584,7 @@
       "G": "Refreshing blended lemon and mint cooler",
       "H": 110,
       "I": "Lemon 2, Mint leaves 10, Sugar 20g",
-      "J": "",
-      "K": "ITM045.jpg,ITM045-2.jpg"
+      "J": "ITM045.jpg,ITM045-2.jpg"
     },
     {
       "A": "ITM046",
@@ -642,8 +596,7 @@
       "G": "Creamy fresh avocado blended with milk",
       "H": 420,
       "I": "Avocado 1, Milk 200ml, Honey 1ts",
-      "J": "",
-      "K": "ITM046.jpg,ITM046-2.jpg"
+      "J": "ITM046.jpg,ITM046-2.jpg"
     },
     {
       "A": "ITM047",
@@ -655,8 +608,7 @@
       "G": "Classic banana and milk shake with malt",
       "H": 350,
       "I": "Milk 200ml, Banana 1, Horlicks 2ts",
-      "J": "",
-      "K": "ITM047.jpg"
+      "J": "ITM047.jpg"
     },
     {
       "A": "ITM048",
@@ -668,8 +620,7 @@
       "G": "Classic creamy vanilla ice cream (2 Scoops)",
       "H": 220,
       "I": "Cream, Milk, Sugar, Vanilla Extract",
-      "J": "Today Special",
-      "K": "ITM048.jpg,ITM048-2.jpg"
+      "J": "ITM048.jpg,ITM048-2.jpg"
     },
     {
       "A": "ITM049",
@@ -681,8 +632,7 @@
       "G": "Sweet strawberry ice cream (2 Scoops)",
       "H": 210,
       "I": "Cream, Milk, Sugar, Strawberry puree",
-      "J": "",
-      "K": "ITM049.jpg,ITM049-2.jpg"
+      "J": "ITM049.jpg,ITM049-2.jpg"
     },
     {
       "A": "ITM050",
@@ -694,8 +644,7 @@
       "G": "Mixed fresh seasonal fruits with vanilla",
       "H": 250,
       "I": "Fruits 150g, Ice cream 1 scoop, Nuts 10g",
-      "J": "",
-      "K": "ITM050.jpg,ITM050-2.jpg"
+      "J": "ITM050.jpg,ITM050-2.jpg"
     },
     {
       "A": "ITM051",
@@ -707,8 +656,7 @@
       "G": "Layered rose milk dessert with vermicelli",
       "H": 400,
       "I": "Milk 200ml, Vermicelli 20g, Basil seeds 10g",
-      "J": "Today Special",
-      "K": "ITM051.jpg,ITM051-2.jpg"
+      "J": "ITM051.jpg,ITM051-2.jpg"
     }
   ]
 }
