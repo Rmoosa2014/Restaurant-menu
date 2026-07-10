@@ -106,20 +106,26 @@
     <div id="productModal" class="fixed inset-0 z-[80] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
         <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
-            <button onclick="closeModal()" class="absolute top-3 right-3 z-30 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-times"></i></button>
+            <button onclick="closeModal()" class="absolute top-3 end-3 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center shadow"><i class="fas fa-times"></i></button>
             <div class="relative h-56 md:h-64 w-full bg-gray-100 group">
                 <div id="modal-image-slider" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar"></div>
-                <div id="modalCategoryBadge" class="absolute bottom-3 left-3 bg-white/95 px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm z-20"></div>
+                <div id="modal-image-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none"></div>
+                <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm z-20"></div>
+                <div id="modalTodaySpecialBadge" class="hidden absolute top-3 start-3 bg-gradient-to-r from-orange-400 to-red-500 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-white shadow-lg flex items-center gap-1 z-20"><i class="fas fa-star text-yellow-200"></i> Today's Special</div>
             </div>
-            <div class="p-5 overflow-y-auto relative">
+            <div class="p-5 md:p-6 overflow-y-auto relative">
                 <div class="flex justify-between items-start gap-2 mb-2 border-b border-gray-100 pb-3">
                     <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
-                    <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap text-right"></span>
+                    <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap text-end"></span>
                 </div>
                 <p id="modalDesc" class="text-gray-600 mb-4 text-sm"></p>
-                <div class="flex gap-2 mb-4"><div class="flex items-center text-gray-700 text-sm bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-lg inline-flex"><i class="fas fa-fire text-orange-500 mr-2 text-lg"></i><span id="modalCalories" class="font-bold text-gray-900 mr-1"></span><span class="text-xs">Cal</span></div></div>
-                <div id="modalRecipeArea" class="hidden mb-4 bg-yellow-50 border border-yellow-100 rounded-xl p-4 cursor-pointer" onclick="toggleRecipe()"><h4 class="font-bold text-yellow-800 text-sm mb-1 flex items-center gap-2"><i class="fas fa-book-open"></i> Recipe</h4><p id="modalRecipe" class="text-sm text-yellow-700 leading-relaxed line-clamp-2"></p></div>
-                
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <div class="flex items-center text-gray-700 text-sm bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-lg inline-flex"><i class="fas fa-fire text-orange-500 me-2 text-lg"></i><span id="modalCalories" class="font-bold text-gray-900 me-1"></span><span class="text-xs">Cal</span></div>
+                </div>
+                <div id="modalRecipeArea" class="hidden mb-4 bg-yellow-50 border border-yellow-100 rounded-xl p-4 cursor-pointer relative" onclick="toggleRecipe()">
+                    <h4 class="font-bold text-yellow-800 text-sm mb-1 flex items-center gap-2"><i class="fas fa-book-open"></i> Recipe / Ingredients</h4>
+                    <p id="modalRecipe" class="text-sm text-yellow-700 leading-relaxed"></p>
+                </div>
                 <div id="modal-action-footer" class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100">
                     <button onclick="openWhatsAppItem()" class="w-full bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow flex items-center justify-center gap-2"><i class="fab fa-whatsapp text-lg"></i> Order via WhatsApp</button>
                     <div class="flex gap-3">
@@ -150,7 +156,16 @@
         </div>
     </div>
     
-    <button id="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex opacity-0 pointer-events-none transition-all duration-500 fixed bottom-6 right-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg"><i class="fas fa-arrow-up"></i></button>
+    <button id="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex opacity-0 pointer-events-none transition-all duration-500 fixed bottom-6 right-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg"><i class="fas fa-arrow-up"></i><div id="category-page-overlay" class="fixed inset-0 z-[70] hidden items-end md:items-center justify-center p-0 md:p-6">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="category-backdrop" onclick="closeCategoryPage()"></div>
+        <div class="relative z-10 w-full md:max-w-2xl bg-[#f8fafc] rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[90vh] md:h-[80vh] transform translate-y-full md:scale-95 opacity-0 transition-all duration-300" id="category-content">
+            <div class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-gray-100 px-4 h-16 flex items-center gap-4 shrink-0">
+                <button onclick="closeCategoryPage()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition shadow-sm"><i class="fas fa-arrow-left"></i></button>
+                <h2 id="category-page-title" class="text-xl font-bold text-gray-900 truncate">Category Name</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6"><div id="category-page-grid" class="grid grid-cols-2 gap-3 sm:gap-4"></div></div>
+        </div>
+    </div></button>
 <script>
         const newRiyalIcon = `
         <svg class="inline-block w-[0.8em] h-[0.8em] mr-1 opacity-90" viewBox="0 0 202.03 220.76" xmlns="http://www.w3.org/2000/svg">
@@ -230,6 +245,8 @@ function formatMenuData() {
                     desc: row.G || "",
                     calories: row.H || "",
                     recipe: row.I || "",
+                    // Checks Column K for the word 'special'
+                    isTodaySpecial: String(row.K || "").toLowerCase().includes('special'),
                     imgUrls: (() => {
                         let urls = [];
                         if (row.J) {
@@ -264,7 +281,7 @@ function formatMenuData() {
             ['All', ...mainCategories].forEach((cat, index) => {
                 const isAll = cat === 'All', isActive = isAll ? selectedMainCategories.size === 0 : selectedMainCategories.has(cat);
                 const btn = document.createElement('button');
-                btn.className = `w-[calc(25vw-9px)] sm:w-[120px] shrink-0 snap-start flex flex-col items-center justify-center p-1.5 rounded-xl border font-bold text-[10px] transition-colors ${isActive ? 'bg-red-500 text-white' : 'bg-white text-gray-600'}`;
+                btn.className = `w-[calc(25vw-9px)] sm:w-[120px] shrink-0 snap-start flex flex-col items-center justify-center p-1.5 rounded-xl border font-bold text-[10px] transition-colors ${isActive ? 'bg-red-500 text-white border-red-500 shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-500'}`;
                 btn.innerHTML = `<i class="fas fa-utensils text-sm mb-1 ${isActive ? 'text-white' : 'text-red-400'}"></i><span class="truncate w-full text-center">${cat}</span>`;
                 btn.onclick = () => { 
                     if(isAll){ selectedMainCategories.clear(); selectedSubCategories.clear(); }
@@ -283,7 +300,7 @@ function formatMenuData() {
 
             Array.from(relevantSubCats).sort().forEach(subCat => {
                 const isActive = selectedSubCategories.has(subCat), btn = document.createElement('button');
-                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold transition-colors ${isActive ? 'bg-gray-800 text-white' : 'bg-white text-gray-600'}`;
+                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold transition-colors ${isActive ? 'bg-gray-800 text-white border-gray-800 shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100'}`;
                 btn.textContent = subCat;
                 btn.onclick = () => { selectedSubCategories.has(subCat) ? selectedSubCategories.delete(subCat) : selectedSubCategories.add(subCat); renderSubCategoryFilters(); executeFilter(); };
                 container.appendChild(btn);
@@ -291,7 +308,6 @@ function formatMenuData() {
         }
 
         function executeFilter() {
-            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1">${globalCurrency}</span>`;
             const container = document.getElementById('menu-container'), emptyState = document.getElementById('empty-state');
             container.innerHTML = '';
             let filteredData = activeMenuData;
@@ -300,39 +316,129 @@ function formatMenuData() {
             if (selectedSubCategories.size > 0) filteredData = filteredData.filter(i => selectedSubCategories.has(i.subCat));
             if (searchQuery) filteredData = filteredData.filter(i => (`${i.name} ${i.desc}`).toLowerCase().includes(searchQuery));
 
+            let hasItems = false;
+
+            // Render Today's Specials First
+            if (selectedMainCategories.size === 0 && selectedSubCategories.size === 0 && !searchQuery) {
+                const specials = activeMenuData.filter(i => i.isTodaySpecial);
+                if (specials.length > 0) {
+                    hasItems = true;
+                    specials.sort((a, b) => a.order - b.order);
+                    renderSection("🌟 Today's Specials", specials, container, true);
+                }
+            }
+
             const grouped = {};
             filteredData.forEach(item => { if(!grouped[item.subCat]) grouped[item.subCat] = []; grouped[item.subCat].push(item); });
 
-            let hasItems = false;
             for (const subCat in grouped) {
                 hasItems = true;
-                const section = document.createElement('div'), items = grouped[subCat].sort((a, b) => a.order - b.order);
-                section.innerHTML = `<h3 class="text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4">${subCat}</h3>`;
-                const grid = document.createElement('div'); grid.className = "grid grid-cols-2 md:grid-cols-4 gap-3";
-                
-                items.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full cursor-pointer";
-                    card.onclick = () => openModal(item.id);
-                    let imgs = item.imgUrls.map(u => `<img src="${u}" class="w-full h-full object-cover shrink-0 snap-center">`).join('');
-                    if(item.imgUrls.length > 1) imgs += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
-                    
-                    card.innerHTML = `
-                        <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 left-2 w-8 h-8 bg-white/90 rounded-full text-gray-400 z-20"><i class="${likedItems.has(item.id) ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
-                        <div class="relative aspect-[4/3] bg-gray-100"><div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">${imgs}</div></div>
-                        <div class="p-3 flex flex-col flex-grow">
-                            <div class="flex justify-between items-start mb-1 gap-2"><h4 class="text-sm font-bold text-gray-900 leading-tight">${item.name}</h4><span class="font-extrabold text-red-600 text-sm shrink-0 flex items-baseline">${finalCurrencyDisplay}${item.price}</span></div>
-                            <p class="text-xs text-gray-500 line-clamp-2 mt-1 mb-2">${item.desc}</p>
-                            ${item.calories ? `<div class="mt-auto text-[10px] font-bold text-orange-500 bg-orange-50 w-fit px-2 py-1 rounded"><i class="fas fa-fire"></i> ${item.calories} Cal</div>` : ''}
-                        </div>`;
-                    grid.appendChild(card);
-                });
-                section.appendChild(grid); container.appendChild(section);
+                const items = grouped[subCat].sort((a, b) => a.order - b.order);
+                renderSection(subCat, items, container, false);
             }
+            
             if(!hasItems) { container.classList.add('hidden'); emptyState.classList.remove('hidden'); } 
             else { container.classList.remove('hidden'); container.classList.add('flex'); emptyState.classList.add('hidden'); }
         }
-function openModal(id) {
+
+        function renderSection(title, items, container, isHighlight) {
+            const section = document.createElement('div');
+            section.className = 'menu-section-tracker';
+            
+            const headerClasses = isHighlight ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500" : "text-xl font-bold text-gray-800";
+                
+            const titleWrapper = document.createElement('div');
+            titleWrapper.className = "flex items-center justify-between border-b-2 border-red-100 pb-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity group";
+            titleWrapper.onclick = () => openCategoryPage(title, isHighlight);
+            titleWrapper.innerHTML = `<h3 class="${headerClasses}">${title}</h3><div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-red-500 group-hover:bg-red-100 transition-colors shadow-sm"><i class="fas fa-chevron-right text-sm"></i></div>`;
+            section.appendChild(titleWrapper);
+            
+            const grid = document.createElement('div');
+            if (isHighlight) grid.className = `grid ${items.length > 20 ? 'grid-rows-2' : 'grid-rows-1'} grid-flow-col gap-3 sm:gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x snap-mandatory`;
+            else grid.className = "grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6";
+
+            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1">${globalCurrency}</span>`;
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                const bgClass = item.isTodaySpecial ? 'bg-amber-50/60 border-amber-200' : 'bg-white border-gray-100';
+                let cardClasses = `menu-card ${bgClass} rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group`;
+                if (isHighlight) cardClasses += ' w-[40vw] sm:w-[220px] snap-start shrink-0';
+                else if (index === items.length - 1 && items.length % 2 !== 0) cardClasses += ' col-span-2 md:col-span-1'; 
+                
+                card.className = cardClasses;
+                card.style.animation = `fadeInUp 0.4s ease forwards ${index * 30}ms`;
+                card.onclick = () => openModal(item.id);
+
+                const isLiked = likedItems.has(item.id);
+                let badgeHtml = item.isTodaySpecial ? `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[10px]"></i> Special</div>` : '';
+
+                let imgs = item.imgUrls.map(u => `<img src="${u}" class="w-full h-full object-cover shrink-0 snap-center">`).join('');
+                if(item.imgUrls.length > 1) imgs += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
+
+                card.innerHTML = `
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
+                    <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl"><div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="scroll-behavior: smooth;">${imgs}</div>${badgeHtml}</div>
+                    <div class="p-3 sm:p-4 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-1 sm:mb-2 gap-2"><h4 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">${item.name}</h4><span class="font-extrabold text-red-600 whitespace-nowrap text-sm sm:text-base shrink-0 flex items-baseline">${finalCurrencyDisplay}${item.price}</span></div>
+                        <p class="text-xs text-gray-500 line-clamp-2 mt-1 mb-2 flex-grow">${item.desc}</p>
+                        <div class="flex justify-between items-end mt-1">${item.calories ? `<div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-orange-500 bg-orange-50 w-fit px-2 py-1 rounded-md"><i class="fas fa-fire"></i> ${item.calories} Cal</div>` : '<div></div>'}</div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+            section.appendChild(grid); container.appendChild(section);
+        }
+
+        // --- THE DEDICATED CATEGORY PAGE LOGIC ---
+        function openCategoryPage(title, isHighlight) {
+            let items = isHighlight ? activeMenuData.filter(i => i.isTodaySpecial) : activeMenuData.filter(i => i.subCat === title);
+            items.sort((a, b) => a.order - b.order);
+            document.getElementById('category-page-title').textContent = title;
+            
+            const grid = document.getElementById('category-page-grid'); grid.innerHTML = '';
+            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1">${globalCurrency}</span>`;
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                const bgClass = item.isTodaySpecial ? 'bg-amber-50/60 border-amber-200' : 'bg-white border-gray-100';
+                card.className = `menu-card ${bgClass} rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group`;
+                card.style.animation = `fadeInUp 0.4s ease forwards ${index * 20}ms`;
+                card.onclick = () => openModal(item.id);
+
+                const isLiked = likedItems.has(item.id);
+                let badgeHtml = item.isTodaySpecial ? `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[8px] font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[8px]"></i> Special</div>` : '';
+                let imgs = item.imgUrls.map(u => `<img src="${u}" class="w-full h-full object-cover shrink-0 snap-center">`).join('');
+                if(item.imgUrls.length > 1) imgs += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
+
+                card.innerHTML = `
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 shadow-sm z-20 text-xs"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
+                    <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl"><div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">${imgs}</div>${badgeHtml}</div>
+                    <div class="p-2 sm:p-3 flex flex-col flex-grow">
+                        <h4 class="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight line-clamp-1 mb-1">${item.name}</h4>
+                        <span class="font-extrabold text-red-600 whitespace-nowrap text-sm shrink-0 mb-1 flex items-baseline">${finalCurrencyDisplay}${item.price}</span>
+                        <p class="text-[9px] sm:text-[10px] text-gray-500 line-clamp-2 mb-2 flex-grow">${item.desc}</p>
+                        <div class="flex justify-between items-end mt-auto">${item.calories ? `<div class="flex items-center gap-1 text-[8px] font-bold text-orange-500 bg-orange-50 w-fit px-1.5 py-0.5 rounded"><i class="fas fa-fire"></i> ${item.calories} Cal</div>` : '<div></div>'}</div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+
+            const modal = document.getElementById('category-page-overlay'), backdrop = document.getElementById('category-backdrop'), content = document.getElementById('category-content');
+            modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth; 
+            backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100');
+            content.classList.remove('translate-y-full', 'md:scale-95', 'opacity-0'); content.classList.add('translate-y-0', 'md:scale-100', 'opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCategoryPage() {
+            const modal = document.getElementById('category-page-overlay'), backdrop = document.getElementById('category-backdrop'), content = document.getElementById('category-content');
+            backdrop.classList.remove('opacity-100'); backdrop.classList.add('opacity-0');
+            content.classList.remove('translate-y-0', 'md:scale-100', 'opacity-100'); content.classList.add('translate-y-full', 'md:scale-95', 'opacity-0');
+            document.body.style.overflow = '';
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        }
+
+        // --- MODALS & EXTRAS ---
+        function openModal(id) {
             const item = activeMenuData.find(i => i.id === id); if(!item) return;
             currentOpenItemId = id;
             
@@ -340,7 +446,7 @@ function openModal(id) {
             slider.innerHTML = ''; dots.innerHTML = '';
             item.imgUrls.forEach((url, i) => {
                 slider.innerHTML += `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-center">`;
-                dots.innerHTML += `<div class="modal-dot w-2 h-2 rounded-full ${i===0 ? 'bg-red-500' : 'bg-white/80'}"></div>`;
+                dots.innerHTML += `<div class="modal-dot w-2 h-2 rounded-full transition-all duration-300 ${i===0 ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}"></div>`;
             });
             if(item.imgUrls.length > 1) slider.innerHTML += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
             
@@ -348,15 +454,20 @@ function openModal(id) {
             document.getElementById('modalTitle').textContent = item.name;
             document.getElementById('modalDesc').textContent = item.desc;
             
-            let modalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1">${globalCurrency}</span>`;
+            const specialBadge = document.getElementById('modalTodaySpecialBadge');
+            if (item.isTodaySpecial && specialBadge) specialBadge.classList.remove('hidden');
+            else if (specialBadge) specialBadge.classList.add('hidden');
+            
+            let modalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1.5 opacity-90">${globalCurrency}</span>`;
             document.getElementById('modalPrice').innerHTML = `<div class="flex items-baseline">${modalCurrencyDisplay}${item.price}</div>`;
 
-            if(item.calories) { document.getElementById('modalCalories').textContent = item.calories; document.getElementById('modalCalories').parentElement.classList.remove('hidden'); } 
-            else document.getElementById('modalCalories').parentElement.classList.add('hidden');
+            const calArea = document.getElementById('modalCalories');
+            if(item.calories && calArea) { calArea.textContent = item.calories; calArea.parentElement.classList.remove('hidden'); calArea.parentElement.classList.add('inline-flex'); } 
+            else if (calArea) { calArea.parentElement.classList.add('hidden'); calArea.parentElement.classList.remove('inline-flex'); }
 
             const recipeArea = document.getElementById('modalRecipeArea');
-            if(item.recipe) { document.getElementById('modalRecipe').textContent = item.recipe; recipeArea.classList.remove('hidden'); } 
-            else recipeArea.classList.add('hidden');
+            if(item.recipe && recipeArea) { document.getElementById('modalRecipe').textContent = item.recipe; recipeArea.classList.remove('hidden'); window.toggleRecipe(true); } 
+            else if (recipeArea) recipeArea.classList.add('hidden');
 
             const modal = document.getElementById('productModal'), backdrop = document.getElementById('modalBackdrop'), content = document.getElementById('modalContent');
             modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth; 
@@ -408,12 +519,15 @@ function openModal(id) {
             if(!currentOpenItemId) return; const item = activeMenuData.find(i => i.id === currentOpenItemId);
             if(navigator.share) navigator.share({ title: item.name, text: `Check out ${item.name}!`, url: window.location.href });
         }
-        function toggleRecipe() { document.getElementById('modalRecipe').classList.toggle('line-clamp-2'); }
+        window.toggleRecipe = function(forceCollapse = false) { 
+            const p = document.getElementById('modalRecipe'); 
+            if(forceCollapse) p.classList.add('line-clamp-2'); 
+            else p.classList.toggle('line-clamp-2'); 
+        };
         function toggleMainCategories() { document.getElementById('main-category-container').classList.toggle('max-h-0'); document.getElementById('main-category-container').classList.toggle('opacity-0'); }
 
         document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase().trim(); executeFilter(); });
         
-        // Auto-Swiping logic
         document.addEventListener('touchstart', () => lastSliderInteraction = Date.now(), {passive: true});
         document.addEventListener('mousedown', () => lastSliderInteraction = Date.now());
         
