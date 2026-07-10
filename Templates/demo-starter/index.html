@@ -399,7 +399,7 @@
                         <div class="relative aspect-[4/3] bg-gray-100"><img src="${item.img}" class="w-full h-full object-cover" onerror="this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.N || rawBranding.M || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}';"></div>
                         <div class="p-3 flex flex-col flex-grow">
                             <h4 class="text-sm font-bold text-gray-900 line-clamp-1">${item.name}</h4>
-                            <span class="font-extrabold text-red-600 mt-1">${item.price} ${globalCurrency}</span>
+                            <span class="font-extrabold text-red-600 mt-1 flex items-baseline"><span class="text-[0.7em] mr-0.5 opacity-90">${globalCurrency}</span>${item.price}</span>
                         </div>`;
                     grid.appendChild(card);
                 });
@@ -450,7 +450,7 @@
             document.getElementById('modal-image').src = item.img;
             document.getElementById('modalCategoryBadge').textContent = item.subCat;
             document.getElementById('modalTitle').textContent = item.name;
-            document.getElementById('modalPrice').textContent = `${item.price} ${globalCurrency}`;
+            document.getElementById('modalPrice').innerHTML = `<div class="flex items-baseline"><span class="text-sm mr-1 opacity-90">${globalCurrency}</span>${item.price}</div>`;
             document.getElementById('modalDesc').textContent = item.desc;
             
             const modal = document.getElementById('productModal'), backdrop = document.getElementById('modalBackdrop'), content = document.getElementById('modalContent');
