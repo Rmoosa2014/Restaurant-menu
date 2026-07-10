@@ -697,10 +697,7 @@ ADD THIS HERE TO STOP HIDING ---> */
         };
 
         /// --- Master Initialization (JSON Upgraded) ---
-        async function init() {
-            try {
-                // Point directly to the JSON file
-                const fileUrl = "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/MenuMasterData.json?v=" + new Date().getTime();
+        const fileUrl = "MenuMasterData.json?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
                 if (!response.ok) throw new Error("Could not fetch JSON file");
                 
