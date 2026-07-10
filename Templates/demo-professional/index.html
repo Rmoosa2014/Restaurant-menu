@@ -852,39 +852,147 @@ function formatMenuData() {
             else pContent.style.transform = ''; 
         });
 
-        // 4. Manual & Auto Carousel Swipe Logic (RTL Safe)
+        // --- 4. Premium Infinite Bidirectional Carousel & Dot Engine ---
+        
+        // A. Automatically injects clones at both the start and end of the image list
+        function maintainInfiniteCarousels() {
+            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
+                if (slider.clientWidth === 0 || slider.dataset.infiniteSetup === "true") return; 
+                
+                // Clear any old, single HTML clones first
+                slider.querySelectorAll('[data-is-clone="true"]').forEach(c => c.remove());
+                
+                const imgs = Array.from(slider.children);
+                if (imgs.length > 1) {
+                    // Create Front Clone (Last Image) for backwards swiping
+                    const frontClone = imgs[imgs.length - 1].cloneNode(true);
+                    frontClone.dataset.isClone = "true";
+                    
+                    // Create Back Clone (First Image) for forwards swiping
+                    const backClone = imgs[0].cloneNode(true);
+                    backClone.dataset.isClone = "true";
+                    
+                    // Inject Dual Clones
+                    slider.insertBefore(frontClone, imgs[0]);
+                    slider.appendChild(backClone);
+                    
+                    slider.dataset.infiniteSetup = "true";
+                    slider.dataset.realCount = imgs.length; // The true number of images
+
+                    // Disable smooth scroll temporarily to jump past the front clone invisibly
+                    const originalBehavior = slider.style.scrollBehavior;
+                    slider.style.scrollBehavior = 'auto'; 
+                    const isRTL = document.documentElement.dir === 'rtl';
+                    slider.scrollLeft = isRTL ? -slider.clientWidth : slider.clientWidth;
+                    void slider.offsetWidth; // Force jump
+                    slider.style.scrollBehavior = originalBehavior || 'smooth'; 
+                }
+            });
+        }
+        
+        // Run constantly to catch new pop-up modals opening
+        setInterval(maintainInfiniteCarousels, 100);
+
+        // B. Global Teleporter & Red Dot Sync Engine
+        document.addEventListener('scroll', (e) => {
+            if (e.target && e.target.classList && e.target.dataset.infiniteSetup === "true") {
+                const slider = e.target;
+                const currentPos = Math.abs(slider.scrollLeft);
+                const clientWidth = slider.clientWidth;
+                const maxScroll = slider.scrollWidth - clientWidth;
+                if (clientWidth === 0) return;
+
+                const isRTL = document.documentElement.dir === 'rtl';
+                let teleported = false;
+
+                // Invisible Teleport if hitting boundaries
+                if (currentPos <= 5) {
+                    slider.style.scrollBehavior = 'auto';
+                    slider.scrollLeft = isRTL ? -(maxScroll - clientWidth) : (maxScroll - clientWidth);
+                    void slider.offsetWidth;
+                    slider.style.scrollBehavior = 'smooth';
+                    teleported = true;
+                } else if (currentPos >= maxScroll - 5) {
+                    slider.style.scrollBehavior = 'auto';
+                    slider.scrollLeft = isRTL ? -clientWidth : clientWidth;
+                    void slider.offsetWidth;
+                    slider.style.scrollBehavior = 'smooth';
+                    teleported = true;
+                }
+
+                // Sync the Red Dots perfectly with the scrolling image
+                const dotsContainer = slider.nextElementSibling;
+                if (dotsContainer && dotsContainer.id === 'modal-image-dots') {
+                    const realCount = parseInt(slider.dataset.realCount);
+                    const activePos = teleported ? Math.abs(slider.scrollLeft) : currentPos;
+                    let activeIndex = Math.round(activePos / clientWidth) - 1; 
+                    
+                    if (activeIndex < 0) activeIndex = realCount - 1;
+                    if (activeIndex >= realCount) activeIndex = 0;
+                    
+                    Array.from(dotsContainer.children).forEach((dot, k) => {
+                        dot.className = `modal-dot w-2 h-2 rounded-full transition-all duration-300 ${k === activeIndex ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}`;
+                    });
+                }
+            }
+        }, true); 
+
+        // C. Smart Interaction Tracker (Stops auto-swiper when user touches the image)
+        ['touchstart', 'touchmove', 'mousedown', 'wheel'].forEach(evt => {
+            document.addEventListener(evt, (e) => {
+                if (e.target.closest('.mini-img-slider') || e.target.closest('#modal-image-slider')) {
+                    lastSliderInteraction = Date.now();
+                }
+            }, { passive: true });
+        });
+
+        // D. Auto-Swiper Engine
+        setInterval(() => {
+            if (Date.now() - lastSliderInteraction < 5000) return;
+            const isRTL = document.documentElement.dir === 'rtl';
+            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
+                if (slider.dataset.infiniteSetup === "true") {
+                    const currentPos = Math.abs(slider.scrollLeft);
+                    slider.scrollTo({ left: isRTL ? -(currentPos + slider.clientWidth) : (currentPos + slider.clientWidth), behavior: 'smooth' });
+                }
+            });
+        }, 4000);
+
+        // E. Manual Swipe Speed Boost
         let carouselSwipeStartX = 0;
         document.addEventListener('touchstart', (e) => {
             const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
-            if (slider && slider.children.length > 1) carouselSwipeStartX = e.touches[0].clientX;
+            if (slider && slider.children.length > 1) {
+                carouselSwipeStartX = e.touches[0].clientX;
+            }
         }, { passive: true });
 
         document.addEventListener('touchend', (e) => {
             const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
             if (slider && slider.children.length > 1) {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (maxScroll <= 0) return; 
+                
                 const diff = carouselSwipeStartX - e.changedTouches[0].clientX; 
-                const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
+                
                 if (Math.abs(diff) > 40) {
-                    if (diff > 40) slider.scrollTo({ left: slider.scrollLeft + (slider.clientWidth * dir), behavior: 'smooth' }); 
-                    else slider.scrollTo({ left: slider.scrollLeft - (slider.clientWidth * dir), behavior: 'smooth' }); 
+                    const isRTL = document.documentElement.dir === 'rtl';
+                    const currentScroll = Math.abs(slider.scrollLeft);
+                    
+                    const isAtStart = currentScroll <= 5;
+                    const isAtEnd = currentScroll >= maxScroll - 5;
+
+                    const movingForward = isRTL ? diff < -40 : diff > 40;
+                    const movingBackward = isRTL ? diff > 40 : diff < -40;
+
+                    if (movingForward && isAtEnd) {
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else if (movingBackward && isAtStart) {
+                        slider.scrollTo({ left: isRTL ? -maxScroll : maxScroll, behavior: 'smooth' });
+                    }
                 }
             }
         }, { passive: true });
-
-        setInterval(() => {
-            if (Date.now() - lastSliderInteraction < 3000) return;
-            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
-                if(slider.children.length > 1) {
-                    let maxScroll = slider.scrollWidth - slider.clientWidth;
-                    if(Math.abs(slider.scrollLeft) >= maxScroll - 5) { 
-                        slider.scrollTo({ left: 0, behavior: 'smooth' }); 
-                    } else { 
-                        const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
-                        slider.scrollTo({ left: slider.scrollLeft + (slider.clientWidth * dir), behavior: 'smooth' }); 
-                    }
-                }
-            });
-        }, 4000);
 
         // Start App
         window.onload = init;
