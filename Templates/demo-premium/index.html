@@ -697,7 +697,9 @@ ADD THIS HERE TO STOP HIDING ---> */
         };
 
         /// --- Master Initialization (JSON Upgraded) ---
-        const fileUrl = "MenuMasterData.json?v=" + new Date().getTime();
+        async function init() {
+            try {
+                const fileUrl = "MenuMasterData.json?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
                 if (!response.ok) throw new Error("Could not fetch JSON file");
                 
