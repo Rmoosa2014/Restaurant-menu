@@ -51,19 +51,25 @@
             </div>
 
             <!-- CSS Phone Mockup -->
-            <div class="flex-1 flex justify-center relative w-full max-w-sm">
+            <div class="flex-1 flex justify-center relative w-full max-w-sm mx-auto lg:mt-0 mt-8">
                 <!-- Decorative background blob -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-red-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-red-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
                 
+                <!-- The Phone Frame -->
                 <div class="relative mx-auto border-gray-900 bg-gray-900 border-[12px] sm:border-[14px] rounded-[2.5rem] h-[550px] sm:h-[650px] w-[280px] sm:w-[320px] shadow-2xl z-10 transform transition hover:-translate-y-2 duration-500">
                     <!-- Phone Notch -->
-                    <div class="w-[120px] sm:w-[148px] h-[18px] bg-gray-900 absolute top-0 left-1/2 -translate-x-1/2 rounded-b-[1rem] z-20 flex justify-center items-center gap-2">
-                        <div class="w-12 h-1.5 bg-gray-800 rounded-full"></div>
+                    <div class="w-[130px] sm:w-[148px] h-[18px] bg-gray-900 absolute top-0 left-1/2 -translate-x-1/2 rounded-b-[1rem] z-20 flex justify-center items-center gap-2">
+                        <div class="w-10 h-1.5 bg-gray-800 rounded-full"></div>
                         <div class="w-2 h-2 bg-gray-800 rounded-full"></div>
                     </div>
-                    <!-- Live Screen (Loads your actual app!) -->
-                    <div class="rounded-[2rem] overflow-hidden w-full h-full bg-white relative">
-                        <iframe src="Templates/demo-starter/index.html" class="w-full h-full border-none" title="Live App Preview"></iframe>
+                    
+                    <!-- Live Screen (With Auto-Scaling applied) -->
+                    <div class="rounded-[1.8rem] overflow-hidden w-full h-full bg-white relative">
+                        <iframe src="Templates/demo-premium/index.html" 
+                                class="absolute top-0 left-0 border-none" 
+                                style="width: 133.33%; height: 133.33%; transform: scale(0.75); transform-origin: top left;" 
+                                title="Live App Preview">
+                        </iframe>
                     </div>
                 </div>
             </div>
