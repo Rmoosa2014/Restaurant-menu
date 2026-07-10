@@ -586,7 +586,7 @@ ADD THIS HERE TO STOP HIDING ---> */
             }
 
             
-            renderOffers();
+            
 
             const t = staticText[currentLang];
             // Clear the standard placeholder so it doesn't overlap our custom animated one!
@@ -1399,9 +1399,7 @@ function executeFilter() {
             document.getElementById('label-wa').textContent = t.wa;
             document.getElementById('label-share').textContent = t.share;
 
-            const delCharge = rawBranding.smartDelivery ? `${rawBranding.smartDelivery} ${globalCurrency}` : 'Free';
-            document.getElementById('modalDeliveryText').textContent = `${t.deliveryPrefix} ${delCharge}`;
-
+            
             let modalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) 
     ? newRiyalIcon 
     : `<span class="text-[0.8em] mr-1.5 opacity-90">${globalCurrency}</span>`;
@@ -1451,106 +1449,7 @@ document.getElementById('modalPrice').innerHTML = `
                 vidBtn.classList.add('hidden');
             }
 
-            // Parse and Add Review/Social Icons
-            const reviewArea = document.getElementById('modalReviewArea');
-            const reviewIconsContainer = document.getElementById('modalReviewIcons');
-            reviewIconsContainer.innerHTML = ''; 
-
-            if (item.reviewLinks) {
-                // Keep the exact upper/lower case for the real link so it doesn't break
-                const links = String(item.reviewLinks).split(',').map(l => l.trim());
-                
-                const platforms = [
-                    { name: 'instagram', icon: 'fab fa-instagram', hover: 'hover:bg-pink-600', color: 'text-pink-600' },
-                    { name: 'facebook', icon: 'fab fa-facebook-f', hover: 'hover:bg-blue-600', color: 'text-blue-600' },
-                    { name: 'snapchat', icon: 'fab fa-snapchat-ghost', hover: 'hover:bg-yellow-500 hover:text-black', color: 'text-yellow-500' },
-                    { name: 'tiktok', icon: 'fab fa-tiktok', hover: 'hover:bg-gray-700', color: 'text-gray-700' },
-                    { name: 'youtube', icon: 'fab fa-youtube', hover: 'hover:bg-red-600', color: 'text-red-600' }
-                ];
-
-                links.forEach(link => {
-                    if (!link) return;
-                    
-                    // We only use lowercase to search for platform names, we don't change the actual link
-                    const lowerLink = link.toLowerCase(); 
-                    
-                    // If it's not a social media link, automatically assume it's Google
-                    let matchedPlatform = platforms.find(p => lowerLink.includes(p.name)) || { name: 'google' };
-                    
-                    const a = document.createElement('a');
-                    a.href = lowerLink.startsWith('http') ? link : `https://${link}`;
-                    a.target = '_blank';
-
-                    // --- The Custom Google Reviews Pill Button ---
-                    if (matchedPlatform.name === 'google') {
-                        a.className = `h-10 px-4 rounded-full border border-gray-200 bg-white flex items-center justify-center gap-2 transition-all duration-300 hover:bg-gray-50 shadow-sm`;
-                        a.innerHTML = `
-                            <i class="fab fa-google text-blue-500 text-lg"></i>
-                            <span class="font-bold text-gray-700 text-sm">Reviews</span>
-                            <div class="flex text-yellow-400 text-xs gap-0.5">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                        `;
-                    } 
-                    // --- Standard Social Media Circle Buttons ---
-                    else {
-                        a.className = `w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center ${matchedPlatform.color} transition-all duration-300 ${matchedPlatform.hover} hover:text-white shadow-sm`;
-                        a.innerHTML = `<i class="${matchedPlatform.icon}"></i>`;
-                    }
-                    
-                    reviewIconsContainer.appendChild(a);
-                });
-                
-                reviewArea.classList.remove('hidden');
-                reviewArea.classList.add('flex');
-            } else {
-                reviewArea.classList.add('hidden');
-                reviewArea.classList.remove('flex');
-            }
-
-            // --- NEW: RELATED ITEMS LOGIC ---
-            const relatedArea = document.getElementById('modalRelatedArea');
-            const relatedSlider = document.getElementById('related-slider');
-            relatedSlider.innerHTML = '';
             
-            const relatedRow = relatedItemsData.find(row => String(row['C']).trim() === String(item.id).trim());
-            
-            if (relatedRow) {
-                let relatedIDs = [];
-                ['D','E','F','G','H','I','J','K','L','M'].forEach(col => {
-                    if (relatedRow[col]) relatedIDs.push(String(relatedRow[col]).trim());
-                });
-
-                const matchedItems = activeMenuData.filter(menuItem => relatedIDs.includes(String(menuItem.id))).slice(0, 10);
-
-                if (matchedItems.length > 0) {
-                    matchedItems.forEach(relItem => {
-                        relatedSlider.innerHTML += `
-                            <div class="relative w-[28vw] sm:w-[110px] flex-shrink-0 snap-start bg-orange-50 border border-orange-100 rounded-xl p-2 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                                <div onclick="openModal('${relItem.id}')">
-                                    <img src="${relItem.img}" class="w-full h-16 object-cover rounded-lg mb-1.5">
-                                    <h4 class="text-[10px] font-bold text-gray-800 line-clamp-1">${relItem.name}</h4>
-                                </div>
-                                <div class="flex justify-between items-center mt-1">
-                                    <p class="text-[10px] text-orange-600 font-bold">${relItem.price} ${globalCurrency}</p>
-                                    
-                                </div>
-                            </div>
-                        `;
-                    });
-                    relatedArea.classList.remove('hidden');
-                    relatedArea.classList.add('flex');
-                    setupDraggable('related-slider');
-                    updateQuickAddButtons();
-                } else {
-                    relatedArea.classList.add('hidden');
-                    relatedArea.classList.remove('flex');
-                }
-            } else {
-                relatedArea.classList.add('hidden');
-                relatedArea.classList.remove('flex');
-            }
-            // ---------------------------------
 
             const modal = document.getElementById('productModal');
             const backdrop = document.getElementById('modalBackdrop');
@@ -1792,14 +1691,6 @@ let diningType = 'Takeaway';
         }
 
         
-
-        setTimeout(() => { 
-            initTableSelect(); 
-            setupDraggable('table-grid'); // Enable desktop drag
-        }, 500);
-      
-        
-
         // --- REWORKED: DEDICATED CATEGORY POPUP LOGIC ---
         function openCategoryPage(title, isHighlight) {
             let items = [];
