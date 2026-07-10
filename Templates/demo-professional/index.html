@@ -146,7 +146,7 @@
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
         <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
             <button onclick="closeModal()" class="absolute top-3 end-3 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center shadow"><i class="fas fa-times"></i></button>
-            <div class="relative h-56 md:h-64 w-full bg-gray-100 group">
+            <div class="relative aspect-[4/3] w-full shrink-0 bg-gray-100 group">
                 <div id="modal-image-slider" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar"></div>
                 <div id="modal-image-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none"></div>
                 <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm z-20"></div>
@@ -195,7 +195,7 @@
         </div>
     </div>
     
-    <button id="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex opacity-0 pointer-events-none transition-all duration-500 fixed bottom-6 right-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg"><i class="fas fa-arrow-up"></i><div id="category-page-overlay" class="fixed inset-0 z-[70] hidden items-end md:items-center justify-center p-0 md:p-6">
+    <div id="category-page-overlay" class="fixed inset-0 z-[70] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="category-backdrop" onclick="closeCategoryPage()"></div>
         <div class="relative z-10 w-full md:max-w-2xl bg-[#f8fafc] rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[90vh] md:h-[80vh] transform translate-y-full md:scale-95 opacity-0 transition-all duration-300" id="category-content">
             <div class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-gray-100 px-4 h-16 flex items-center gap-4 shrink-0">
@@ -204,7 +204,9 @@
             </div>
             <div class="flex-1 overflow-y-auto p-4 sm:p-6"><div id="category-page-grid" class="grid grid-cols-2 gap-3 sm:gap-4"></div></div>
         </div>
-    </div></button>
+    </div>
+
+    <button id="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex opacity-0 pointer-events-none transition-all duration-500 fixed bottom-6 right-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg"><i class="fas fa-arrow-up"></i></button>
 <script>
         const newRiyalIcon = `
         <svg class="inline-block w-[0.8em] h-[0.8em] mr-1 opacity-90" viewBox="0 0 202.03 220.76" xmlns="http://www.w3.org/2000/svg">
@@ -346,7 +348,9 @@ function formatMenuData() {
 
             Array.from(relevantSubCats).sort().forEach(subCat => {
                 const isActive = selectedSubCategories.has(subCat), btn = document.createElement('button');
-                btn.className = `shrink-0 px-3 py-1 rounded-full border text-xs font-bold transition-colors ${isActive ? 'bg-gray-800 text-white border-gray-800 shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100'}`;
+                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '');
+                btn.id = `sub-btn-${safeId}`;
+                btn.className = `sub-cat-btn shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isActive ? 'bg-gray-800 text-white border-gray-800 shadow-sm' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100'}`;
                 btn.textContent = subCat;
                 btn.onclick = () => { selectedSubCategories.has(subCat) ? selectedSubCategories.delete(subCat) : selectedSubCategories.add(subCat); renderSubCategoryFilters(); executeFilter(); };
                 container.appendChild(btn);
@@ -377,6 +381,26 @@ function formatMenuData() {
             const grouped = {};
             filteredData.forEach(item => { if(!grouped[item.subCat]) grouped[item.subCat] = []; grouped[item.subCat].push(item); });
 
+           // Setup Intersection Observer for scroll-sync
+            if(window.intersectionObserver) window.intersectionObserver.disconnect();
+            window.intersectionObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        const subId = entry.target.id.replace('section-', '');
+                        const btn = document.getElementById(`sub-btn-${subId}`);
+                        if(btn) {
+                            btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                            document.querySelectorAll('.sub-cat-btn').forEach(b => {
+                                b.classList.remove('bg-gray-800', 'text-white', 'border-gray-800');
+                                b.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+                            });
+                            btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                            btn.classList.add('bg-gray-800', 'text-white', 'border-gray-800');
+                        }
+                    }
+                });
+            }, { rootMargin: '-20% 0px -70% 0px' });
+
             for (const subCat in grouped) {
                 hasItems = true;
                 const items = grouped[subCat].sort((a, b) => a.order - b.order);
@@ -389,7 +413,10 @@ function formatMenuData() {
 
         function renderSection(title, items, container, isHighlight) {
             const section = document.createElement('div');
-            section.className = 'menu-section-tracker';
+                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '');
+                section.id = `section-${safeId}`;
+                section.className = 'menu-section-tracker';
+                if(window.intersectionObserver) window.intersectionObserver.observe(section);
             
             const headerClasses = isHighlight ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500" : "text-xl font-bold text-gray-800";
                 
@@ -588,11 +615,21 @@ function formatMenuData() {
             });
         }, 4000);
 
-        // 1. Go To Top Button Logic
+        // 1. Go To Top Button & Auto-Hide Category Logic
+        let lastScrollY = window.scrollY;
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('back-to-top-btn');
-            if (window.scrollY > 300) { btn.classList.remove('opacity-0', 'pointer-events-none'); btn.classList.add('opacity-100'); } 
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > 300) { btn.classList.remove('opacity-0', 'pointer-events-none'); btn.classList.add('opacity-100'); } 
             else { btn.classList.add('opacity-0', 'pointer-events-none'); btn.classList.remove('opacity-100'); }
+            
+            // Auto-hide categories on scroll down
+            if (currentScrollY > 150 && typeof isMainCatOpen !== 'undefined') {
+                if (currentScrollY > lastScrollY && isMainCatOpen) { toggleMainCategories(); } 
+                else if (currentScrollY < lastScrollY - 20 && !isMainCatOpen) { toggleMainCategories(); }
+            }
+            lastScrollY = currentScrollY;
         });
 
         // 2. Animated Search Placeholder Logic
@@ -670,7 +707,7 @@ function formatMenuData() {
             else pContent.style.transform = ''; 
         });
 
-        // 4. Manual Carousel Swipe Logic
+        // 4. Manual & Auto Carousel Swipe Logic (RTL Safe)
         let carouselSwipeStartX = 0;
         document.addEventListener('touchstart', (e) => {
             const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
@@ -681,13 +718,28 @@ function formatMenuData() {
             const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
             if (slider && slider.children.length > 1) {
                 const diff = carouselSwipeStartX - e.changedTouches[0].clientX; 
+                const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
                 if (Math.abs(diff) > 40) {
-                    const currentScroll = Math.abs(slider.scrollLeft);
-                    if (diff > 40) slider.scrollTo({ left: currentScroll + slider.clientWidth, behavior: 'smooth' }); // Swiped left
-                    else slider.scrollTo({ left: currentScroll - slider.clientWidth, behavior: 'smooth' }); // Swiped right
+                    if (diff > 40) slider.scrollTo({ left: slider.scrollLeft + (slider.clientWidth * dir), behavior: 'smooth' }); 
+                    else slider.scrollTo({ left: slider.scrollLeft - (slider.clientWidth * dir), behavior: 'smooth' }); 
                 }
             }
         }, { passive: true });
+
+        setInterval(() => {
+            if (Date.now() - lastSliderInteraction < 3000) return;
+            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
+                if(slider.children.length > 1) {
+                    let maxScroll = slider.scrollWidth - slider.clientWidth;
+                    if(Math.abs(slider.scrollLeft) >= maxScroll - 5) { 
+                        slider.scrollTo({ left: 0, behavior: 'smooth' }); 
+                    } else { 
+                        const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
+                        slider.scrollTo({ left: slider.scrollLeft + (slider.clientWidth * dir), behavior: 'smooth' }); 
+                    }
+                }
+            });
+        }, 4000);
 
         // Start App
         window.onload = init;
