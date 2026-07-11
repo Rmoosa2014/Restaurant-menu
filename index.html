@@ -264,8 +264,14 @@ tbody tr:nth-child(even) td.hi-col{background:#FBDACB;}
 tfoot td{padding:14px 12px; text-align:center; border-top:1px solid var(--line); background:#fff;}
 tfoot td:first-child{text-align:left; font-weight:700; color:var(--ink); font-size:13.5px;}
 tfoot td.hi-col{background:var(--flame-tint);}
-.try-btn{display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; background:var(--flame); color:#fff; font-size:11.5px; font-weight:700; padding:9px 13px; border-radius:100px; transition:background .2s ease, transform .2s ease;}
-.try-btn:hover{background:var(--flame-dark); transform:translateY(-1px);}
+.try-btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; font-size:11.5px; font-weight:700; padding:9px 13px; border-radius:100px; border:1.5px solid transparent; transition:background .2s ease, transform .2s ease, border-color .2s ease, color .2s ease;}
+.try-btn:hover{transform:translateY(-1px);}
+.try-btn-starter{background:#fff; color:var(--ink); border-color:var(--line);}
+.try-btn-starter:hover{border-color:var(--ink); background:var(--bg-alt);}
+.try-btn-professional{background:var(--cobalt); color:#fff;}
+.try-btn-professional:hover{background:#1F3CAE;}
+.try-btn-premium{background:var(--flame); color:#fff; box-shadow:0 8px 16px -8px rgba(255,78,31,0.55);}
+.try-btn-premium:hover{background:var(--flame-dark);}
 .try-btn-none{color:var(--ink-faint); font-size:13px;}
 
 /* ---------- TESTIMONIALS ---------- */
@@ -872,9 +878,9 @@ tfoot td.hi-col{background:var(--flame-tint);}
         <tfoot>
           <tr>
             <td>Try it out</td>
-            <td><a href="#" class="try-btn" data-plan="starter" target="_blank" rel="noopener">Try the demo</a></td>
-            <td><a href="#" class="try-btn" data-plan="professional" target="_blank" rel="noopener">Try the demo</a></td>
-            <td class="hi-col"><a href="#" class="try-btn" data-plan="premium" target="_blank" rel="noopener">Try the demo</a></td>
+            <td><a href="https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/Templates/demo-starter/index.html" class="try-btn try-btn-starter" data-plan="starter" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-right"></i>Try the demo</a></td>
+            <td><a href="https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/Templates/demo-professional/index.html" class="try-btn try-btn-professional" data-plan="professional" target="_blank" rel="noopener"><i class="fa-solid fa-bolt"></i>Try the demo</a></td>
+            <td class="hi-col"><a href="https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/Templates/demo-premium/index.html" class="try-btn try-btn-premium" data-plan="premium" target="_blank" rel="noopener"><i class="fa-solid fa-star"></i>Try the demo</a></td>
             <td><span class="try-btn-none">—</span></td>
           </tr>
         </tfoot>
