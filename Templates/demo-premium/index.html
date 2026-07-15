@@ -666,7 +666,7 @@ ADD THIS HERE TO STOP HIDING ---> */
         let activeMenuData = []; 
         let mainCategories = []; 
         let allSubCategories = []; // NEW: Stores subcategories 
-        
+        let relatedItemsData = [];
         let selectedMainCategories = new Set(); // NEW: Multi-select logic
         let selectedSubCategories = new Set();  // NEW: Multi-select logic
         let searchQuery = '';
@@ -732,9 +732,11 @@ ADD THIS HERE TO STOP HIDING ---> */
                     const arRows = jsonData[sMenuAr];
                     if(arRows.length > 1) rawMenuAr = arRows.slice(1);
                 }
-                if(sRelated && jsonData[sRelated]) {
-                    relatedItemsData = jsonData[sRelated];
-                }
+                if(sRelated && Array.isArray(jsonData[sRelated])) {
+    relatedItemsData = jsonData[sRelated];
+} else {
+    relatedItemsData = [];
+}
 
                 document.getElementById('loading-state').classList.add('hidden');
                 
@@ -1754,9 +1756,9 @@ function setupVerticalDraggable(elementId) {
             const delCharge = rawBranding.smartDelivery ? `${rawBranding.smartDelivery} ${globalCurrency}` : 'Free';
             document.getElementById('modalDeliveryText').textContent = `${t.deliveryPrefix} ${delCharge}`;
 
-            let modalCurrencyDisplay = (String(globalCurrency).toUpperCase().includes('SR')) 
-                ? newRiyalIcon 
-                : `<span class="text-sm md:text-base font-normal mx-1 text-red-400">${globalCurrency}</span>`;
+            let globalCurrency = ""; 
+// ADD THIS LINE: Define the symbol or SVG for the Riyal icon
+const newRiyalIcon = `<span class="text-sm md:text-base font-bold mx-1 text-red-500">SR</span>`;
 
             const priceHtml = currentLang === 'en' 
                 ? `<span class="text-red-400 flex items-baseline justify-end">${modalCurrencyDisplay}<span class="text-3xl text-red-500">${item.price}</span></span>`
