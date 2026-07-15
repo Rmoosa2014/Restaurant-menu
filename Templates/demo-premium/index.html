@@ -1033,7 +1033,8 @@ let relatedItemsData = []; // (You did this perfectly!)
             rawSource.forEach(row => {
                 if(!row.B || !row.D) return;
 
-                const safeId = row.A ? String(row.A).trim() : Math.random().toString();
+                // Creates a safe alphanumeric ID without decimal dots (e.g. "item-abc123")
+const safeId = row.A ? String(row.A).trim() : 'item-' + Math.random().toString(36).substr(2, 9);
                 
                 // Define the brand logo up front
                 const brandLogo = rawBranding.smartLogo || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png';
