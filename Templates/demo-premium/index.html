@@ -699,8 +699,8 @@ ADD THIS HERE TO STOP HIDING ---> */
         /// --- Master Initialization (JSON Upgraded) ---
         async function init() {
             try {
-                
-		const fileUrl = "https://rmoosa2014.github.io/Restaurant-menu/Templates/demo-premium/MenuMasterData.json?v=" + new Date().getTime();
+                // Point directly to the JSON file
+                const fileUrl = "https://rmoosa2014.github.io/Restaurant-menu/Templates/demo-premium/MenuMasterData.json?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
                 if (!response.ok) throw new Error("Could not fetch JSON file");
                 
@@ -1614,13 +1614,9 @@ function setupVerticalDraggable(elementId) {
 
                 const isLiked = likedItems.has(item.id);
                 
-                let cardCurrencyDisplay = (String(globalCurrency).toUpperCase().includes('SR')) 
-                    ? newRiyalIcon 
-                    : `<span class="text-[10px] sm:text-xs font-normal mx-0.5 text-gray-500">${globalCurrency}</span>`;
-
                 const priceHtml = currentLang === 'en' 
-                    ? `<span class="flex items-baseline">${cardCurrencyDisplay}<span class="text-base sm:text-lg">${item.price}</span></span>`
-                    : `<span class="flex items-baseline"><span class="text-base sm:text-lg">${item.price}</span>${cardCurrencyDisplay}</span>`;
+                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5 text-gray-500">${globalCurrency}</span><span class="text-base sm:text-lg">${item.price}</span>`
+                    : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
 
                 let badgeHtml = '';
                 if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[10px]"></i> Special</div>`;
@@ -2510,13 +2506,9 @@ function toggleQuickCart(id) {
                 card.onclick = () => openModal(item.id);
 
                 const isLiked = likedItems.has(item.id);
-                let catPageCurrencyDisplay = (String(globalCurrency).toUpperCase().includes('SR')) 
-                    ? newRiyalIcon 
-                    : `<span class="text-[10px] font-normal mx-0.5 text-gray-500">${globalCurrency}</span>`;
-
                 const priceHtml = currentLang === 'en' 
-                    ? `<span class="flex items-baseline">${catPageCurrencyDisplay}<span class="text-sm sm:text-base">${item.price}</span></span>`
-                    : `<span class="flex items-baseline"><span class="text-sm sm:text-base">${item.price}</span>${catPageCurrencyDisplay}</span>`;
+                    ? `<span class="text-[10px] font-normal me-0.5 text-gray-500">${globalCurrency}</span><span class="text-sm sm:text-base">${item.price}</span>`
+                    : `<span class="text-sm sm:text-base">${item.price}</span> <span class="text-[10px] font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
 
                 let badgeHtml = '';
                 if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[8px] sm:text-[10px] font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[8px]"></i> Special</div>`;
