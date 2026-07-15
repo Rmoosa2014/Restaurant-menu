@@ -700,7 +700,7 @@ ADD THIS HERE TO STOP HIDING ---> */
         async function init() {
             try {
                 // Point directly to the JSON file
-                const fileUrl = "https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/Templates/demo-premium/MenuMasterData.json?v=" + new Date().getTime();
+                const fileUrl = "https://rmoosa2014.github.io/Restaurant-menu/Templates/demo-premium/MenuMasterData.json?v=" + new Date().getTime();
                 const response = await fetch(fileUrl);
                 if (!response.ok) throw new Error("Could not fetch JSON file");
                 
