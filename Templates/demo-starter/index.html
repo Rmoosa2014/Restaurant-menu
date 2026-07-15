@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Menu</title>
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ef4444">
     <link rel="apple-touch-icon" href="logo.png">
-    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
         :root { --font-en: 'Poppins', sans-serif; --font-ar: 'Cairo', sans-serif; }
@@ -24,21 +25,18 @@
         .menu-card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
         .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        /* Smooth scrolling for the category sync */
-        html { scroll-behavior: smooth; }
     </style>
 </head>
-<body class="text-gray-800 antialiased" ondragstart="return false;" onselectstart="return false;">
-
+<body class="text-gray-800 antialiased transition-colors duration-300" ondragstart="return false;" onselectstart="return false;">
     <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full z-40 top-0 transition-all duration-300 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <div onclick="openBrandModal()" class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:scale-105 transition-all relative group">
+                    <div id="brand-logo-container" onclick="openBrandModal()" class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:scale-105 transition-all relative group">
                         <i id="default-logo-icon" class="fas fa-utensils text-red-500 text-xl group-hover:text-red-600"></i>
                         <img id="brand-logo-img" src="" class="w-full h-full object-cover hidden">
                     </div>
-                    <span id="nav-title" onclick="openBrandModal()" class="font-bold text-lg tracking-tight text-gray-900 cursor-pointer hover:text-red-600">Loading...</span>
+                    <span id="nav-title" onclick="openBrandModal()" class="font-bold text-lg sm:text-xl tracking-tight text-gray-900 truncate cursor-pointer hover:text-red-600">Loading...</span>
                 </div>
             </div>
         </div>
@@ -46,17 +44,26 @@
 
     <header id="hero-section" class="pt-24 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative overflow-hidden rounded-b-3xl sm:rounded-b-none bg-gray-900 text-white mb-2 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(17,24,39,0.8), rgba(17,24,39,0.95));">
         <div class="relative z-10 py-6">
-            <h1 class="text-4xl sm:text-5xl font-extrabold mb-4 drop-shadow-md">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-md">
                 <span id="hero-title1">Welcome to</span> <br/>
                 <span id="hero-title2" class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Our Restaurant</span>
             </h1>
         </div>
     </header>
 
-    <section id="filter-header-island" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-2 sticky top-[64px] z-30 bg-[#f8fafc] py-2 transition-all duration-300 shadow-[0_8px_15px_-3px_rgba(0,0,0,0.05)] rounded-b-2xl border-b border-gray-100">
-        <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden group">
-            <div class="absolute inset-y-0 start-0 flex items-center px-3 z-10"><i class="fas fa-search text-gray-400"></i></div>
-            <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 leading-5 bg-transparent focus:outline-none sm:text-sm text-gray-900 font-bold" placeholder="Search menu...">
+    <section id="filter-header-island" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mb-2 sticky top-[64px] z-40 bg-[#f8fafc] py-2 transition-all duration-300 shadow-[0_8px_15px_-3px_rgba(0,0,0,0.05)] rounded-b-2xl border-b border-gray-100">
+        <div class="relative max-w-xl mx-auto mb-2 bg-white border border-gray-200 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition-shadow overflow-hidden group">
+            <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none px-3 z-10"><i class="fas fa-search text-gray-400"></i></div>
+            <div id="search-placeholder-wrapper" class="absolute inset-y-0 start-10 end-4 flex items-center pointer-events-none z-10 text-sm font-medium text-gray-400">
+                <span id="search-prefix" class="whitespace-nowrap"></span>
+                <div class="h-5 overflow-hidden w-full relative ms-1">
+                    <div id="animated-placeholder-container" class="flex flex-col transition-transform duration-500 ease-in-out absolute w-full top-0 start-0">
+                        <span class="truncate h-5 leading-5 block" id="search-text-1"></span>
+                        <span class="truncate h-5 leading-5 block" id="search-text-2"></span>
+                    </div>
+                </div>
+            </div>
+            <input type="text" id="searchInput" class="block w-full ps-10 pe-3 py-2 leading-5 bg-transparent focus:outline-none sm:text-sm relative z-20 text-gray-900 font-bold" placeholder="">
         </div>
         <div id="main-category-container" class="max-h-[300px] opacity-100 overflow-hidden transition-all duration-300">
             <div id="main-category-wrapper" class="overflow-x-auto hide-scrollbar px-1 py-1.5 snap-x w-full">
@@ -66,31 +73,24 @@
                 </div>
             </div>
         </div>
-        <div class="flex overflow-x-auto hide-scrollbar gap-0.5 px-1 pt-1 mb-0.5 transition-all" id="sub-category-filters"></div>
+        <div class="flex overflow-x-auto hide-scrollbar gap-0.5 px-1 pt-1 mb-0.5" id="sub-category-filters"></div>
         <div onclick="toggleMainCategories()" class="w-full flex justify-center pb-1 cursor-pointer group">
-            <i id="category-toggle-icon" class="fas fa-chevron-up text-gray-400 hover:text-red-500 text-[11px] px-6 py-1 transition-transform duration-300"></i>
+            <i id="category-toggle-icon" class="fas fa-chevron-up text-gray-400 hover:text-red-500 text-[11px] px-6 py-1"></i>
         </div>
     </section>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 min-h-[50vh]">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 min-h-[50vh]">
         <div id="loading-state" class="flex flex-col items-center justify-center py-20">
             <i class="fas fa-circle-notch fa-spin text-4xl text-red-500 mb-4"></i>
-            <p class="text-gray-500 font-medium animate-pulse">Loading Menu...</p>
+            <p class="text-gray-500 font-medium animate-pulse" id="loading-text">Loading Menu...</p>
         </div>
         <div id="menu-container" class="hidden flex-col gap-10"></div>
         <div id="empty-state" class="hidden text-center py-20">
             <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
-            <h3 class="text-xl font-medium text-gray-500">No items found.</h3>
+            <h3 id="empty-text" class="text-xl font-medium text-gray-500">No items found.</h3>
         </div>
     </main>
-
-    <!-- Go To Top Button -->
-    <button id="goTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 end-6 z-40 bg-gray-900 text-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center hover:bg-black transition-all duration-300 transform scale-0 opacity-0 pointer-events-none">
-        <i class="fas fa-chevron-up"></i>
-    </button>
-
-    <!-- Fully Interactive Footer (3-Column Mobile Contacts) -->
-    <footer class="bg-gray-900 text-white pt-12 pb-12 rounded-t-3xl sm:rounded-none mt-10">
+    
+    <footer class="bg-gray-900 text-white pt-12 pb-32 md:pb-12 rounded-t-3xl sm:rounded-none mt-10 relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-start">
             <div class="flex flex-col items-start">
                 <div class="flex items-center gap-3 mb-4">
@@ -109,22 +109,22 @@
                 </h4>
                 <ul class="text-gray-400 text-[11px] sm:text-sm grid grid-cols-3 sm:flex sm:flex-col gap-2 sm:gap-3 w-full">
                     <li class="w-full">
-                        <a id="link-phone" href="#" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
+                        <div onclick="callPhone()" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden cursor-pointer">
                             <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-phone text-red-400 group-hover:text-white"></i></div>
                             <span class="dir-ltr font-medium truncate w-full" id="f-phone">--</span>
-                        </a>
+                        </div>
                     </li>
                     <li class="w-full">
-                        <a id="link-whatsapp" href="#" target="_blank" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
+                        <div onclick="openWhatsApp()" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden cursor-pointer">
                             <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-green-500 group-hover:text-white transition-colors"><i class="fab fa-whatsapp text-green-400 text-lg group-hover:text-white"></i></div>
                             <span class="dir-ltr font-medium truncate w-full" id="f-whatsapp">--</span>
-                        </a>
+                        </div>
                     </li>
                     <li class="w-full">
-                        <a id="link-email" href="#" class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3 hover:text-white transition group overflow-hidden">
                             <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fas fa-envelope text-blue-400 group-hover:text-white"></i></div>
                             <span id="f-email" class="dir-ltr truncate w-full">--</span>
-                        </a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -133,7 +133,7 @@
                 <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 inline-flex items-center gap-2">
                     <i class="fas fa-map-marked-alt text-red-500"></i> <span>Location</span>
                 </h4>
-                <a id="link-location" href="#" target="_blank" class="flex items-start gap-3 text-gray-400 hover:text-white transition group text-start">
+                <a href="#" id="f-map-link" target="_blank" class="flex items-start gap-3 text-gray-400 hover:text-white transition group text-start">
                     <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fas fa-map-marker-alt text-red-500 group-hover:text-white"></i></div>
                     <span id="f-address" class="mt-1 leading-relaxed">--</span>
                 </a>
@@ -141,27 +141,36 @@
         </div>
     </footer>
 
-    <!-- Product Modal with Swipe-to-Close -->
+    <!-- Clean Product Modal -->
     <div id="productModal" class="fixed inset-0 z-[80] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="modalBackdrop" onclick="closeModal()"></div>
-        <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
-            <!-- Swipe indicator line for UI -->
-            <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full z-40 md:hidden"></div>
-            
-            <button onclick="closeModal()" class="absolute top-4 end-4 z-30 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center shadow"><i class="fas fa-times"></i></button>
-            <div class="relative aspect-[4/3] w-full shrink-0 bg-gray-100">
-                <img id="modal-image" src="" class="w-full h-full object-cover">
+        <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalContent">
+            <button onclick="closeModal()" class="absolute top-3 end-3 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center shadow"><i class="fas fa-times"></i></button>
+            <div class="relative aspect-[4/3] w-full shrink-0 bg-gray-100 group">
+                <div id="modal-image-slider" class="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar"></div>
+                <div id="modal-image-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-none"></div>
                 <div id="modalCategoryBadge" class="absolute bottom-3 start-3 bg-white/95 px-3 py-1.5 rounded-lg text-sm font-bold text-red-600 shadow-sm z-20"></div>
+                <div id="modalTodaySpecialBadge" class="hidden absolute top-3 start-3 bg-gradient-to-r from-orange-400 to-red-500 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold text-white shadow-lg flex items-center gap-1 z-20"><i class="fas fa-star text-yellow-200"></i> Today's Special</div>
             </div>
-            <div class="p-5 md:p-6 overflow-y-auto relative overscroll-contain" id="modalScrollArea">
-                <div class="flex justify-between items-start gap-2 mb-2 border-b border-gray-100 pb-4">
+            <div class="p-5 md:p-6 overflow-y-auto relative">
+                <div class="flex justify-between items-start gap-2 mb-2 border-b border-gray-100 pb-3">
                     <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 leading-tight"></h2>
-                    <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap"></span>
+                    <span id="modalPrice" class="font-extrabold text-red-500 text-2xl whitespace-nowrap text-end"></span>
                 </div>
-                <p id="modalDesc" class="text-gray-600 mb-4 leading-relaxed text-sm"></p>
-                <div id="modal-action-footer" class="mt-4 flex gap-3 pt-4 border-t border-gray-100">
-                    <button onclick="callPhone()" class="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow flex justify-center items-center gap-2"><i class="fas fa-phone-alt"></i> Call</button>
-                    <button onclick="shareItem()" class="flex-1 border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition flex justify-center items-center gap-2"><i class="fas fa-share-alt text-red-500"></i> Share</button>
+                <p id="modalDesc" class="text-gray-600 mb-4 text-sm"></p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <div class="flex items-center text-gray-700 text-sm bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-lg inline-flex"><i class="fas fa-fire text-orange-500 me-2 text-lg"></i><span id="modalCalories" class="font-bold text-gray-900 me-1"></span><span class="text-xs">Cal</span></div>
+                </div>
+                <div id="modalRecipeArea" class="hidden mb-4 bg-yellow-50 border border-yellow-100 rounded-xl p-4 cursor-pointer relative" onclick="toggleRecipe()">
+                    <h4 class="font-bold text-yellow-800 text-sm mb-1 flex items-center gap-2"><i class="fas fa-book-open"></i> Recipe / Ingredients</h4>
+                    <p id="modalRecipe" class="text-sm text-yellow-700 leading-relaxed"></p>
+                </div>
+                <div id="modal-action-footer" class="mt-4 flex flex-col gap-3 pt-4 border-t border-gray-100">
+                    <button onclick="openWhatsAppItem()" class="w-full bg-green-500 text-white text-center py-3 rounded-xl font-bold hover:bg-green-600 transition shadow flex items-center justify-center gap-2"><i class="fab fa-whatsapp text-lg"></i> Order via WhatsApp</button>
+                    <div class="flex gap-3">
+                        <button onclick="callPhone()" class="flex-1 bg-gray-900 text-white py-2.5 rounded-xl font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2"><i class="fas fa-phone-alt"></i> Call</button>
+                        <button onclick="shareItem()" class="flex-1 border-2 border-gray-200 text-gray-700 py-2.5 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2"><i class="fas fa-share-alt text-red-500"></i> Share</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,349 +179,851 @@
     <!-- Brand Modal -->
     <div id="brandModal" class="fixed inset-0 z-[110] hidden items-end md:items-center justify-center p-0 md:p-6">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="brandModalBackdrop" onclick="closeBrandModal()"></div>
-        <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:translate-y-0 md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="brandModalContent">
-            <button onclick="closeBrandModal()" class="absolute top-3 end-3 z-30 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-times"></i></button>
-            <div class="w-full bg-gray-900 flex flex-col items-center pt-10 pb-8"><div class="w-36 h-36 bg-white rounded-full p-4 mb-4"><img id="brandModalImage" src="" class="w-full h-full object-contain"></div><h2 id="brandModalTitle" class="text-2xl font-extrabold text-white text-center"></h2></div>
-            <div class="p-5 overflow-y-auto bg-gray-50"><p id="brandModalDesc" class="text-sm text-gray-600 mb-6"></p></div>
+        <div class="relative z-10 bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-md overflow-hidden shadow-2xl transform translate-y-full md:scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]" id="brandModalContent">
+            <button onclick="closeBrandModal()" class="absolute top-3 right-3 z-30 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-times"></i></button>
+            <div class="relative w-full shrink-0 bg-gray-900 flex flex-col items-center pt-10 pb-8 border-b border-gray-800">
+                <div class="w-36 h-36 bg-white rounded-full p-4 shadow-2xl mb-4 relative z-10 flex items-center justify-center"><img id="brandModalImage" src="" class="max-w-full max-h-full object-contain"></div>
+                <h2 id="brandModalTitle" class="text-2xl font-extrabold text-white text-center z-10 px-4"></h2>
+            </div>
+            <div class="p-5 bg-gray-50 overflow-y-auto">
+                <p id="brandModalDesc" class="text-gray-600 mb-6 text-sm"></p>
+                <div class="flex flex-col gap-3 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-3 text-sm text-gray-700 cursor-pointer" onclick="callPhone()"><div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500"><i class="fas fa-phone"></i></div><span id="brandModalPhone" class="font-bold"></span></div>
+                    <div class="flex items-center gap-3 text-sm text-gray-700 cursor-pointer" onclick="openWhatsApp()"><div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-500"><i class="fab fa-whatsapp"></i></div><span id="brandModalWA" class="font-bold"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="category-page-overlay" class="fixed inset-0 z-[70] hidden items-end md:items-center justify-center p-0 md:p-6">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="category-backdrop" onclick="closeCategoryPage()"></div>
+        <div class="relative z-10 w-full md:max-w-2xl bg-[#f8fafc] rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[90vh] md:h-[80vh] transform translate-y-full md:scale-95 opacity-0 transition-all duration-300" id="category-content">
+            <div class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-gray-100 px-4 h-16 flex items-center gap-4 shrink-0">
+                <button onclick="closeCategoryPage()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition shadow-sm"><i class="fas fa-arrow-left"></i></button>
+                <h2 id="category-page-title" class="text-xl font-bold text-gray-900 truncate">Category Name</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6"><div id="category-page-grid" class="grid grid-cols-2 gap-3 sm:gap-4"></div></div>
         </div>
     </div>
 
-    <script>
-        // Security Lock
-        !function(){var e=["cm1vb3NhMjAxNC5naXRodWIuaW8=","bG9jYWxob3N0","MTI3LjAuMC4x","PGRpdiBzdHlsZT0nZGlzcGxheTpmbGV4O2p1c3RpZnktY29udGVudDpjZW50ZXI7YWxpZ24taXRlbXM6Y2VudGVyO2hlaWdodDoxMDB2aDtiYWNrZ3JvdW5kLWNvbG9yOiNmOGZhZmM7Zm9udC1mYW1pbHk6c2Fucy1zZXJpZjtjb2xvcjojZWY0NDQ0Jz48aDI+VW5hdXRob3JpemVkIERvbWFpbi4gQWNjZXNzIERlbmllZC48L2gyPjwvZGl2Pg==","U2VjdXJpdHkgTG9jayBUcmlnZ2VyZWQ="],o=window.location.hostname;if(![atob(e[0]),atob(e[1]),atob(e[2])].includes(o)&&""!==o){throw document.body.innerHTML=atob(e[3]),new Error(atob(e[4]))}}();
-        document.addEventListener('contextmenu', e => e.preventDefault());
+    <button id="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex opacity-0 pointer-events-none transition-all duration-500 fixed bottom-6 right-6 z-40 bg-gray-800 text-white w-10 h-10 rounded-full items-center justify-center shadow-lg"><i class="fas fa-arrow-up"></i></button>
+<script>
+const allowedDomains = [
+            "rmoosa2014.github.io", 
+            "localhost",            
+            "127.0.0.1"             
+        ];
+        
+        const currentDomain = window.location.hostname;
+        
+        // If they host it on their own site, the app self-destructs!
+        if (!allowedDomains.includes(currentDomain) && currentDomain !== "") {
+            document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f8fafc; font-family:sans-serif; color:#ef4444;">
+                    <h2>Unauthorized Domain. Access Denied.</h2>
+                </div>`;
+            throw new Error("Security Lock Triggered."); 
+        }
+      document.addEventListener('contextmenu', event => event.preventDefault());
 
-        let rawBranding = {}, rawMenuEn = [], rawMenuAr = [];
-        let currentLang = 'en', globalCurrency = "";
+        // Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+U)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || 
+               (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+               (e.ctrlKey && e.key === 'U') || 
+               (e.metaKey && e.altKey && e.key === 'I')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        const newRiyalIcon = `
+        <svg class="inline-block w-[0.8em] h-[0.8em] mr-1 opacity-90" viewBox="0 0 202.03 220.76" xmlns="http://www.w3.org/2000/svg">
+            <path fill="currentColor" d="M3.62,190.51c1.85-3.4,4.63-11.11,8.33-12.04l62.35-13.27v-30.87l-63.28,13.58c-1.23,0,3.09-13.27,3.4-13.89,1.54-3.4,4.32-11.11,8.03-12.04l51.86-11.11V20.42c0-4.94,8.64-11.73,11.42-14.51.93-.62,9.88-8.64,9.88-4.94v105.57l24.69-5.56V31.84c0-4.94,8.64-11.73,11.73-14.2.62-.93,9.57-8.64,9.57-5.25v84.27l58.34-12.35h.31l1.23-.31c.93-.31-3.09,12.96-3.7,13.89-1.54,3.09-4.32,11.11-8.03,11.73l-48.15,10.5v24.39l60.19-12.66c1.23-.31-2.78,13.27-3.4,13.89-1.54,3.4-4.32,11.11-8.03,12.04l-68.53,14.82c-.93,0-1.54,0-1.54-1.23v-46.61l-24.69,5.25v31.79c0,6.79-13.27,25-20.06,26.86v-.31L.22,204.4c-1.23.31,3.09-12.96,3.4-13.89ZM196.55,194.83c-1.54,3.09-4.32,11.11-8.33,12.04l-68.84,13.89c-.93.31,3.09-12.96,3.7-13.89,1.54-3.4,4.32-11.11,8.03-12.04l68.84-13.89c1.54-.31-3.09,12.96-3.4,13.89Z"/>
+        </svg>`;
+
+        let rawBranding = {}, rawMenu = [];
+        let globalCurrency = "", currentLang = 'en';
         let activeMenuData = [], mainCategories = [], allSubCategories = [];
         let selectedMainCategories = new Set(), selectedSubCategories = new Set(), searchQuery = '';
-        let currentOpenItemId = null;
-        let intersectionObserver = null;
-
-        // Auto-Typing Search Animation
-        const searchStrings = ["Search menu...", "Find your favorite...", "Craving something?"];
-        let typeIdx = 0, charIdx = 0, isDeleting = false;
-        function typeWriter() {
-            const input = document.getElementById('searchInput');
-            if(!input || document.activeElement === input) { setTimeout(typeWriter, 1000); return; }
-            const currentString = searchStrings[typeIdx];
-            if (isDeleting) {
-                input.placeholder = currentString.substring(0, charIdx--);
-                if (charIdx < 0) { isDeleting = false; typeIdx = (typeIdx + 1) % searchStrings.length; setTimeout(typeWriter, 500); return; }
-            } else {
-                input.placeholder = currentString.substring(0, charIdx++);
-                if (charIdx > currentString.length) { isDeleting = true; setTimeout(typeWriter, 2000); return; }
-            }
-            setTimeout(typeWriter, isDeleting ? 40 : 80);
-        }
+        let currentOpenItemId = null, likedItems = new Set(JSON.parse(localStorage.getItem('likedItems')) || []);
+        let lastSliderInteraction = 0; // Fixes the swiper tracking safely
 
         async function init() {
             try {
-                const fileUrl = "MenuMasterData.json?v=" + new Date().getTime();
-                const response = await fetch(fileUrl);
-                const jsonData = await response.json();
+                // Pointing to your local JSON directly!
+                const response = await fetch("MenuMasterData.json?v=" + new Date().getTime());
+                if (!response.ok) throw new Error("Could not fetch JSON file");
                 
+                const jsonData = await response.json();
                 const sNames = Object.keys(jsonData);
-                const sBrand = sNames.find(n => n.includes("01") || n.includes("Brand")) || sNames[0];
-                const sMenuEn = sNames.find(n => n.includes("3") || n.includes("English")) || sNames[2];
-                const sMenuAr = sNames.find(n => n.includes("4") || n.includes("Arabic")) || sNames[3];
+                
+                const sBrand = sNames.find(n => n.includes("01") || n.toLowerCase().includes("brand")) || sNames[0];
+                const sMenu = sNames.find(n => n.includes("02") || n.toLowerCase().includes("menu")) || sNames[1];
 
-                if(jsonData[sBrand]) rawBranding = jsonData[sBrand].find((r, i) => i > 0 && (r.K || r.B || r.L)) || jsonData[sBrand][1] || {};
-                if(jsonData[sMenuEn]) rawMenuEn = jsonData[sMenuEn].slice(1);
-                if(jsonData[sMenuAr]) rawMenuAr = jsonData[sMenuAr].slice(1);
+                if(sBrand && jsonData[sBrand]) {
+                    rawBranding = jsonData[sBrand].find((r, i) => i > 0 && (r.K || r.B || r.M)) || jsonData[sBrand][1] || {};
+                }
+                if(sMenu && jsonData[sMenu]) {
+                    rawMenu = jsonData[sMenu].slice(1);
+                }
 
                 document.getElementById('loading-state').classList.add('hidden');
                 applySystemSetup();
-                typeWriter();
-            } catch (error) { console.error("Error loading JSON"); }
+            } catch (error) {
+                document.getElementById('loading-state').innerHTML = '<p class="text-red-500 font-bold p-10 text-center">Error loading MenuMasterData.json</p>';
+            }
         }
 
         function applySystemSetup() {
-            let langVal = String(rawBranding.K || rawBranding.J || "english").trim().toLowerCase();
-            currentLang = langVal.includes('arabic') ? 'ar' : 'en';
-            globalCurrency = rawBranding.K || rawBranding.J || "";
-            
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            // Precise Excel Column Mapping
+            rawBranding.smartCurrency = rawBranding.K || "";
+            rawBranding.smartDelivery = rawBranding.M || "";
+            rawBranding.smartLogo = rawBranding.N || "";
+            rawBranding.smartSocial = rawBranding.J || "";
+            globalCurrency = rawBranding.smartCurrency;
+
             document.getElementById('nav-title').textContent = rawBranding.B || "Restaurant";
-            document.getElementById('hero-title2').textContent = rawBranding.B || "Our Restaurant";
             document.getElementById('footer-title').textContent = rawBranding.B || "Restaurant";
-
+            document.getElementById('hero-title2').textContent = rawBranding.B || "Restaurant";
             document.getElementById('f-phone').textContent = rawBranding.C || "--";
-            document.getElementById('link-phone').href = rawBranding.C ? `tel:${rawBranding.C}` : '#';
             document.getElementById('f-whatsapp').textContent = rawBranding.D || "--";
-            document.getElementById('link-whatsapp').href = rawBranding.D ? `https://wa.me/${rawBranding.D}` : '#';
-            document.getElementById('f-email').textContent = rawBranding.F || "--";
-            document.getElementById('link-email').href = rawBranding.F ? `mailto:${rawBranding.F}` : '#';
             document.getElementById('f-address').textContent = rawBranding.H || "--";
-            document.getElementById('link-location').href = rawBranding.I || '#';
             
-            const socialContainer = document.getElementById('social-media-container');
-            socialContainer.innerHTML = '';
-            if(rawBranding.J && String(rawBranding.J).trim() !== "") {
-                const links = String(rawBranding.J).split(',');
-                links.forEach(link => {
-                    let cleanLink = link.trim();
-                    if(cleanLink) {
-                        let iconClass = "fas fa-link";
-                        if(cleanLink.includes("instagram")) iconClass = "fab fa-instagram";
-                        else if(cleanLink.includes("facebook")) iconClass = "fab fa-facebook-f";
-                        else if(cleanLink.includes("twitter") || cleanLink.includes("x.com")) iconClass = "fab fa-twitter";
-                        else if(cleanLink.includes("tiktok")) iconClass = "fab fa-tiktok";
-                        else if(cleanLink.includes("snapchat")) iconClass = "fab fa-snapchat-ghost";
-                        else if(cleanLink.includes("youtube")) iconClass = "fab fa-youtube";
-                        socialContainer.innerHTML += `<a href="${cleanLink}" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm text-gray-300"><i class="${iconClass}"></i></a>`;
-                    }
-                });
-            }
-
-            if(rawBranding.N || rawBranding.M) {
+            // Added Email Mapping from Column F!
+            const emailEl = document.getElementById('f-email');
+            emailEl.textContent = rawBranding.F || "--";
+            
+            formatMenuData();
+            
+            if(rawBranding.smartLogo) {
                 document.getElementById('default-logo-icon').classList.add('hidden');
-                document.getElementById('brand-logo-img').src = rawBranding.N || rawBranding.M;
+                document.getElementById('brand-logo-img').src = rawBranding.smartLogo;
                 document.getElementById('brand-logo-img').classList.remove('hidden');
             }
-
-            const rawSource = currentLang === 'en' ? rawMenuEn : rawMenuAr;
-            formatMenuData(rawSource);
+            formatMenuData();
         }
-
-        // Icon mapping for categories
-        function getCategoryIcon(catName) {
-            const lower = catName.toLowerCase();
-            if(lower.includes('burger') || lower.includes('برجر')) return 'fa-hamburger';
-            if(lower.includes('pizza') || lower.includes('بيتزا')) return 'fa-pizza-slice';
-            if(lower.includes('drink') || lower.includes('juice') || lower.includes('مشروب')) return 'fa-glass-cheers';
-            if(lower.includes('coffee') || lower.includes('قهوة')) return 'fa-coffee';
-            if(lower.includes('salad') || lower.includes('سلطة')) return 'fa-leaf';
-            if(lower.includes('dessert') || lower.includes('sweet') || lower.includes('حلى')) return 'fa-ice-cream';
-            if(lower.includes('all') || lower.includes('الكل')) return 'fa-th-large';
-            return 'fa-utensils';
-        }
-
-        function formatMenuData(rawSource) {
+function formatMenuData() {
             activeMenuData = []; mainCategories = []; allSubCategories = [];
-            const brandLogo = rawBranding.N || rawBranding.M || 'logo.png';
+            const brandLogo = rawBranding.smartLogo || 'logo.png';
 
-            rawSource.forEach(row => {
+            rawMenu.forEach(row => {
                 if(!row.B || !row.D) return;
                 const safeId = row.A ? String(row.A).trim() : Math.random().toString();
-                let imgPath = brandLogo; let excelImg = "";
-
-                if (row.H && String(row.H).trim() !== "") {
-                    excelImg = String(row.H).split(',')[0].trim();
-                }
-
-                if (excelImg !== "") {
-                    if (excelImg.startsWith('http')) { imgPath = excelImg; } 
-                    else { imgPath = `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${excelImg}`; }
-                }
                 
                 const item = {
-                    id: safeId, mainCat: String(row.B).trim(), subCat: String(row.C || "Other").trim(),
-                    name: String(row.D).trim(), order: parseInt(row.E) || 999, price: row.F || 0,
-                    desc: row.G || "", img: imgPath
+                    id: safeId,
+                    mainCat: String(row.B).trim(),
+                    subCat: String(row.C || "Other").trim(),
+                    name: String(row.D).trim(),
+                    order: parseInt(row.E) || 999, 
+                    price: row.F || 0,
+                    desc: row.G || "",
+                    calories: row.H || "",
+                    recipe: row.I || "",
+                    // Checks Column K for the word 'special'
+                    isTodaySpecial: String(row.K || "").toLowerCase().includes('special'),
+                    imgUrls: (() => {
+                        let urls = [];
+                        if (row.J) {
+                            urls = String(row.J).split(',').map(u => {
+                                let clean = u.trim();
+                                if (!clean) return null;
+                                if (!clean.startsWith('http')) return `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${clean}`;
+                                return clean;
+                            }).filter(u => u !== null);
+                        } else urls.push(brandLogo);
+                        return [...new Set(urls)];
+                    })(),
+                    img: (() => {
+                        if (row.J) {
+                            let first = String(row.J).split(',')[0].trim();
+                            return first.startsWith('http') ? first : `https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/ItemImages/${first}`;
+                        }
+                        return brandLogo;
+                    })()
                 };
+
                 activeMenuData.push(item);
                 if(!mainCategories.includes(item.mainCat)) mainCategories.push(item.mainCat);
                 if(!allSubCategories.includes(item.subCat)) allSubCategories.push(item.subCat);
             });
             renderCategoryFilters(); renderSubCategoryFilters(); executeFilter();
+            animateSearchPlaceholder(); // Starts the typing animation!
+        }
+
+        function getCategoryIcon(catName) {
+            const lower = catName.toLowerCase();
+            if(lower.includes('burger')) return 'fa-hamburger';
+            if(lower.includes('pizza')) return 'fa-pizza-slice';
+            if(lower.includes('drink') || lower.includes('beverage') || lower.includes('juice') || lower.includes('shake')) return 'fa-glass-cheers';
+            if(lower.includes('salad')) return 'fa-leaf';
+            if(lower.includes('dessert') || lower.includes('sweet') || lower.includes('ice cream')) return 'fa-ice-cream';
+            if(lower.includes('coffee')) return 'fa-coffee';
+            if(lower.includes('chicken')) return 'fa-drumstick-bite';
+            if(lower.includes('fish') || lower.includes('seafood')) return 'fa-fish';
+            if(lower.includes('sandwich')) return 'fa-hotdog';
+            if(lower.includes('soup')) return 'fa-mug-hot';
+            if(lower.includes('breakfast') || lower.includes('bread')) return 'fa-egg';
+            if(lower.includes('meat')) return 'fa-bacon';
+            return 'fa-utensils'; 
+        }
+
+        function setupDraggable(elementId) {
+            const slider = document.getElementById(elementId);
+            if(!slider) return;
+            let isDown = false; let startX; let scrollLeft;
+            slider.addEventListener('mousedown', (e) => { isDown = true; slider.classList.add('cursor-grabbing'); startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
+            slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('cursor-grabbing'); });
+            slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('cursor-grabbing'); });
+            slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk; });
         }
 
         function renderCategoryFilters() {
             const row1 = document.getElementById('category-row-1'), row2 = document.getElementById('category-row-2');
             row1.innerHTML = ''; row2.innerHTML = '';
+            
+            const activeClass = 'bg-red-500 text-white border-red-500 shadow-sm z-10';
+            const inactiveClass = 'bg-white text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-500';
+
             ['All', ...mainCategories].forEach((cat, index) => {
-                const isAll = cat === 'All', isActive = isAll ? selectedMainCategories.size === 0 : selectedMainCategories.has(cat);
+                const isAll = cat === 'All';
+                const isActive = isAll ? selectedMainCategories.size === 0 : selectedMainCategories.has(cat);
+                const icon = isAll ? 'fa-th-large' : getCategoryIcon(cat);
+                
                 const btn = document.createElement('button');
-                btn.className = `w-[100px] shrink-0 snap-start p-2 rounded-xl border font-bold text-[10px] transition-colors flex flex-col items-center justify-center ${isActive ? 'bg-red-500 text-white border-red-500' : 'bg-white text-gray-600'}`;
-                btn.innerHTML = `<i class="fas ${getCategoryIcon(cat)} mb-1 text-lg"></i> <span class="truncate w-full text-center">${isAll ? (currentLang==='ar'?'الكل':'All') : cat}</span>`;
-                btn.onclick = () => {
-                    if (isAll) { selectedMainCategories.clear(); selectedSubCategories.clear(); }
+                btn.className = `w-[calc(25vw-9px)] sm:w-[120px] shrink-0 snap-start flex flex-col items-center justify-center gap-1 whitespace-nowrap p-1.5 rounded-xl border font-bold text-[10px] leading-tight transition-colors ${isActive ? activeClass : inactiveClass}`;
+                btn.innerHTML = `<i class="fas ${icon} text-sm ${isActive ? 'text-white' : 'text-red-400'}"></i> <span class="truncate w-full text-center">${cat}</span>`;
+                
+                btn.onclick = () => { 
+                    if(isAll){ selectedMainCategories.clear(); selectedSubCategories.clear(); }
                     else { selectedMainCategories.has(cat) ? selectedMainCategories.delete(cat) : selectedMainCategories.add(cat); }
-                    renderCategoryFilters(); renderSubCategoryFilters(); executeFilter();
+                    renderCategoryFilters(); renderSubCategoryFilters(); executeFilter(); 
+                    
+                    const menuContainer = document.getElementById('menu-container');
+                    if (menuContainer) {
+                        const menuTop = menuContainer.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo({ top: menuTop - 190, behavior: 'smooth' });
+                    }
                 };
-                (index % 8 < 4) ? row1.appendChild(btn) : row2.appendChild(btn);
+                index % 8 < 4 ? row1.appendChild(btn) : row2.appendChild(btn);
             });
+            setupDraggable('main-category-wrapper');
         }
 
         function renderSubCategoryFilters() {
-            const container = document.getElementById('sub-category-filters');
-            container.innerHTML = '';
-            let relevant = new Set();
-            if (selectedMainCategories.size === 0) allSubCategories.forEach(sub => relevant.add(sub));
-            else activeMenuData.forEach(i => { if (selectedMainCategories.has(i.mainCat)) relevant.add(i.subCat); });
+            const container = document.getElementById('sub-category-filters'); container.innerHTML = '';
+            const activeClass = 'bg-gray-800 text-white border-gray-800 shadow-sm';
+            const inactiveClass = 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100';
 
-            Array.from(relevant).sort().forEach(subCat => {
-                const isActive = selectedSubCategories.has(subCat);
-                const btn = document.createElement('button');
-                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '');
+            let relevantSubCats = new Set();
+            if (selectedMainCategories.size === 0) allSubCategories.forEach(sub => relevantSubCats.add(sub));
+            else activeMenuData.forEach(item => { if (selectedMainCategories.has(item.mainCat)) relevantSubCats.add(item.subCat); });
+
+            Array.from(relevantSubCats).sort().forEach(subCat => {
+                const isActive = selectedSubCategories.has(subCat), btn = document.createElement('button');
+                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
                 btn.id = `sub-btn-${safeId}`;
-                btn.className = `sub-cat-btn shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isActive ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200'}`;
+                btn.className = `sub-cat-btn shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isActive ? activeClass : inactiveClass}`;
                 btn.textContent = subCat;
-                btn.onclick = () => {
-                    selectedSubCategories.has(subCat) ? selectedSubCategories.delete(subCat) : selectedSubCategories.add(subCat);
-                    renderSubCategoryFilters(); executeFilter();
+                btn.onclick = () => { 
+                    selectedSubCategories.has(subCat) ? selectedSubCategories.delete(subCat) : selectedSubCategories.add(subCat); 
+                    renderSubCategoryFilters(); executeFilter(); 
+                    
+                    const menuContainer = document.getElementById('menu-container');
+                    if (menuContainer) {
+                        const menuTop = menuContainer.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo({ top: menuTop - 190, behavior: 'smooth' });
+                    }
                 };
                 container.appendChild(btn);
             });
+            setupDraggable('sub-category-filters');
         }
-
-// 1. The Custom SVG Icon
-        const newRiyalIcon = `
-        <svg class="inline-block w-[0.6em] h-[0.6em] mr-1 opacity-90" viewBox="0 0 202.03 220.76" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" d="M3.62,190.51c1.85-3.4,4.63-11.11,8.33-12.04l62.35-13.27v-30.87l-63.28,13.58c-1.23,0,3.09-13.27,3.4-13.89,1.54-3.4,4.32-11.11,8.03-12.04l51.86-11.11V20.42c0-4.94,8.64-11.73,11.42-14.51.93-.62,9.88-8.64,9.88-4.94v105.57l24.69-5.56V31.84c0-4.94,8.64-11.73,11.73-14.2.62-.93,9.57-8.64,9.57-5.25v84.27l58.34-12.35h.31l1.23-.31c.93-.31-3.09,12.96-3.7,13.89-1.54,3.09-4.32,11.11-8.03,11.73l-48.15,10.5v24.39l60.19-12.66c1.23-.31-2.78,13.27-3.4,13.89-1.54,3.4-4.32,11.11-8.03,12.04l-68.53,14.82c-.93,0-1.54,0-1.54-1.23v-46.61l-24.69,5.25v31.79c0,6.79-13.27,25-20.06,26.86v-.31L.22,204.4c-1.23.31,3.09-12.96,3.4-13.89ZM196.55,194.83c-1.54,3.09-4.32,11.11-8.33,12.04l-68.84,13.89c-.93.31,3.09-12.96,3.7-13.89,1.54-3.4,4.32-11.11,8.03-12.04l68.84-13.89c1.54-.31-3.09,12.96-3.4,13.89Z"/>
-        </svg>`;
 
         function executeFilter() {
-            // 2. The Logic to check the Excel sheet (Moved INSIDE the function)
-            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) 
-                ? newRiyalIcon 
-                : `<span class="text-[0.8em] mr-1 opacity-90">${globalCurrency}</span>`;
-
-            const container = document.getElementById('menu-container');
-            container.innerHTML = '';
-            let filtered = activeMenuData;
+            const container = document.getElementById('menu-container'), emptyState = document.getElementById('empty-state');
+            container.innerHTML = ''; let hasItems = false;
+            let filteredData = activeMenuData;
             
-            if (selectedMainCategories.size > 0) filtered = filtered.filter(i => selectedMainCategories.has(i.mainCat));
-            if (selectedSubCategories.size > 0) filtered = filtered.filter(i => selectedSubCategories.has(i.subCat));
-            if (searchQuery) filtered = filtered.filter(i => (`${i.name} ${i.desc}`).toLowerCase().includes(searchQuery));
+            // Clear default placeholder so animation shows properly
+            document.getElementById('searchInput').placeholder = '';
+            
+            if (selectedMainCategories.size > 0) filteredData = filteredData.filter(i => selectedMainCategories.has(i.mainCat));
+            if (selectedSubCategories.size > 0) filteredData = filteredData.filter(i => selectedSubCategories.has(i.subCat));
+            
+            if (searchQuery) {
+                const searchWords = searchQuery.toLowerCase().split(' ').filter(word => word.trim() !== '');
+                filteredData = filteredData.filter(i => {
+                    const searchableText = `${i.name} ${i.desc} ${i.mainCat} ${i.subCat}`.toLowerCase();
+                    return searchWords.every(word => searchableText.includes(word));
+                });
+            }
+
+            if (selectedMainCategories.size === 0 && selectedSubCategories.size === 0 && !searchQuery) {
+                const specials = activeMenuData.filter(i => i.isTodaySpecial);
+                if (specials.length > 0) {
+                    hasItems = true;
+                    specials.sort((a, b) => a.order - b.order);
+                    renderSection("🌟 Today's Specials", specials, container, true);
+                }
+            }
 
             const grouped = {};
-            filtered.forEach(item => { if(!grouped[item.subCat]) grouped[item.subCat] = []; grouped[item.subCat].push(item); });
-
-            // Setup Intersection Observer for scroll-sync
-            if(intersectionObserver) intersectionObserver.disconnect();
-            intersectionObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting) {
-                        const subId = entry.target.id.replace('section-', '');
-                        const btn = document.getElementById(`sub-btn-${subId}`);
-                        if(btn) btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                    }
-                });
-            }, { rootMargin: '-20% 0px -70% 0px' });
+            filteredData.forEach(item => { if(!grouped[item.subCat]) grouped[item.subCat] = []; grouped[item.subCat].push(item); });
 
             for (const subCat in grouped) {
+                hasItems = true;
                 const items = grouped[subCat].sort((a, b) => a.order - b.order);
-                const section = document.createElement('div');
-                const safeId = subCat.replace(/[^a-zA-Z0-9]/g, '');
-                section.id = `section-${safeId}`;
-                
-                section.innerHTML = `<h3 class="text-xl font-bold text-gray-800 border-b-2 border-red-100 pb-2 mb-4 pt-2">${subCat}</h3>`;
-                const grid = document.createElement('div');
-                grid.className = "grid grid-cols-2 md:grid-cols-4 gap-3";
-
-                items.forEach((item) => {
-                    const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full cursor-pointer";
-                    card.onclick = () => openModal(item.id);
-                    card.innerHTML = `
-                        <div class="relative aspect-[4/3] bg-gray-100"><img src="${item.img}" class="w-full h-full object-cover" onerror="this.onerror=null; this.classList.replace('object-cover', 'object-contain'); this.classList.add('p-4'); this.src='${rawBranding.N || rawBranding.M || 'https://raw.githubusercontent.com/Rmoosa2014/Restaurant-menu/main/images/logo.png'}';"></div>
-                        <div class="p-3 flex flex-col flex-grow">
-                            <h4 class="text-sm font-bold text-gray-900 line-clamp-1">${item.name}</h4>
-                            <span class="font-extrabold text-red-600 mt-1 flex items-baseline">
-    ${finalCurrencyDisplay}
-    ${item.price}
-</span>
-                        </div>`;
-                    grid.appendChild(card);
-                });
-                section.appendChild(grid); 
-                container.appendChild(section);
-                intersectionObserver.observe(section);
+                renderSection(subCat, items, container, false);
             }
-            container.classList.remove('hidden'); container.classList.add('flex');
+            
+            if(!hasItems) { container.classList.add('hidden'); emptyState.classList.remove('hidden'); } 
+            else { container.classList.remove('hidden'); container.classList.add('flex'); emptyState.classList.add('hidden'); }
         }
 
-        document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase().trim(); executeFilter(); });
+        function renderSection(title, items, container, isHighlight) {
+            const section = document.createElement('div');
+            const safeId = title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+            section.id = `section-${safeId}`;
+            section.className = 'menu-section-tracker';
+            
+            const headerClasses = isHighlight ? "text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500" : "text-xl font-bold text-gray-800";
+            const titleWrapper = document.createElement('div');
+            titleWrapper.className = "flex items-center justify-between border-b-2 border-red-100 pb-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity group";
+            titleWrapper.onclick = () => openCategoryPage(title, isHighlight);
+            titleWrapper.innerHTML = `<h3 class="${headerClasses}">${title}</h3><div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-red-500 group-hover:bg-red-100 transition-colors shadow-sm"><i class="fas fa-chevron-right text-sm"></i></div>`;
+            section.appendChild(titleWrapper);
+            
+            const grid = document.createElement('div');
+            if (isHighlight) grid.className = `grid ${items.length > 20 ? 'grid-rows-2' : 'grid-rows-1'} grid-flow-col gap-3 sm:gap-4 overflow-x-auto hide-scrollbar pb-4 snap-x snap-mandatory`;
+            else grid.className = "grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6";
 
-        // Go to Top Scroll Listener
-        window.addEventListener('scroll', () => {
-            const btn = document.getElementById('goTopBtn');
-            if (window.scrollY > 300) { btn.classList.remove('scale-0', 'opacity-0', 'pointer-events-none'); btn.classList.add('scale-100', 'opacity-100'); } 
-            else { btn.classList.add('scale-0', 'opacity-0', 'pointer-events-none'); btn.classList.remove('scale-100', 'opacity-100'); }
-        });
+            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1 opacity-90">${globalCurrency}</span>`;
 
-        // Swipe-to-Close Modal Logic
-        const modalContent = document.getElementById('modalContent');
-        const modalScrollArea = document.getElementById('modalScrollArea');
-        let startY = 0, currentY = 0;
-        
-        modalContent.addEventListener('touchstart', (e) => {
-            if(modalScrollArea.scrollTop === 0) startY = e.touches[0].clientY;
-        }, {passive: true});
-        
-        modalContent.addEventListener('touchmove', (e) => {
-            if(startY === 0) return;
-            currentY = e.touches[0].clientY;
-            const diff = currentY - startY;
-            if(diff > 0) { modalContent.style.transform = `translateY(${diff}px)`; modalContent.style.transition = 'none'; }
-        }, {passive: true});
-        
-        modalContent.addEventListener('touchend', (e) => {
-            if(startY === 0) return;
-            const diff = currentY - startY;
-            modalContent.style.transition = 'all 0.3s ease';
-            if(diff > 120) closeModal(); else modalContent.style.transform = '';
-            startY = 0;
-        });
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                const bgClass = item.isTodaySpecial ? 'bg-amber-50/60 border-amber-200' : 'bg-white border-gray-100';
+                let cardClasses = `menu-card ${bgClass} rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group`;
+                if (isHighlight) cardClasses += ' w-[40vw] sm:w-[220px] snap-start shrink-0';
+                else if (index === items.length - 1 && items.length % 2 !== 0) cardClasses += ' col-span-2 md:col-span-1'; 
+                
+                card.className = cardClasses;
+                card.style.animation = `fadeInUp 0.4s ease forwards ${index * 30}ms`;
+                card.onclick = () => openModal(item.id);
 
+                const isLiked = likedItems.has(item.id);
+                let badgeHtml = item.isTodaySpecial ? `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[10px]"></i> Special</div>` : '';
+
+                let imgs = item.imgUrls.map(u => `<img src="${u}" class="w-full h-full object-cover shrink-0 snap-center">`).join('');
+                if(item.imgUrls.length > 1) imgs += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
+
+                card.innerHTML = `
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm z-20 text-sm"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
+                    <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl"><div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="scroll-behavior: smooth;">${imgs}</div>${badgeHtml}</div>
+                    <div class="p-3 sm:p-4 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-1 sm:mb-2 gap-2"><h4 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">${item.name}</h4><span class="font-extrabold text-red-600 whitespace-nowrap text-sm sm:text-base shrink-0 flex items-baseline">${finalCurrencyDisplay}${item.price}</span></div>
+                        <p class="text-xs text-gray-500 line-clamp-2 mt-1 mb-2 flex-grow">${item.desc}</p>
+                        <div class="flex justify-between items-end mt-1">${item.calories ? `<div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-orange-500 bg-orange-50 w-fit px-2 py-1 rounded-md"><i class="fas fa-fire"></i> ${item.calories} Cal</div>` : '<div></div>'}</div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+            section.appendChild(grid); container.appendChild(section);
+        }
+
+        // --- THE DEDICATED CATEGORY PAGE LOGIC ---
+        function openCategoryPage(title, isHighlight) {
+            let items = isHighlight ? activeMenuData.filter(i => i.isTodaySpecial) : activeMenuData.filter(i => i.subCat === title);
+            items.sort((a, b) => a.order - b.order);
+            document.getElementById('category-page-title').textContent = title;
+            
+            const grid = document.getElementById('category-page-grid'); grid.innerHTML = '';
+            let finalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1">${globalCurrency}</span>`;
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                const bgClass = item.isTodaySpecial ? 'bg-amber-50/60 border-amber-200' : 'bg-white border-gray-100';
+                card.className = `menu-card ${bgClass} rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full opacity-0 translate-y-4 relative group`;
+                card.style.animation = `fadeInUp 0.4s ease forwards ${index * 20}ms`;
+                card.onclick = () => openModal(item.id);
+
+                const isLiked = likedItems.has(item.id);
+                let badgeHtml = item.isTodaySpecial ? `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[8px] font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[8px]"></i> Special</div>` : '';
+                let imgs = item.imgUrls.map(u => `<img src="${u}" class="w-full h-full object-cover shrink-0 snap-center">`).join('');
+                if(item.imgUrls.length > 1) imgs += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
+
+                card.innerHTML = `
+                    <button onclick="toggleLike(event, '${item.id}')" class="absolute top-2 start-2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 shadow-sm z-20 text-xs"><i class="${isLiked ? 'fas text-red-500' : 'far'} fa-heart"></i></button>
+                    <div class="relative aspect-[4/3] overflow-hidden shrink-0 bg-gray-100 rounded-t-2xl"><div class="mini-img-slider flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">${imgs}</div>${badgeHtml}</div>
+                    <div class="p-2 sm:p-3 flex flex-col flex-grow">
+                        <h4 class="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight line-clamp-1 mb-1">${item.name}</h4>
+                        <span class="font-extrabold text-red-600 whitespace-nowrap text-sm shrink-0 mb-1 flex items-baseline">${finalCurrencyDisplay}${item.price}</span>
+                        <p class="text-[9px] sm:text-[10px] text-gray-500 line-clamp-2 mb-2 flex-grow">${item.desc}</p>
+                        <div class="flex justify-between items-end mt-auto">${item.calories ? `<div class="flex items-center gap-1 text-[8px] font-bold text-orange-500 bg-orange-50 w-fit px-1.5 py-0.5 rounded"><i class="fas fa-fire"></i> ${item.calories} Cal</div>` : '<div></div>'}</div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+
+            const modal = document.getElementById('category-page-overlay'), backdrop = document.getElementById('category-backdrop'), content = document.getElementById('category-content');
+            modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth; 
+            backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100');
+            content.classList.remove('translate-y-full', 'md:scale-95', 'opacity-0'); content.classList.add('translate-y-0', 'md:scale-100', 'opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCategoryPage() {
+            const modal = document.getElementById('category-page-overlay'), backdrop = document.getElementById('category-backdrop'), content = document.getElementById('category-content');
+            backdrop.classList.remove('opacity-100'); backdrop.classList.add('opacity-0');
+            content.classList.remove('translate-y-0', 'md:scale-100', 'opacity-100'); content.classList.add('translate-y-full', 'md:scale-95', 'opacity-0');
+            document.body.style.overflow = '';
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        }
+
+        // --- MODALS & EXTRAS ---
         function openModal(id) {
-            const item = activeMenuData.find(i => i.id === id);
-            if (!item) return;
+            const item = activeMenuData.find(i => i.id === id); if(!item) return;
             currentOpenItemId = id;
-            document.getElementById('modal-image').src = item.img;
+            
+            const slider = document.getElementById('modal-image-slider'), dots = document.getElementById('modal-image-dots');
+            slider.innerHTML = ''; dots.innerHTML = '';
+            item.imgUrls.forEach((url, i) => {
+                slider.innerHTML += `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-center">`;
+                dots.innerHTML += `<div class="modal-dot w-2 h-2 rounded-full transition-all duration-300 ${i===0 ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}"></div>`;
+            });
+            if(item.imgUrls.length > 1) slider.innerHTML += `<img src="${item.imgUrls[0]}" class="w-full h-full object-cover shrink-0 snap-center" data-is-clone="true">`;
+            
             document.getElementById('modalCategoryBadge').textContent = item.subCat;
             document.getElementById('modalTitle').textContent = item.name;
-            // 1. Check if it is SR and swap the SVG
-    // 1. Check if it is SR and swap the SVG
-    let modalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) 
-        ? newRiyalIcon 
-        : `<span class="text-[0.8em] mr-1.5 opacity-90">${globalCurrency}</span>`;
-
-    // 2. Display the newly formatted price
-    document.getElementById('modalPrice').innerHTML = `
-    <div class="flex items-baseline">
-        ${modalCurrencyDisplay}
-        ${item.price}
-    </div>`;
             document.getElementById('modalDesc').textContent = item.desc;
             
+            const specialBadge = document.getElementById('modalTodaySpecialBadge');
+            if (item.isTodaySpecial && specialBadge) specialBadge.classList.remove('hidden');
+            else if (specialBadge) specialBadge.classList.add('hidden');
+            
+            let modalCurrencyDisplay = (globalCurrency.toUpperCase().includes('SR')) ? newRiyalIcon : `<span class="text-[0.8em] mr-1.5 opacity-90">${globalCurrency}</span>`;
+            document.getElementById('modalPrice').innerHTML = `<div class="flex items-baseline">${modalCurrencyDisplay}${item.price}</div>`;
+
+            const calArea = document.getElementById('modalCalories');
+            if(item.calories && calArea) { calArea.textContent = item.calories; calArea.parentElement.classList.remove('hidden'); calArea.parentElement.classList.add('inline-flex'); } 
+            else if (calArea) { calArea.parentElement.classList.add('hidden'); calArea.parentElement.classList.remove('inline-flex'); }
+
+            const recipeArea = document.getElementById('modalRecipeArea');
+            if(item.recipe && recipeArea) { document.getElementById('modalRecipe').textContent = item.recipe; recipeArea.classList.remove('hidden'); window.toggleRecipe(true); } 
+            else if (recipeArea) recipeArea.classList.add('hidden');
+
             const modal = document.getElementById('productModal'), backdrop = document.getElementById('modalBackdrop'), content = document.getElementById('modalContent');
-            content.style.transform = ''; // Reset swipe transform
-            modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth;
+            modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth; 
             backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100');
             content.classList.remove('translate-y-full', 'opacity-0'); content.classList.add('translate-y-0', 'opacity-100');
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
+            currentOpenItemId = null;
             const modal = document.getElementById('productModal'), backdrop = document.getElementById('modalBackdrop'), content = document.getElementById('modalContent');
             backdrop.classList.remove('opacity-100'); backdrop.classList.add('opacity-0');
             content.classList.remove('translate-y-0', 'opacity-100'); content.classList.add('translate-y-full', 'opacity-0');
             document.body.style.overflow = '';
-            setTimeout(() => { modal.classList.remove('flex'); modal.classList.add('hidden'); content.style.transform = ''; }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
         }
 
+        function openBrandModal() {
+            document.getElementById('brandModalTitle').textContent = rawBranding.B || "Restaurant";
+            document.getElementById('brandModalDesc').textContent = "Welcome! We pride ourselves on serving delicious, high-quality food.";
+            document.getElementById('brandModalPhone').textContent = rawBranding.C || "--";
+            document.getElementById('brandModalWA').textContent = rawBranding.D || "--";
+            document.getElementById('brandModalImage').src = rawBranding.smartLogo || 'logo.png';
+            
+            const modal = document.getElementById('brandModal'), backdrop = document.getElementById('brandModalBackdrop'), content = document.getElementById('brandModalContent');
+            modal.classList.remove('hidden'); modal.classList.add('flex'); void modal.offsetWidth; 
+            backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100');
+            content.classList.remove('translate-y-full', 'opacity-0'); content.classList.add('translate-y-0', 'opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBrandModal() {
+            const modal = document.getElementById('brandModal'), backdrop = document.getElementById('brandModalBackdrop'), content = document.getElementById('brandModalContent');
+            backdrop.classList.remove('opacity-100'); backdrop.classList.add('opacity-0');
+            content.classList.remove('translate-y-0', 'opacity-100'); content.classList.add('translate-y-full', 'opacity-0');
+            document.body.style.overflow = '';
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        }
+
+        function toggleLike(e, id) { e.stopPropagation(); likedItems.has(id) ? likedItems.delete(id) : likedItems.add(id); localStorage.setItem('likedItems', JSON.stringify([...likedItems])); executeFilter(); }
+        function callPhone() { if(rawBranding.C) window.location.href = `tel:${rawBranding.C}`; }
+        function openWhatsApp() { if(rawBranding.D) window.open(`https://wa.me/${rawBranding.D}`, '_blank'); }
+        function openWhatsAppItem() {
+            if(!currentOpenItemId || !rawBranding.D) return;
+            const item = activeMenuData.find(i => i.id === currentOpenItemId);
+            window.open(`https://wa.me/${rawBranding.D}?text=${encodeURIComponent(`Hi, I would like to order: ${item.name} (${item.price}${globalCurrency})`)}`, '_blank');
+        }
+        function shareItem() {
+            if(!currentOpenItemId) return; const item = activeMenuData.find(i => i.id === currentOpenItemId);
+            if(navigator.share) navigator.share({ title: item.name, text: `Check out ${item.name}!`, url: window.location.href });
+        }
+        window.toggleRecipe = function(forceCollapse = false) { 
+            const p = document.getElementById('modalRecipe'); 
+            if(forceCollapse) p.classList.add('line-clamp-2'); 
+            else p.classList.toggle('line-clamp-2'); 
+        };
+        function toggleMainCategories() { document.getElementById('main-category-container').classList.toggle('max-h-0'); document.getElementById('main-category-container').classList.toggle('opacity-0'); }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase().trim(); executeFilter(); });
+        
+        document.addEventListener('touchstart', () => lastSliderInteraction = Date.now(), {passive: true});
+        document.addEventListener('mousedown', () => lastSliderInteraction = Date.now());
+        
+        setInterval(() => {
+            if (Date.now() - lastSliderInteraction < 3000) return;
+            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
+                if(slider.children.length > 1) {
+                    let maxScroll = slider.scrollWidth - slider.clientWidth;
+                    if(Math.abs(slider.scrollLeft) >= maxScroll - 5) { slider.scrollTo({ left: 0, behavior: 'smooth' }); } 
+                    else { slider.scrollTo({ left: slider.scrollLeft + slider.clientWidth, behavior: 'smooth' }); }
+                }
+            });
+        }, 4000);
+
+        // 1. Full App ScrollSpy, Auto-Hide, & Go To Top Logic
         let isMainCatOpen = true;
-        function toggleMainCategories() {
-            isMainCatOpen = !isMainCatOpen;
+        let lastScrollY = window.scrollY;
+        let hasPassedHeader = false;
+        let autoCloseTimeout;
+        let menuOpenScrollY = 0;
+        let ignoreScrollUntil = 0;
+        let uiScrollTimeout;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const hideThreshold = 150; 
+
+            // Auto-hide ONLY once when scrolling past the header
+            if (currentScrollY > hideThreshold && !hasPassedHeader) {
+                hasPassedHeader = true;
+                if (isMainCatOpen) toggleMainCategories(false);
+            } 
+            else if (currentScrollY <= hideThreshold && hasPassedHeader) {
+                hasPassedHeader = false;
+                if (!isMainCatOpen) toggleMainCategories(true);
+            }
+
+            // User interaction checks
+            if (hasPassedHeader && isMainCatOpen) {
+                if (Date.now() > ignoreScrollUntil) {
+                    if (Math.abs(currentScrollY - menuOpenScrollY) > 50) {
+                        clearTimeout(autoCloseTimeout);
+                        autoCloseTimeout = setTimeout(() => {
+                            if (isMainCatOpen) toggleMainCategories(false);
+                        }, 200); 
+                    }
+                } else {
+                    menuOpenScrollY = currentScrollY;
+                }
+            }
+
+            // ScrollSpy for Horizontal Sub-Categories
+            const sections = document.querySelectorAll('.menu-section-tracker');
+            let currentActiveSectionId = null;
+            
+            sections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top <= 180 && rect.bottom >= 180) {
+                    currentActiveSectionId = sec.id.replace('section-', '');
+                }
+            });
+
+            if (currentActiveSectionId) {
+                const activeBtn = document.getElementById('sub-btn-' + currentActiveSectionId);
+                const subContainer = document.getElementById('sub-category-filters');
+                
+                if (activeBtn && subContainer) {
+                    subContainer.scrollTo({
+                        left: activeBtn.offsetLeft - 10,
+                        behavior: 'smooth'
+                    });
+                    
+                    document.querySelectorAll('.sub-cat-btn').forEach(b => {
+                        b.classList.remove('bg-gray-800', 'text-white', 'border-gray-800');
+                        b.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+                    });
+                    activeBtn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                    activeBtn.classList.add('bg-gray-800', 'text-white', 'border-gray-800');
+                }
+            }
+
+            // Go to top button fade logic
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+            if (backToTopBtn) {
+                backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                backToTopBtn.classList.remove('opacity-100');
+            }
+
+            clearTimeout(uiScrollTimeout);
+            uiScrollTimeout = setTimeout(() => {
+                const totalPageHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercentage = (currentScrollY / totalPageHeight) * 100;
+
+                if (backToTopBtn && scrollPercentage >= 30) {
+                    backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    backToTopBtn.classList.add('opacity-100');
+                }
+            }, 1000); 
+        }, {passive: true});
+
+        function toggleMainCategories(forceState) {
             const container = document.getElementById('main-category-container');
             const icon = document.getElementById('category-toggle-icon');
+            
+            if (forceState !== undefined) isMainCatOpen = forceState;
+            else isMainCatOpen = !isMainCatOpen;
+
             if (isMainCatOpen) {
-                container.classList.remove('max-h-0', 'opacity-0'); container.classList.add('max-h-[300px]', 'opacity-100');
-                icon.style.transform = 'rotate(0deg)';
+                ignoreScrollUntil = Date.now() + 800; 
+                menuOpenScrollY = window.scrollY; 
+                container.classList.remove('max-h-0', 'opacity-0');
+                container.classList.add('max-h-[300px]', 'opacity-100');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down', 'text-gray-500');
+                    icon.classList.add('fa-chevron-up', 'text-red-400');
+                }
             } else {
-                container.classList.add('max-h-0', 'opacity-0'); container.classList.remove('max-h-[300px]', 'opacity-100');
-                icon.style.transform = 'rotate(180deg)';
+                container.classList.add('max-h-0', 'opacity-0');
+                container.classList.remove('max-h-[300px]', 'opacity-100');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-up', 'text-red-400');
+                    icon.classList.add('fa-chevron-down', 'text-gray-500');
+                }
             }
         }
+        
+        // Ensure Touch-to-close on the header island works
+        const island = document.getElementById('filter-header-island');
+        let touchStartY = 0;
+        island.addEventListener('touchstart', e => { touchStartY = e.changedTouches[0].screenY; }, {passive: true});
+        island.addEventListener('touchend', e => {
+            const touchEndY = e.changedTouches[0].screenY;
+            if (touchEndY > touchStartY + 30) toggleMainCategories(true); 
+            else if (touchEndY < touchStartY - 30) toggleMainCategories(false); 
+        }, {passive: true});
 
-        function openBrandModal() { document.getElementById('brandModal').classList.remove('hidden'); document.getElementById('brandModal').classList.add('flex'); }
-        function closeBrandModal() { document.getElementById('brandModal').classList.remove('flex'); document.getElementById('brandModal').classList.add('hidden'); }
-        function callPhone() { if(rawBranding.C) window.location.href = `tel:${rawBranding.C}`; }
-        function shareItem() { if(navigator.share) navigator.share({ title: 'Restaurant', url: window.location.href }); }
+        // 2. Animated Search Placeholder Logic
+        let placeholderTimer;
+        function animateSearchPlaceholder() {
+            clearInterval(placeholderTimer);
+            const container = document.getElementById('animated-placeholder-container');
+            const span1 = document.getElementById('search-text-1');
+            const span2 = document.getElementById('search-text-2');
+            
+            if (!container || activeMenuData.length === 0) return;
 
+            const suggestions = [...activeMenuData].sort(() => 0.5 - Math.random()).slice(0, 5).map(item => item.name);
+            let currentIndex = 0;
+            
+            document.getElementById('search-prefix').innerText = currentLang === 'en' ? 'Try searching "' : 'جرب البحث عن "';
+            span1.innerText = suggestions[0] + '"...';
+
+            placeholderTimer = setInterval(() => {
+                currentIndex = (currentIndex + 1) % suggestions.length;
+                span2.innerText = suggestions[currentIndex] + '"...';
+                
+                container.style.transition = 'transform 0.5s ease-in-out';
+                container.style.transform = 'translateY(-20px)';
+
+                setTimeout(() => {
+                    container.style.transition = 'none';
+                    span1.innerText = span2.innerText;
+                    container.style.transform = 'translateY(0)';
+                }, 500); 
+            }, 3000);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => { 
+            const placeholderWrapper = document.getElementById('search-placeholder-wrapper');
+            if(e.target.value.length > 0) placeholderWrapper.classList.add('opacity-0');
+            else placeholderWrapper.classList.remove('opacity-0');
+            searchQuery = e.target.value.toLowerCase().trim(); 
+            executeFilter(); 
+        });
+        
+        // 3. Premium Swipe-To-Close Modal Physics
+        const pModal = document.getElementById('productModal');
+        const pContent = document.getElementById('modalContent');
+        let pullStartY = 0;
+        let isPulling = false;
+
+        pModal.addEventListener('touchstart', (e) => {
+            const scrollArea = pContent.querySelector('.overflow-y-auto');
+            if (scrollArea && scrollArea.scrollTop <= 0) {
+                pullStartY = e.touches[0].clientY;
+                isPulling = true;
+                pContent.classList.remove('transition-all', 'duration-300');
+            } else isPulling = false;
+        }, { passive: true });
+
+        pModal.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+            const deltaY = e.touches[0].clientY - pullStartY;
+            if (deltaY > 0) {
+                if (e.cancelable) e.preventDefault(); 
+                pContent.style.transform = `translateY(${deltaY * 0.4}px)`;
+            } else {
+                pContent.style.transform = '';
+                isPulling = false; 
+            }
+        }, { passive: false });
+
+        pModal.addEventListener('touchend', () => {
+            if (!isPulling) return;
+            isPulling = false;
+            pContent.classList.add('transition-all', 'duration-300');
+            const currentPullAmount = parseInt(pContent.style.transform.replace(/[^\d.]/g, '') || "0");
+            if (currentPullAmount > 100) { pContent.style.transform = ''; closeModal(); } 
+            else pContent.style.transform = ''; 
+        });
+
+        // --- 4. Premium Infinite Bidirectional Carousel & Dot Engine ---
+        
+        // A. Automatically injects clones at both the start and end of the image list
+        function maintainInfiniteCarousels() {
+            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
+                if (slider.clientWidth === 0 || slider.dataset.infiniteSetup === "true") return; 
+                
+                // Clear any old, single HTML clones first
+                slider.querySelectorAll('[data-is-clone="true"]').forEach(c => c.remove());
+                
+                const imgs = Array.from(slider.children);
+                if (imgs.length > 1) {
+                    // Create Front Clone (Last Image) for backwards swiping
+                    const frontClone = imgs[imgs.length - 1].cloneNode(true);
+                    frontClone.dataset.isClone = "true";
+                    
+                    // Create Back Clone (First Image) for forwards swiping
+                    const backClone = imgs[0].cloneNode(true);
+                    backClone.dataset.isClone = "true";
+                    
+                    // Inject Dual Clones
+                    slider.insertBefore(frontClone, imgs[0]);
+                    slider.appendChild(backClone);
+                    
+                    slider.dataset.infiniteSetup = "true";
+                    slider.dataset.realCount = imgs.length; // The true number of images
+
+                    // Disable smooth scroll temporarily to jump past the front clone invisibly
+                    const originalBehavior = slider.style.scrollBehavior;
+                    slider.style.scrollBehavior = 'auto'; 
+                    const isRTL = document.documentElement.dir === 'rtl';
+                    slider.scrollLeft = isRTL ? -slider.clientWidth : slider.clientWidth;
+                    void slider.offsetWidth; // Force jump
+                    slider.style.scrollBehavior = originalBehavior || 'smooth'; 
+                }
+            });
+        }
+        
+        // Run constantly to catch new pop-up modals opening
+        setInterval(maintainInfiniteCarousels, 100);
+
+        // B. Global Teleporter & Red Dot Sync Engine
+        document.addEventListener('scroll', (e) => {
+            if (e.target && e.target.classList && e.target.dataset.infiniteSetup === "true") {
+                const slider = e.target;
+                const currentPos = Math.abs(slider.scrollLeft);
+                const clientWidth = slider.clientWidth;
+                const maxScroll = slider.scrollWidth - clientWidth;
+                if (clientWidth === 0) return;
+
+                const isRTL = document.documentElement.dir === 'rtl';
+                let teleported = false;
+
+                // Invisible Teleport if hitting boundaries
+                if (currentPos <= 5) {
+                    slider.style.scrollBehavior = 'auto';
+                    slider.scrollLeft = isRTL ? -(maxScroll - clientWidth) : (maxScroll - clientWidth);
+                    void slider.offsetWidth;
+                    slider.style.scrollBehavior = 'smooth';
+                    teleported = true;
+                } else if (currentPos >= maxScroll - 5) {
+                    slider.style.scrollBehavior = 'auto';
+                    slider.scrollLeft = isRTL ? -clientWidth : clientWidth;
+                    void slider.offsetWidth;
+                    slider.style.scrollBehavior = 'smooth';
+                    teleported = true;
+                }
+
+                // Sync the Red Dots perfectly with the scrolling image
+                const dotsContainer = slider.nextElementSibling;
+                if (dotsContainer && dotsContainer.id === 'modal-image-dots') {
+                    const realCount = parseInt(slider.dataset.realCount);
+                    const activePos = teleported ? Math.abs(slider.scrollLeft) : currentPos;
+                    let activeIndex = Math.round(activePos / clientWidth) - 1; 
+                    
+                    if (activeIndex < 0) activeIndex = realCount - 1;
+                    if (activeIndex >= realCount) activeIndex = 0;
+                    
+                    Array.from(dotsContainer.children).forEach((dot, k) => {
+                        dot.className = `modal-dot w-2 h-2 rounded-full transition-all duration-300 ${k === activeIndex ? 'bg-red-500 scale-125' : 'bg-white/80 shadow-sm'}`;
+                    });
+                }
+            }
+        }, true); 
+
+        // C. Smart Interaction Tracker (Stops auto-swiper when user touches the image)
+        ['touchstart', 'touchmove', 'mousedown', 'wheel'].forEach(evt => {
+            document.addEventListener(evt, (e) => {
+                if (e.target.closest('.mini-img-slider') || e.target.closest('#modal-image-slider')) {
+                    lastSliderInteraction = Date.now();
+                }
+            }, { passive: true });
+        });
+
+        // D. Auto-Swiper Engine
+        setInterval(() => {
+            if (Date.now() - lastSliderInteraction < 5000) return;
+            const isRTL = document.documentElement.dir === 'rtl';
+            document.querySelectorAll('.mini-img-slider, #modal-image-slider').forEach(slider => {
+                if (slider.dataset.infiniteSetup === "true") {
+                    const currentPos = Math.abs(slider.scrollLeft);
+                    slider.scrollTo({ left: isRTL ? -(currentPos + slider.clientWidth) : (currentPos + slider.clientWidth), behavior: 'smooth' });
+                }
+            });
+        }, 4000);
+
+        // E. Manual Swipe Speed Boost
+        let carouselSwipeStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
+            if (slider && slider.children.length > 1) {
+                carouselSwipeStartX = e.touches[0].clientX;
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            const slider = e.target.closest('.mini-img-slider, #modal-image-slider');
+            if (slider && slider.children.length > 1) {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (maxScroll <= 0) return; 
+                
+                const diff = carouselSwipeStartX - e.changedTouches[0].clientX; 
+                
+                if (Math.abs(diff) > 40) {
+                    const isRTL = document.documentElement.dir === 'rtl';
+                    const currentScroll = Math.abs(slider.scrollLeft);
+                    
+                    const isAtStart = currentScroll <= 5;
+                    const isAtEnd = currentScroll >= maxScroll - 5;
+
+                    const movingForward = isRTL ? diff < -40 : diff > 40;
+                    const movingBackward = isRTL ? diff > 40 : diff < -40;
+
+                    if (movingForward && isAtEnd) {
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else if (movingBackward && isAtStart) {
+                        slider.scrollTo({ left: isRTL ? -maxScroll : maxScroll, behavior: 'smooth' });
+                    }
+                }
+            }
+        }, { passive: true });
+
+        // Start App
         window.onload = init;
     </script>
 </body>
