@@ -662,7 +662,7 @@ let currentLang = 'en';
 let langSetup = 'English&Arabic'; 
 
 let globalCurrency = ""; 
-const newRiyalIcon = `<span class="text-sm md:text-base font-bold mx-1 text-red-500">SR</span>`; // <-- Paste it here!
+const newRiyalIcon = `<svg class="inline-block w-[0.8em] h-[0.8em] mx-0.5 fill-current" viewBox="0 0 202.03 220.76" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M3.62,190.51c1.85-3.4,4.63-11.11,8.33-12.04l62.35-13.27v-30.87l-63.28,13.58c-1.23,0,3.09-13.27,3.4-13.89,1.54-3.4,4.32-11.11,8.03-12.04l51.86-11.11V20.42c0-4.94,8.64-11.73,11.42-14.51.93-.62,9.88-8.64,9.88-4.94v105.57l24.69-5.56V31.84c0-4.94,8.64-11.73,11.73-14.2.62-.93,9.57-8.64,9.57-5.25v84.27l58.34-12.35h.31l1.23-.31c.93-.31-3.09,12.96-3.7,13.89-1.54,3.09-4.32,11.11-8.03,11.73l-48.15,10.5v24.39l60.19-12.66c1.23-.31-2.78,13.27-3.4,13.89-1.54,3.4-4.32,11.11-8.03,12.04l-68.53,14.82c-.93,0-1.54,0-1.54-1.23v-46.61l-24.69,5.25v31.79c0,6.79-13.27,25-20.06,26.86v-.31L.22,204.4c-1.23.31,3.09-12.96,3.4-13.89ZM196.55,194.83c-1.54,3.09-4.32,11.11-8.33,12.04l-68.84,13.89c-.93.31,3.09-12.96,3.7-13.89,1.54-3.4,4.32-11.11,8.03-12.04l68.84-13.89c1.54-.31-3.09,12.96-3.4,13.89Z"/></svg>`;
 
 let activeMenuData = []; 
 let mainCategories = []; 
@@ -1618,9 +1618,13 @@ function setupVerticalDraggable(elementId) {
 
                 const isLiked = likedItems.has(item.id);
                 
+                let cardCurrencyDisplay = (String(globalCurrency).toUpperCase().includes('SR')) 
+                    ? newRiyalIcon 
+                    : `<span class="text-[10px] sm:text-xs font-normal mx-0.5 text-gray-500">${globalCurrency}</span>`;
+
                 const priceHtml = currentLang === 'en' 
-                    ? `<span class="text-[10px] sm:text-xs font-normal me-0.5 text-gray-500">${globalCurrency}</span><span class="text-base sm:text-lg">${item.price}</span>`
-                    : `<span class="text-base sm:text-lg">${item.price}</span> <span class="text-[10px] sm:text-xs font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
+                    ? `<span class="flex items-baseline">${cardCurrencyDisplay}<span>${item.price}</span></span>`
+                    : `<span class="flex items-baseline"><span>${item.price}</span>${cardCurrencyDisplay}</span>`;
 
                 let badgeHtml = '';
                 if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[10px]"></i> Special</div>`;
@@ -2511,9 +2515,13 @@ function toggleQuickCart(id) {
                 card.onclick = () => openModal(item.id);
 
                 const isLiked = likedItems.has(item.id);
+                let cardCurrencyDisplay = (String(globalCurrency).toUpperCase().includes('SR')) 
+                    ? newRiyalIcon 
+                    : `<span class="text-[10px] font-normal mx-0.5 text-gray-500">${globalCurrency}</span>`;
+
                 const priceHtml = currentLang === 'en' 
-                    ? `<span class="text-[10px] font-normal me-0.5 text-gray-500">${globalCurrency}</span><span class="text-sm sm:text-base">${item.price}</span>`
-                    : `<span class="text-sm sm:text-base">${item.price}</span> <span class="text-[10px] font-normal ms-0.5 text-gray-500">${globalCurrency}</span>`;
+                    ? `<span class="flex items-baseline">${cardCurrencyDisplay}<span>${item.price}</span></span>`
+                    : `<span class="flex items-baseline"><span>${item.price}</span>${cardCurrencyDisplay}</span>`;
 
                 let badgeHtml = '';
                 if(item.isTodaySpecial) badgeHtml = `<div class="absolute top-2 end-2 bg-gradient-to-r from-orange-400 to-red-500 px-2 py-1 rounded-lg text-[8px] sm:text-[10px] font-bold text-white shadow-sm z-10"><i class="fas fa-star text-[8px]"></i> Special</div>`;
