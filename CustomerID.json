@@ -1,0 +1,18 @@
+{
+  "CustomersID": [
+    {
+      "A": "Sl#",
+      "B": "Customer",
+      "C": "ID",
+      "D": "Date",
+      "E": "Remarks"
+    },
+    {
+      "A": 1,
+      "B": "ShawarMax",
+      "C": "CS01-2026-08",
+      "D": 46120,
+      "E": "Pending"
+    }
+  ]
+}
